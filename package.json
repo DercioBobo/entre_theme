@@ -1,0 +1,9 @@
+{
+  "name": "entre_theme",
+  "version": "0.0.1",
+  "description": "A non-destructive ERPNext theme app by Entretech",
+  "scripts": {
+    "build": "echo 'entre_theme has no JS bundles to compile'"
+  },
+  "devDependencies": {}
+}
