@@ -68,11 +68,21 @@ def after_install():
 	# ── 2. Guarantee runtime CSS file exists ──────────────────────────────────
 	try:
 		_ensure_runtime_css()
-	except Exception:
+	except Exception as e:
 		# Non-fatal — the shipped placeholder in the repo covers most cases.
+		print(f"  Warning: Could not create theme_runtime.css locally: {e}")
+
+	# ── 3. Fix Bitnami permissions if applicable ──────────────────────────────
+	try:
+		import subprocess
+		app_module_path = frappe.get_app_path("entre_theme")
+		app_root = os.path.realpath(os.path.join(app_module_path, ".."))
+		# Don't crash install if this fails (e.g., standard bench installs)
+		subprocess.run(["sudo", "chown", "-R", "daemon:daemon", app_root], check=False)
+	except Exception:
 		pass
 
-	# ── 3. Instructions ───────────────────────────────────────────────────────
+	# ── 4. Instructions ───────────────────────────────────────────────────────
 	print("\n" + "=" * 60)
 	print("  Entre Theme installed successfully!")
 	print("  Run the following to compile assets:")
