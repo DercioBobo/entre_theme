@@ -1,6 +1,5 @@
 import frappe
-from frappe.utils import get_html_format
-
+from werkzeug.wrappers import Response
 
 class LoginPageRenderer:
 	"""
@@ -81,9 +80,12 @@ class LoginPageRenderer:
 			context
 		)
 
-		# Return a proper Werkzeug Response (required by Frappe v15 renderer protocol)
-		return frappe.respond_as_web_page(
-			title="Login",
-			html=html,
-			http_status_code=200,
+		# Return a raw Werkzeug Response — the correct return type for the
+		# Frappe v15 page_renderer protocol. frappe.respond_as_web_page() has
+		# undesirable side-effects (sets frappe.local.response) and a variable
+		# call signature across v15 patch versions.
+		return Response(
+			html,
+			status=200,
+			content_type="text/html; charset=utf-8",
 		)
