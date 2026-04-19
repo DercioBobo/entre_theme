@@ -1,0 +1,48 @@
+/* Sidebar Overrides */
+
+.layout-side-section {
+	background-color: var(--sidebar-bg) !important;
+	border-right: none !important;
+	padding-top: 1rem;
+	padding-right: 0 !important; /* Reset frappe padding */
+}
+
+/* Desk Sidebar adjustments */
+.desk-sidebar {
+	color: #ffffff;
+}
+
+.desk-sidebar .sidebar-section {
+	margin-bottom: 1.5rem;
+}
+
+.desk-sidebar .sidebar-item-container {
+	margin: 0.2rem 1rem;
+	border-radius: var(--border-radius);
+	transition: var(--transition);
+}
+
+.desk-sidebar .standard-sidebar-item {
+	color: rgba(255,255,255,0.7) !important;
+	padding: 0.6rem 1rem;
+	border-radius: var(--border-radius);
+}
+
+.desk-sidebar .standard-sidebar-item:hover,
+.desk-sidebar .standard-sidebar-item.selected {
+	background-color: rgba(255,255,255,0.1) !important;
+	color: #ffffff !important;
+}
+
+.desk-sidebar .sidebar-section-title {
+	color: rgba(255,255,255,0.5);
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	padding-left: 1.5rem;
+}
+
+/* Icon colors */
+.desk-sidebar .standard-sidebar-item svg {
+	fill: currentColor;
+	stroke: currentColor;
+}

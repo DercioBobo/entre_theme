@@ -1,0 +1,2 @@
+# Between Theme has no additional Python dependencies beyond Frappe itself.
+# Keep this file present — setup.py reads it at install time.

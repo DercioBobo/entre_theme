@@ -1,0 +1,38 @@
+/* Navbar Overrides */
+
+.navbar {
+	background-color: var(--navbar-bg) !important;
+	border-bottom: none !important;
+	box-shadow: var(--card-shadow);
+	padding: 0.5rem 1rem;
+	transition: var(--transition);
+}
+
+.navbar .nav-item .nav-link, 
+.navbar .navbar-brand,
+.navbar .search-icon {
+	color: #ffffff !important;
+	opacity: 0.85;
+	transition: var(--transition);
+}
+
+.navbar .nav-item .nav-link:hover,
+.navbar .navbar-brand:hover {
+	opacity: 1;
+}
+
+.navbar .search-bar .form-control {
+	background: rgba(255,255,255,0.1);
+	border: none;
+	color: #ffffff;
+	border-radius: var(--border-radius);
+}
+
+.navbar .search-bar .form-control::placeholder {
+	color: rgba(255,255,255,0.6);
+}
+
+.navbar .search-bar .form-control:focus {
+	background: rgba(255,255,255,0.15);
+	box-shadow: 0 0 0 2px var(--primary-color);
+}

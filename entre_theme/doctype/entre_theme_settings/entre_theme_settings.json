@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "general_settings",
+  "logo_url",
+  "login_bg_url",
+  "company_tagline",
+  "column_break_colors",
+  "primary_color",
+  "navbar_bg",
+  "sidebar_bg",
+  "column_break_typography",
+  "font_family",
+  "enable_animations",
+  "custom_css_section",
+  "custom_css"
+ ],
+ "fields": [
+  {
+   "fieldname": "general_settings",
+   "fieldtype": "Section Break",
+   "label": "Geral"
+  },
+  {
+   "fieldname": "logo_url",
+   "fieldtype": "Attach Image",
+   "label": "Log\u00f3tipo"
+  },
+  {
+   "fieldname": "login_bg_url",
+   "fieldtype": "Attach Image",
+   "label": "Fundo da P\u00e1gina de Login"
+  },
+  {
+   "fieldname": "company_tagline",
+   "fieldtype": "Data",
+   "label": "Slogan"
+  },
+  {
+   "fieldname": "column_break_colors",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "#2B5CE6",
+   "fieldname": "primary_color",
+   "fieldtype": "Color",
+   "label": "Cor Principal"
+  },
+  {
+   "default": "#1a1a2e",
+   "fieldname": "navbar_bg",
+   "fieldtype": "Color",
+   "label": "Fundo da Barra Superior"
+  },
+  {
+   "default": "#16213e",
+   "fieldname": "sidebar_bg",
+   "fieldtype": "Color",
+   "label": "Fundo do Menu Lateral"
+  },
+  {
+   "fieldname": "column_break_typography",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Inter",
+   "fieldname": "font_family",
+   "fieldtype": "Select",
+   "label": "Fonte",
+   "options": "Inter\nRoboto\nOutfit\nOpen Sans\nLato"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_animations",
+   "fieldtype": "Check",
+   "label": "Activar Anima\u00e7\u00f5es"
+  },
+  {
+   "fieldname": "custom_css_section",
+   "fieldtype": "Section Break",
+   "label": "Avan\u00e7ado"
+  },
+  {
+   "fieldname": "custom_css",
+   "fieldtype": "Code",
+   "label": "CSS Personalizado",
+   "options": "CSS"
+  }
+ ],
+ "issingle": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-01-01 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Entre Theme",
+ "name": "Entre Theme Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

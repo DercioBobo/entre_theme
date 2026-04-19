@@ -1,0 +1,59 @@
+/* =============================================================
+   Entre Theme — Desk Theme
+   @import is NOT used — each component file is listed in hooks.py
+   separately so bench build picks them all up correctly.
+   ============================================================= */
+
+/* ── CSS Custom Properties ─────────────────────────────────── */
+:root {
+	/* Brand */
+	--primary-color: #2B5CE6;
+	--navbar-bg: #1a1a2e;
+	--sidebar-bg: #16213e;
+	--font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+	/* Shape & Motion */
+	--border-radius: 10px;
+	--card-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
+	--transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+	/* Frappe v15 variable overrides */
+	--primary: var(--primary-color);
+	--border-radius-md: var(--border-radius);
+	--shadow-sm: var(--card-shadow);
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+body {
+	font-family: var(--font-family);
+}
+
+a,
+.btn,
+.form-control,
+.menu-item,
+.sidebar-item-container {
+	transition: var(--transition);
+}
+
+/* ── Frappe Card ────────────────────────────────────────────── */
+.frappe-card,
+.widget,
+.widget-group .widget {
+	border-radius: var(--border-radius) !important;
+	box-shadow: var(--card-shadow) !important;
+	border: none !important;
+}
+
+/* ── Module icons on home page ─────────────────────────────── */
+.modules-section .widget.links-widget-box {
+	border-radius: var(--border-radius) !important;
+	box-shadow: var(--card-shadow) !important;
+	border: none !important;
+	transition: var(--transition) !important;
+}
+
+.modules-section .widget.links-widget-box:hover {
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.11) !important;
+	transform: translateY(-2px);
+}

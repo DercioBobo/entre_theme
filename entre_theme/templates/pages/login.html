@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ _("Login") }}</title>
+	<meta name="robots" content="noindex, nofollow">
+
+	{# ── Inline root vars so they apply before external CSS loads ── #}
+	<style>
+		:root {
+			--primary-color: {{ primary_color or "#2B5CE6" }};
+			--font-family: '{{ font_family or "Inter" }}', system-ui, -apple-system, sans-serif;
+			{% if login_bg_url %}
+			--login-bg: url("{{ login_bg_url }}");
+			{% else %}
+			--login-bg: linear-gradient(135deg,
+				color-mix(in srgb, {{ primary_color or "#2B5CE6" }} 8%, white) 0%,
+				color-mix(in srgb, {{ primary_color or "#2B5CE6" }} 15%, white) 100%);
+			{% endif %}
+		}
+	</style>
+
+	{# ── Login stylesheet ── #}
+	<link rel="stylesheet" href="/assets/entre_theme/css/login.css">
+
+	{# ── Custom CSS from settings (server-rendered, no extra request) ── #}
+	{% if custom_css %}
+	<style id="entre-custom-css">{{ custom_css }}</style>
+	{% endif %}
+</head>
+
+<body class="entre-login-page">
+
+<main class="et-login-wrapper">
+	<div class="et-login-card">
+
+		{# ── Header: logo + tagline ── #}
+		<header class="et-login-header">
+			{% if logo_url %}
+			<img src="{{ logo_url }}" class="et-logo" alt="Logo">
+			{% else %}
+			<div class="et-logo-placeholder">
+				<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<rect width="40" height="40" rx="10" fill="var(--primary-color)"/>
+					<path d="M12 20h16M20 12v16" stroke="white" stroke-width="3" stroke-linecap="round"/>
+				</svg>
+			</div>
+			{% endif %}
+			{% if company_tagline %}
+			<p class="et-tagline">{{ company_tagline }}</p>
+			{% endif %}
+		</header>
+
+		{# ── Error banner (hidden by default, shown by JS on login failure) ── #}
+		<div id="et-login-error" class="et-error-banner" style="display:none;" role="alert"></div>
+
+		{# ── Login Form ── #}
+		<form id="et-form-login" class="et-form" novalidate>
+			<div class="et-field-group">
+				<label for="login_email" class="et-label">{{ _("Email ou Utilizador") }}</label>
+				<input
+					type="text"
+					id="login_email"
+					name="usr"
+					class="et-input"
+					placeholder="{{ _('name@empresa.com') }}"
+					autocomplete="username"
+					autofocus
+					required
+				>
+			</div>
+
+			<div class="et-field-group">
+				<label for="login_password" class="et-label">{{ _("Palavra-passe") }}</label>
+				<div class="et-input-wrapper">
+					<input
+						type="password"
+						id="login_password"
+						name="pwd"
+						class="et-input"
+						placeholder="{{ _('••••••••') }}"
+						autocomplete="current-password"
+						required
+					>
+					<button type="button" id="et-toggle-pwd" class="et-pwd-toggle" aria-label="{{ _('Mostrar palavra-passe') }}">
+						<svg id="et-eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+						<svg id="et-eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+					</button>
+				</div>
+			</div>
+
+			<div class="et-forgot-row">
+				<button type="button" id="et-show-forgot" class="et-link-btn">{{ _("Esqueceu a palavra-passe?") }}</button>
+			</div>
+
+			<button type="submit" id="et-btn-login" class="et-btn-primary">
+				<span id="et-btn-login-text">{{ _("Entrar") }}</span>
+				<span id="et-btn-login-spinner" style="display:none;">
+					<svg class="et-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10" opacity="0.25"/><path d="M12 2a10 10 0 010 20" opacity="0.75"/></svg>
+				</span>
+			</button>
+		</form>
+
+		{# ── Forgot Password Form (hidden initially) ── #}
+		<form id="et-form-forgot" class="et-form" style="display:none;" novalidate>
+			<p class="et-hint">{{ _("Introduza o seu email e enviaremos um link para repor a palavra-passe.") }}</p>
+
+			<div class="et-field-group">
+				<label for="forgot_email" class="et-label">{{ _("Email") }}</label>
+				<input
+					type="email"
+					id="forgot_email"
+					name="user"
+					class="et-input"
+					placeholder="{{ _('name@empresa.com') }}"
+					autocomplete="email"
+					required
+				>
+			</div>
+
+			<button type="submit" id="et-btn-forgot" class="et-btn-primary">{{ _("Repor Palavra-passe") }}</button>
+
+			<button type="button" id="et-back-login" class="et-link-btn et-back-btn">
+				&larr; {{ _("Voltar ao login") }}
+			</button>
+		</form>
+
+		{# ── Social / SSO Logins ── #}
+		{% if provider_logins %}
+		<div class="et-divider"><span>{{ _("ou") }}</span></div>
+		<div class="et-social-btns">
+			{% for p in provider_logins %}
+			<a href="{{ p.auth_url }}" class="et-btn-social">
+				{{ _("Entrar com %(provider)s", provider=p.provider_name) }}
+			</a>
+			{% endfor %}
+		</div>
+		{% endif %}
+
+	</div>{# .et-login-card #}
+</main>
+
+{# ── Minimal JS — no frappe desk stack, no jQuery ── #}
+<script>
+(function () {
+	"use strict";
+
+	// ── Helpers ──────────────────────────────────────────────────
+	function showError(msg) {
+		var el = document.getElementById("et-login-error");
+		el.textContent = msg;
+		el.style.display = "block";
+	}
+
+	function clearError() {
+		var el = document.getElementById("et-login-error");
+		el.style.display = "none";
+		el.textContent = "";
+	}
+
+	function setLoading(isLoading) {
+		var btn = document.getElementById("et-btn-login");
+		var txt = document.getElementById("et-btn-login-text");
+		var spin = document.getElementById("et-btn-login-spinner");
+		btn.disabled = isLoading;
+		txt.style.display = isLoading ? "none" : "inline";
+		spin.style.display = isLoading ? "inline-flex" : "none";
+	}
+
+	function postJSON(data, callback) {
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST", "/");
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.setRequestHeader("X-Frappe-CSRF-Token", "{{ frappe.session.csrf_token }}");
+		xhr.onload = function () {
+			try { callback(null, JSON.parse(xhr.responseText)); }
+			catch (e) { callback({ message: "{{ _('Erro inesperado. Por favor tente novamente.') }}" }); }
+		};
+		xhr.onerror = function () {
+			callback({ message: "{{ _('Erro de rede. Verifique a sua ligação.') }}" });
+		};
+		var encoded = Object.keys(data).map(function (k) {
+			return encodeURIComponent(k) + "=" + encodeURIComponent(data[k]);
+		}).join("&");
+		xhr.send(encoded);
+	}
+
+	// ── Password toggle ───────────────────────────────────────────
+	var toggleBtn = document.getElementById("et-toggle-pwd");
+	var pwdInput = document.getElementById("login_password");
+	var eyeOpen = document.getElementById("et-eye-open");
+	var eyeClosed = document.getElementById("et-eye-closed");
+	if (toggleBtn) {
+		toggleBtn.addEventListener("click", function () {
+			var show = pwdInput.getAttribute("type") === "password";
+			pwdInput.setAttribute("type", show ? "text" : "password");
+			eyeOpen.style.display = show ? "none" : "";
+			eyeClosed.style.display = show ? "" : "none";
+		});
+	}
+
+	// ── View switching ────────────────────────────────────────────
+	var formLogin = document.getElementById("et-form-login");
+	var formForgot = document.getElementById("et-form-forgot");
+
+	document.getElementById("et-show-forgot").addEventListener("click", function () {
+		clearError();
+		formLogin.style.display = "none";
+		formForgot.style.display = "";
+		document.getElementById("forgot_email").focus();
+	});
+
+	document.getElementById("et-back-login").addEventListener("click", function () {
+		clearError();
+		formForgot.style.display = "none";
+		formLogin.style.display = "";
+		document.getElementById("login_email").focus();
+	});
+
+	// ── Login submission ──────────────────────────────────────────
+	formLogin.addEventListener("submit", function (e) {
+		e.preventDefault();
+		clearError();
+
+		var usr = document.getElementById("login_email").value.trim();
+		var pwd = document.getElementById("login_password").value;
+
+		if (!usr || !pwd) {
+			showError("{{ _('Preencha o email/utilizador e a palavra-passe.') }}");
+			return;
+		}
+
+		setLoading(true);
+		postJSON({ cmd: "login", usr: usr, pwd: pwd, device: "desktop" }, function (err, data) {
+			setLoading(false);
+			if (err) { showError(err.message); return; }
+
+			if (data.message === "Logged In") {
+				// Redirect — respect next_url if present
+				var params = new URLSearchParams(window.location.search);
+				window.location.href = params.get("redirect-to") || data.home_page || "/app";
+			} else {
+				var msg = (data.exc_type === "AuthenticationError")
+					? "{{ _('Credenciais inválidas. Verifique o email e a palavra-passe.') }}"
+					: (data.message || "{{ _('Erro no login. Por favor tente novamente.') }}");
+				showError(msg);
+			}
+		});
+	});
+
+	// ── Forgot password submission ────────────────────────────────
+	formForgot.addEventListener("submit", function (e) {
+		e.preventDefault();
+		clearError();
+
+		var user = document.getElementById("forgot_email").value.trim();
+		if (!user) {
+			showError("{{ _('Introduza o seu endereço de email.') }}");
+			return;
+		}
+
+		var btn = document.getElementById("et-btn-forgot");
+		btn.disabled = true;
+		btn.textContent = "{{ _('A enviar...') }}";
+
+		postJSON({
+			cmd: "frappe.core.doctype.user.user.reset_password",
+			user: user
+		}, function (err, data) {
+			btn.disabled = false;
+			btn.textContent = "{{ _('Repor Palavra-passe') }}";
+
+			if (err) { showError(err.message); return; }
+
+			if (data.message === "not found") {
+				showError("{{ _('Não foi encontrado nenhum utilizador com este email.') }}");
+			} else {
+				// Show success inline
+				document.getElementById("et-login-error").style.display = "none";
+				formForgot.innerHTML = (
+					'<div class="et-success-msg">' +
+					'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>' +
+					'<p>{{ _("Email de recuperação enviado! Verifique a sua caixa de entrada.") }}</p>' +
+					'</div>'
+				);
+			}
+		});
+	});
+
+})();
+</script>
+</body>
+</html>

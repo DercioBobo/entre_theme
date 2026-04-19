@@ -1,0 +1,48 @@
+/* Standard Form Overrides */
+
+.form-control, .input-with-feedback {
+	border-radius: 8px !important;
+	border-color: #e2e8f0;
+	transition: var(--transition);
+}
+
+.form-control:focus, .input-with-feedback:focus-within {
+	border-color: var(--primary-color) !important;
+	box-shadow: 0 0 0 3px rgba(43,92,230, 0.1) !important;
+}
+
+/* Primary Button Override */
+.btn-primary {
+	background-color: var(--primary-color) !important;
+	border-color: var(--primary-color) !important;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+	opacity: 0.9;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(43,92,230, 0.2);
+}
+
+/* Secondary Button Override */
+.btn-default {
+	border-radius: 8px;
+	background: #f8fafc;
+	border-color: #e2e8f0;
+}
+
+.btn-default:hover {
+	background: #f1f5f9;
+}
+
+/* Dropdowns & Modals */
+.dropdown-menu, .modal-content {
+	border-radius: var(--border-radius);
+	box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+	border: none;
+}
+
+.modal-header {
+	border-bottom: 1px solid #f1f5f9;
+}
