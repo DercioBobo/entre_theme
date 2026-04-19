@@ -49,10 +49,92 @@ function applyThemeVars(vars) {
 	}
 }
 
+function injectTailwindEnvironment() {
+	if (document.getElementById('tailwind-cdn')) return;
+
+	// 1. Inject Tailwind CDN
+	const script = document.createElement('script');
+	script.id = 'tailwind-cdn';
+	script.src = "https://cdn.tailwindcss.com";
+	
+	// 2. Map DocType variables to Tailwind theme!
+	const config = document.createElement('script');
+	config.innerHTML = `
+		tailwind.config = {
+			corePlugins: { preflight: false },
+			theme: {
+				extend: {
+					colors: {
+						primary: 'var(--primary-color)',
+						'primary-hover': 'var(--primary-hover)',
+						'card-bg': 'var(--card-bg)',
+						'card-border': 'var(--card-border)',
+						'input-bg': 'var(--input-bg)',
+						'input-border': 'var(--input-border)',
+						'input-focus': 'var(--input-focus-ring)',
+						'navbar-bg': 'var(--navbar-bg)',
+						'sidebar-bg': 'var(--sidebar-bg)',
+						'sidebar-active': 'var(--sidebar-active-bg)',
+						'sidebar-text': 'var(--sidebar-text)',
+						'sidebar-text-active': 'var(--sidebar-text-active)',
+					},
+					borderRadius: {
+						theme: 'var(--border-radius)',
+					},
+					boxShadow: {
+						card: 'var(--card-shadow)',
+						btn: 'var(--button-shadow)',
+					}
+				}
+			}
+		}
+	`;
+	
+	document.head.appendChild(config);
+	document.head.appendChild(script);
+
+	// 3. Setup a Tailwind CSS block for @apply targeting standard Frappe components
+	const tailwindStyles = document.createElement('style');
+	tailwindStyles.type = "text/tailwindcss";
+	tailwindStyles.innerHTML = \`
+		/* Overriding core frappe UI components using Tailwind */
+		.frappe-card, .widget, .widget-group .widget {
+			@apply bg-card-bg rounded-theme shadow-card border border-card-border;
+		}
+		
+		.form-control, .input-with-feedback {
+			@apply rounded-theme bg-input-bg border border-input-border transition-all duration-200 outline-none;
+		}
+
+		.form-control:focus, .input-with-feedback:focus-within {
+			@apply border-input-focus ring-2 ring-input-focus ring-opacity-20;
+		}
+
+		.btn-primary {
+			@apply bg-primary border-primary text-white rounded-theme shadow-btn transition-all duration-200;
+		}
+		.btn-primary:focus { @apply ring-2 ring-primary ring-opacity-30; }
+		.btn-primary:hover { @apply bg-primary-hover border-primary-hover -translate-y-px; }
+
+		.desk-sidebar .sidebar-item-container {
+			@apply mx-4 my-1 rounded-theme transition-all duration-200;
+		}
+		.desk-sidebar .standard-sidebar-item {
+			@apply text-sidebar-text py-2 px-4 rounded-theme;
+		}
+		.desk-sidebar .standard-sidebar-item:hover, .desk-sidebar .standard-sidebar-item.selected {
+			@apply bg-sidebar-active text-sidebar-text-active;
+		}
+	\`;
+	document.head.appendChild(tailwindStyles);
+}
+
 /**
  * Fetch theme variables from server and apply them.
  */
 function fetchAndApplyTheme() {
+	injectTailwindEnvironment();
+	
 	frappe.call({
 		method: 'entre_theme.api.get_theme_vars',
 		callback: function(r) {

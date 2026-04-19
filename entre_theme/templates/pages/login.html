@@ -22,12 +22,39 @@
 	</style>
 
 	{# ── Login stylesheet ── #}
-	<link rel="stylesheet" href="/assets/entre_theme/css/login.css">
+	<link rel="icon" type="image/x-icon" href="/assets/frappe/images/favicon.ico">
 
-	{# ── Custom CSS from settings (server-rendered, no extra request) ── #}
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					colors: {
+						primary: 'var(--primary-color, #2B5CE6)',
+						'primary-hover': 'var(--primary-hover, #1e40af)',
+						'card-bg': 'var(--card-bg, #ffffff)',
+						'card-border': 'var(--card-border, #e5e7eb)',
+						'input-bg': 'var(--input-bg, #f8fafc)',
+						'input-border': 'var(--input-border, #e2e8f0)',
+						'input-focus': 'var(--input-focus-ring, #2B5CE6)',
+					},
+					borderRadius: {
+						theme: 'var(--border-radius, 16px)',
+					},
+					boxShadow: {
+						card: 'var(--card-shadow, 0 12px 48px rgba(0, 0, 0, 0.10))',
+						btn: 'var(--button-shadow, 0 4px 14px color-mix(in srgb, var(--primary-color, #2B5CE6) 30%, transparent))',
+					}
+				}
+			}
+		}
+	</script>
+
+	<!-- Inject backend-provided theme configuration (Custom CSS/CSS Variables) -->
 	{% if custom_css %}
-	<style id="entre-custom-css">{{ custom_css }}</style>
+	<style>{{ custom_css }}</style>
 	{% endif %}
+	<style id="theme-vars"></style>
 </head>
 
 <body class="entre-login-page">
