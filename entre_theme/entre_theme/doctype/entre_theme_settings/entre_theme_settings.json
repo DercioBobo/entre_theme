@@ -5,24 +5,46 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "general_settings",
+  "tab_general",
   "logo_url",
   "login_bg_url",
   "company_tagline",
-  "column_break_colors",
-  "primary_color",
-  "navbar_bg",
-  "sidebar_bg",
-  "column_break_typography",
+  "tab_global",
   "font_family",
   "enable_animations",
-  "custom_css_section",
+  "column_break_global",
+  "page_bg",
+  "border_radius",
+  "tab_cards",
+  "card_bg",
+  "card_border",
+  "column_break_cards",
+  "card_shadow",
+  "tab_forms",
+  "input_bg",
+  "input_border",
+  "column_break_forms",
+  "input_focus_ring",
+  "tab_buttons",
+  "primary_color",
+  "primary_color_hover",
+  "column_break_buttons",
+  "button_shadow",
+  "primary_text_color",
+  "tab_sidebar",
+  "navbar_bg",
+  "sidebar_bg",
+  "column_break_sidebar",
+  "sidebar_active_bg",
+  "sidebar_text",
+  "sidebar_text_active",
+  "tab_advanced",
   "custom_css"
  ],
  "fields": [
   {
-   "fieldname": "general_settings",
-   "fieldtype": "Section Break",
+   "fieldname": "tab_general",
+   "fieldtype": "Tab Break",
    "label": "Geral"
   },
   {
@@ -41,47 +63,170 @@
    "label": "Slogan"
   },
   {
-   "fieldname": "column_break_colors",
-   "fieldtype": "Column Break"
+   "fieldname": "tab_global",
+   "fieldtype": "Tab Break",
+   "label": "Tipografia & Arredondamento"
   },
   {
-   "default": "#2B5CE6",
-   "fieldname": "primary_color",
-   "fieldtype": "Color",
-   "label": "Cor Principal"
-  },
-  {
-   "default": "#1a1a2e",
-   "fieldname": "navbar_bg",
-   "fieldtype": "Color",
-   "label": "Fundo da Barra Superior"
-  },
-  {
-   "default": "#16213e",
-   "fieldname": "sidebar_bg",
-   "fieldtype": "Color",
-   "label": "Fundo do Menu Lateral"
-  },
-  {
-   "fieldname": "column_break_typography",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Inter",
    "fieldname": "font_family",
    "fieldtype": "Select",
    "label": "Fonte",
-   "options": "Inter\nRoboto\nOutfit\nOpen Sans\nLato"
+   "options": "Inter\nRoboto\nOutfit\nOpen Sans\nLato",
+   "default": "Inter"
   },
   {
-   "default": "1",
    "fieldname": "enable_animations",
    "fieldtype": "Check",
-   "label": "Activar Anima\u00e7\u00f5es"
+   "label": "Activar Anima\u00e7\u00f5es",
+   "default": "1"
   },
   {
-   "fieldname": "custom_css_section",
-   "fieldtype": "Section Break",
+   "fieldname": "column_break_global",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "page_bg",
+   "fieldtype": "Color",
+   "label": "Background da P\u00e1gina",
+   "default": "#f3f4f6"
+  },
+  {
+   "fieldname": "border_radius",
+   "fieldtype": "Select",
+   "label": "Arredondamento Global",
+   "options": "4px\n6px\n8px\n12px\n99px",
+   "default": "8px"
+  },
+  {
+   "fieldname": "tab_cards",
+   "fieldtype": "Tab Break",
+   "label": "Cart\u00f5es & Widgets"
+  },
+  {
+   "fieldname": "card_bg",
+   "fieldtype": "Color",
+   "label": "Fundo do Cart\u00e3o",
+   "default": "#ffffff"
+  },
+  {
+   "fieldname": "card_border",
+   "fieldtype": "Color",
+   "label": "Borda do Cart\u00e3o",
+   "default": "#e5e7eb"
+  },
+  {
+   "fieldname": "column_break_cards",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "card_shadow",
+   "fieldtype": "Select",
+   "label": "Sombra do Cart\u00e3o",
+   "options": "none\n0px 1px 3px rgba(0,0,0,0.1)\n0px 4px 6px rgba(0,0,0,0.05)\n0px 10px 15px rgba(0,0,0,0.1)",
+   "default": "0px 4px 6px rgba(0,0,0,0.05)"
+  },
+  {
+   "fieldname": "tab_forms",
+   "fieldtype": "Tab Break",
+   "label": "Formul\u00e1rios & Inputs"
+  },
+  {
+   "fieldname": "input_bg",
+   "fieldtype": "Color",
+   "label": "Fundo do Input",
+   "default": "#f9fafb"
+  },
+  {
+   "fieldname": "input_border",
+   "fieldtype": "Color",
+   "label": "Borda do Input",
+   "default": "#d1d5db"
+  },
+  {
+   "fieldname": "column_break_forms",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "input_focus_ring",
+   "fieldtype": "Color",
+   "label": "Anel de Foco",
+   "default": "#2B5CE6"
+  },
+  {
+   "fieldname": "tab_buttons",
+   "fieldtype": "Tab Break",
+   "label": "Bot\u00f5es Principais"
+  },
+  {
+   "fieldname": "primary_color",
+   "fieldtype": "Color",
+   "label": "Cor Principal do Bot\u00e3o",
+   "default": "#2B5CE6"
+  },
+  {
+   "fieldname": "primary_color_hover",
+   "fieldtype": "Color",
+   "label": "Cor ao passar o Rato (Hover)",
+   "default": "#1e40af"
+  },
+  {
+   "fieldname": "column_break_buttons",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "button_shadow",
+   "fieldtype": "Check",
+   "label": "Activar Sombra/Glow no Bot\u00e3o",
+   "default": "0"
+  },
+  {
+   "fieldname": "primary_text_color",
+   "fieldtype": "Color",
+   "label": "Cor do Texto",
+   "default": "#ffffff"
+  },
+  {
+   "fieldname": "tab_sidebar",
+   "fieldtype": "Tab Break",
+   "label": "Barra Lateral e Topo"
+  },
+  {
+   "fieldname": "navbar_bg",
+   "fieldtype": "Color",
+   "label": "Fundo da Barra Superior",
+   "default": "#1a1a2e"
+  },
+  {
+   "fieldname": "sidebar_bg",
+   "fieldtype": "Color",
+   "label": "Fundo do Menu Lateral",
+   "default": "#16213e"
+  },
+  {
+   "fieldname": "column_break_sidebar",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sidebar_active_bg",
+   "fieldtype": "Color",
+   "label": "Fundo Activo",
+   "default": "#1f2937"
+  },
+  {
+   "fieldname": "sidebar_text",
+   "fieldtype": "Color",
+   "label": "Texto do Menu",
+   "default": "#9ca3af"
+  },
+  {
+   "fieldname": "sidebar_text_active",
+   "fieldtype": "Color",
+   "label": "Texto Activo/Hover",
+   "default": "#ffffff"
+  },
+  {
+   "fieldname": "tab_advanced",
+   "fieldtype": "Tab Break",
    "label": "Avan\u00e7ado"
   },
   {

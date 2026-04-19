@@ -1,31 +1,24 @@
 /* =============================================================
-   Entre Theme — Desk Theme
-   @import is NOT used — each component file is listed in hooks.py
-   separately so bench build picks them all up correctly.
+   Entre Theme — Main Frappe Desk Theme Engine
    ============================================================= */
 
-/* ── CSS Custom Properties ─────────────────────────────────── */
+/* ── Frappe Variable Overrides ──────────────────────────────── */
+/* This maps Frappe's hardcoded utility variables to our dynamic variables */
 :root {
-	/* Brand */
-	--primary-color: #2B5CE6;
-	--navbar-bg: #1a1a2e;
-	--sidebar-bg: #16213e;
-	--font-family: 'Inter', system-ui, -apple-system, sans-serif;
-
-	/* Shape & Motion */
-	--border-radius: 10px;
-	--card-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
-	--transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-	/* Frappe v15 variable overrides */
 	--primary: var(--primary-color);
+	--blue-500: var(--primary-color);
+	--bg-color: var(--page-bg);
+	--bg-light-gray: var(--page-bg);
+	--bg-light: var(--page-bg);
+	--border-color: var(--card-border);
 	--border-radius-md: var(--border-radius);
-	--shadow-sm: var(--card-shadow);
+	--control-bg: var(--input-bg);
 }
 
 /* ── Base ───────────────────────────────────────────────────── */
-body {
+body, .page-body {
 	font-family: var(--font-family);
+	background-color: var(--page-bg) !important;
 }
 
 a,
@@ -36,24 +29,33 @@ a,
 	transition: var(--transition);
 }
 
-/* ── Frappe Card ────────────────────────────────────────────── */
+/* ── Cartões, Elementos Flutuantes e Widgets (SaaS Style) ───── */
 .frappe-card,
 .widget,
-.widget-group .widget {
+.widget-group .widget,
+.awesomplete > ul,
+.modal-content,
+.desktop-list,
+.list-item,
+.report-view {
+	background-color: var(--card-bg) !important;
 	border-radius: var(--border-radius) !important;
 	box-shadow: var(--card-shadow) !important;
-	border: none !important;
+	border: 1px solid var(--card-border) !important;
 }
 
-/* ── Module icons on home page ─────────────────────────────── */
+/* Fallback para evitar double-border nas tabelas */
+.list-item { border-left: none !important; border-right: none !important; }
+
+/* ── Module icons on admin home ─────────────────────────────── */
 .modules-section .widget.links-widget-box {
 	border-radius: var(--border-radius) !important;
 	box-shadow: var(--card-shadow) !important;
-	border: none !important;
+	border: 1px solid var(--card-border) !important;
 	transition: var(--transition) !important;
 }
 
 .modules-section .widget.links-widget-box:hover {
-	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.11) !important;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
 	transform: translateY(-2px);
 }

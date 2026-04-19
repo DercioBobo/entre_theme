@@ -9,7 +9,7 @@
 
 /* Desk Sidebar adjustments */
 .desk-sidebar {
-	color: #ffffff;
+	color: var(--sidebar-text);
 }
 
 .desk-sidebar .sidebar-section {
@@ -23,19 +23,19 @@
 }
 
 .desk-sidebar .standard-sidebar-item {
-	color: rgba(255,255,255,0.7) !important;
+	color: var(--sidebar-text) !important;
 	padding: 0.6rem 1rem;
 	border-radius: var(--border-radius);
 }
 
 .desk-sidebar .standard-sidebar-item:hover,
 .desk-sidebar .standard-sidebar-item.selected {
-	background-color: rgba(255,255,255,0.1) !important;
-	color: #ffffff !important;
+	background-color: var(--sidebar-active-bg) !important;
+	color: var(--sidebar-text-active) !important;
 }
 
 .desk-sidebar .sidebar-section-title {
-	color: rgba(255,255,255,0.5);
+	color: color-mix(in srgb, var(--sidebar-text) 70%, transparent);
 	font-weight: 600;
 	letter-spacing: 0.5px;
 	padding-left: 1.5rem;

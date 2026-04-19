@@ -7,16 +7,34 @@ function applyThemeVars(vars) {
 	if(!vars) return;
 	
 	const root = document.documentElement;
-	
-	if(vars.primary_color) root.style.setProperty('--primary-color', vars.primary_color);
-	if(vars.navbar_bg) root.style.setProperty('--navbar-bg', vars.navbar_bg);
-	if(vars.sidebar_bg) root.style.setProperty('--sidebar-bg', vars.sidebar_bg);
-	if(vars.font_family) root.style.setProperty('--font-family', `"${vars.font_family}", system-ui, -apple-system, sans-serif`);
+
+	// Loop over everything and dynamically set standard ones
+	for (const [key, value] of Object.entries(vars)) {
+		if (['font_family', 'enable_animations', 'custom_css', 'button_shadow'].includes(key)) {
+			continue; // Handle specially below
+		}
+		if (value) {
+			const cssVar = '--' + key.replace(/_/g, '-');
+			root.style.setProperty(cssVar, value);
+		}
+	}
+
+	// Handle specials
+	if(vars.font_family) {
+		root.style.setProperty('--font-family', `"${vars.font_family}", system-ui, -apple-system, sans-serif`);
+	}
 	
 	if(vars.enable_animations === 0) {
 		root.style.setProperty('--transition', 'none');
 	} else {
 		root.style.setProperty('--transition', 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)');
+	}
+
+	if(vars.button_shadow && vars.button_shadow !== "0" && vars.button_shadow !== 0 && vars.button_shadow !== "none") {
+		// Only set if Truthy / checked
+		root.style.setProperty('--button-shadow', '0px 4px 14px rgba(0,0,0,0.2)');
+	} else {
+		root.style.setProperty('--button-shadow', 'none');
 	}
 	
 	// Inject custom CSS if provided

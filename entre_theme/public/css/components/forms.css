@@ -1,48 +1,58 @@
 /* Standard Form Overrides */
 
 .form-control, .input-with-feedback {
-	border-radius: 8px !important;
-	border-color: #e2e8f0;
+	border-radius: var(--border-radius) !important;
+	background-color: var(--input-bg) !important;
+	border-color: var(--input-border);
 	transition: var(--transition);
 }
 
 .form-control:focus, .input-with-feedback:focus-within {
-	border-color: var(--primary-color) !important;
-	box-shadow: 0 0 0 3px rgba(43,92,230, 0.1) !important;
+	border-color: var(--input-focus-ring) !important;
+	/* Create a focus ring using the focus color with opacity */
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--input-focus-ring) 20%, transparent) !important;
 }
 
 /* Primary Button Override */
 .btn-primary {
 	background-color: var(--primary-color) !important;
 	border-color: var(--primary-color) !important;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	color: var(--primary-text) !important;
+	border-radius: var(--border-radius);
+	box-shadow: var(--button-shadow);
+	transition: var(--transition);
+}
+
+.btn-primary:focus {
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 30%, transparent) !important;
 }
 
 .btn-primary:hover {
-	opacity: 0.9;
+	background-color: var(--primary-hover) !important;
+	border-color: var(--primary-hover) !important;
 	transform: translateY(-1px);
-	box-shadow: 0 4px 12px rgba(43,92,230, 0.2);
 }
 
 /* Secondary Button Override */
 .btn-default {
-	border-radius: 8px;
-	background: #f8fafc;
-	border-color: #e2e8f0;
+	border-radius: var(--border-radius);
+	background-color: var(--card-bg);
+	border-color: var(--input-border);
+	transition: var(--transition);
 }
 
 .btn-default:hover {
-	background: #f1f5f9;
+	background-color: var(--input-bg);
 }
 
 /* Dropdowns & Modals */
-.dropdown-menu, .modal-content {
+.dropdown-menu {
 	border-radius: var(--border-radius);
 	box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-	border: none;
+	border: 1px solid var(--card-border);
+	background-color: var(--card-bg);
 }
 
 .modal-header {
-	border-bottom: 1px solid #f1f5f9;
+	border-bottom: 1px solid var(--card-border);
 }
