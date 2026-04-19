@@ -1,0 +1,24 @@
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Node / Frappe build artifacts — never commit these
+node_modules/
+yarn.lock
+package.json
+package-lock.json
+
+# Frappe runtime-generated CSS (seeded by after_install, not tracked)
+entre_theme/public/css/theme_runtime.css
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
