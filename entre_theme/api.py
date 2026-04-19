@@ -67,13 +67,12 @@ def apply_theme():
 	)
 
 	try:
-		# frappe.get_app_path returns the Python module dir, e.g.:
+		# frappe.get_app_path returns the Python package dir, e.g.:
 		#   /path/to/bench/apps/entre_theme/entre_theme
-		# public/ lives one level up at:
-		#   /path/to/bench/apps/entre_theme/public
+		# public/ is now a sibling inside that same folder:
+		#   /path/to/bench/apps/entre_theme/entre_theme/public
 		app_module_path = frappe.get_app_path("entre_theme")
-		app_root_path = os.path.dirname(app_module_path)
-		runtime_css_path = os.path.join(app_root_path, "public", "css", "theme_runtime.css")
+		runtime_css_path = os.path.join(app_module_path, "public", "css", "theme_runtime.css")
 
 		with open(runtime_css_path, "w", encoding="utf-8") as f:
 			f.write(css_content)

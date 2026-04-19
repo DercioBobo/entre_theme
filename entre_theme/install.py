@@ -30,9 +30,10 @@ def _ensure_runtime_css():
 	"""
 	app_module_path = frappe.get_app_path("entre_theme")
 	# get_app_path → …/apps/entre_theme/entre_theme  (the Python package)
-	# public/       → …/apps/entre_theme/public
+	# public/ is now a sibling inside that same folder:
+	# → …/apps/entre_theme/entre_theme/public
 	runtime_css = os.path.realpath(
-		os.path.join(app_module_path, "..", "public", "css", "theme_runtime.css")
+		os.path.join(app_module_path, "public", "css", "theme_runtime.css")
 	)
 
 	if not os.path.exists(runtime_css):
