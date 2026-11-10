@@ -1,25 +1,59 @@
 /* =============================================================
    Entre Theme — Login Page
-   Scoped exclusively to .entre-login-page / .et-* classes
+   Scoped to .entre-login-page / .et-* classes.
+
+   Inputs (inline :root vars from login_renderer / api.get_css_vars):
+     --primary-color, --primary-hover, --primary-text, --page-bg,
+     --card-bg, --card-border, --card-shadow, --input-bg,
+     --input-border, --input-focus-ring, --border-radius,
+     --font-family, --login-bg, --login-bg-image
+
+   Styles: body.et-login--<style>
+     classic  centred card on a soft wash of the accent
+     split    brand panel on the left, form on the right
+     side     full background, form in a strip docked right
+     vivid    two-tone diagonal of the accent, floating card
+     glass    frosted card over the image or an accent mesh
+     minimal  no card, left-aligned column, underlined inputs
+     night    dark, accent glowing from below
    ============================================================= */
 
-/* ── Page wrapper ── */
 .entre-login-page {
+	--accent: var(--primary-color, #ec932c);
+	/* Mixed in OKLCH: darker shades keep their colour instead of going brown */
+	--accent-deep: color-mix(in oklch, var(--accent) 74%, black);
+	--accent-light: color-mix(in oklch, var(--accent) 16%, white);
+	/* Neighbouring hues of the accent, for the Vidro mesh */
+	--accent-warm: var(--accent);
+	--accent-cool: var(--accent-light);
+	--on-accent: var(--primary-text, #ffffff);
+	--ink: #0f172a;
+	--ink-soft: #475569;
+	--ink-muted: #94a3b8;
+	--line: #e2e8f0;
+
 	margin: 0;
+	min-height: 100vh;
+	background: var(--login-bg, linear-gradient(135deg, #fdf3e7 0%, #fbe7cf 100%));
+	background-size: cover;
+	background-position: center;
+	font-family: var(--font-family, 'Inter', system-ui, -apple-system, sans-serif);
+	color: var(--ink);
+	-webkit-font-smoothing: antialiased;
+}
+
+.et-login-shell {
 	min-height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: var(--login-bg, linear-gradient(135deg, #e8eeff 0%, #d0daff 100%));
-	background-size: cover;
-	background-position: center;
-	font-family: var(--font-family, 'Inter', system-ui, -apple-system, sans-serif);
 }
 
 .et-login-wrapper {
 	width: 100%;
 	max-width: 420px;
 	padding: 20px;
+	box-sizing: border-box;
 }
 
 /* ── Card ── */
@@ -34,19 +68,44 @@
 /* ── Header ── */
 .et-login-header {
 	text-align: center;
-	margin-bottom: 32px;
+	margin-bottom: 28px;
+}
+
+.et-header-logo {
+	margin-bottom: 14px;
 }
 
 .et-logo {
+	display: inline-block;
 	max-height: 56px;
 	max-width: 70%;
 	object-fit: contain;
-	margin-bottom: 10px;
 }
 
-.et-logo-placeholder {
+/* No logo: the company initial on the accent */
+.et-monogram {
 	display: inline-flex;
-	margin-bottom: 10px;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 14px;
+	background: var(--accent);
+	color: var(--on-accent);
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+/* Title: hidden in the centred-card styles, where the logo leads */
+.et-title {
+	display: none;
+	margin: 0;
+	font-size: 24px;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+	color: var(--ink);
 }
 
 .et-tagline {
@@ -54,6 +113,11 @@
 	color: #64748b;
 	font-size: 13.5px;
 	font-weight: 500;
+}
+
+/* Brand panel: only the split and side styles show it */
+.et-brand-panel {
+	display: none;
 }
 
 /* ── Error banner ── */
@@ -86,7 +150,6 @@
 .et-form {
 	display: flex;
 	flex-direction: column;
-	gap: 0;
 }
 
 .et-field-group {
@@ -128,9 +191,9 @@
 }
 
 .et-input:focus {
-	border-color: var(--input-focus-ring, #2B5CE6);
+	border-color: var(--input-focus-ring, var(--accent));
 	background: #fff;
-	box-shadow: 0 0 0 3px color-mix(in srgb, var(--input-focus-ring, #2B5CE6) 15%, transparent);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--input-focus-ring, var(--accent)) 15%, transparent);
 }
 
 .et-input::placeholder {
@@ -177,7 +240,7 @@
 	background: none;
 	border: none;
 	cursor: pointer;
-	color: var(--primary-color, #2B5CE6);
+	color: var(--accent);
 	font-size: 13px;
 	font-weight: 500;
 	padding: 0;
@@ -200,24 +263,24 @@
 .et-btn-primary {
 	width: 100%;
 	height: 48px;
-	background-color: var(--primary-color, #2B5CE6);
-	color: var(--primary-text, #fff);
+	background-color: var(--accent);
+	color: var(--on-accent);
 	border: none;
 	border-radius: var(--border-radius, 9px);
 	font-size: 15px;
 	font-weight: 600;
 	font-family: inherit;
 	cursor: pointer;
-	box-shadow: var(--button-shadow, 0 4px 14px color-mix(in srgb, var(--primary-color, #2B5CE6) 30%, transparent));
+	box-shadow: var(--button-shadow, 0 4px 14px color-mix(in srgb, var(--accent) 30%, transparent));
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+	transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s, background-color 0.15s;
 }
 
 .et-btn-primary:hover:not(:disabled) {
-	background-color: var(--primary-hover, #1e40af);
+	background-color: var(--primary-hover, var(--accent-deep));
 	transform: translateY(-1px);
 }
 
@@ -225,6 +288,14 @@
 	opacity: 0.7;
 	cursor: not-allowed;
 	transform: none;
+}
+
+.et-btn-primary:focus-visible,
+.et-link-btn:focus-visible,
+.et-pwd-toggle:focus-visible,
+.et-btn-social:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
 }
 
 /* ── Spinner ── */
@@ -246,8 +317,6 @@
 	margin: 24px 0 16px;
 	color: #94a3b8;
 	font-size: 12px;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
 }
 
 .et-divider::before,
@@ -255,7 +324,7 @@
 	content: "";
 	flex: 1;
 	height: 1px;
-	background: #e2e8f0;
+	background: var(--line);
 }
 
 /* ── Social buttons ── */
@@ -268,10 +337,11 @@
 .et-btn-social {
 	display: block;
 	width: 100%;
+	box-sizing: border-box;
 	text-align: center;
 	padding: 12px;
-	border: 1.5px solid #e2e8f0;
-	border-radius: 9px;
+	border: 1.5px solid var(--line);
+	border-radius: var(--border-radius, 9px);
 	font-size: 14px;
 	font-weight: 500;
 	color: #374151;
@@ -282,13 +352,457 @@
 
 .et-btn-social:hover {
 	background: #f1f5f9;
-	border-color: #c7d2fe;
+	border-color: var(--accent-light);
 }
 
-/* ── Responsive ── */
 @media (max-width: 480px) {
 	.et-login-card {
 		padding: 28px 20px 24px;
-		border-radius: 12px;
+	}
+}
+
+
+/* =============================================================
+   Brand panel (split + side): logo, large tagline, company name
+   ============================================================= */
+.et-brand-logo .et-logo {
+	max-height: 44px;
+	max-width: 200px;
+	/* A plate keeps any logo readable on the accent or a photo */
+	background: #ffffff;
+	padding: 10px 14px;
+	border-radius: 12px;
+}
+
+.et-brand-logo .et-monogram {
+	background: var(--on-accent);
+	color: var(--accent);
+}
+
+.et-brand-tagline {
+	margin: 0;
+	font-size: clamp(30px, 3.4vw, 50px);
+	font-weight: 700;
+	line-height: 1.06;
+	letter-spacing: -0.03em;
+	max-width: 13ch;
+	text-wrap: balance;
+}
+
+.et-brand-foot {
+	margin: 0;
+	font-size: 13px;
+	font-weight: 500;
+	opacity: 0.8;
+}
+
+
+/* =============================================================
+   Dividido — brand panel left, form right
+   ============================================================= */
+.et-login--split .et-title {
+	display: block;
+}
+
+@media (min-width: 900px) {
+	.et-login--split {
+		background: var(--card-bg, #ffffff);
+	}
+
+	.et-login--split .et-login-shell {
+		align-items: stretch;
+	}
+
+	.et-login--split .et-brand-panel {
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 40px;
+		flex: 0 0 46%;
+		box-sizing: border-box;
+		padding: 48px 56px;
+		color: var(--on-accent);
+		background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
+	}
+
+	/* With a background image: the photo under an accent tint */
+	.et-login--split.et-has-image .et-brand-panel {
+		background:
+			linear-gradient(160deg,
+				color-mix(in srgb, var(--accent) 80%, transparent) 0%,
+				color-mix(in srgb, var(--accent-deep) 92%, transparent) 100%),
+			var(--login-bg-image) center / cover;
+	}
+
+	/* One large quiet ring, bottom right */
+	.et-login--split .et-brand-panel::after {
+		content: "";
+		position: absolute;
+		width: 560px;
+		height: 560px;
+		right: -220px;
+		bottom: -240px;
+		border-radius: 50%;
+		border: 80px solid color-mix(in srgb, var(--on-accent) 9%, transparent);
+		pointer-events: none;
+	}
+
+	.et-login--split .et-login-wrapper {
+		flex: 1;
+		max-width: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 48px;
+	}
+
+	.et-login--split .et-login-card {
+		width: 100%;
+		max-width: 380px;
+		padding: 0;
+		background: transparent;
+		border: none;
+		box-shadow: none;
+	}
+
+	.et-login--split .et-login-header {
+		text-align: left;
+	}
+
+	/* The panel carries the logo and tagline */
+	.et-login--split .et-header-logo,
+	.et-login--split .et-tagline {
+		display: none;
+	}
+}
+
+
+/* =============================================================
+   Painel Lateral — full background, form docked right
+   ============================================================= */
+.et-login--side {
+	background: linear-gradient(150deg, var(--accent) 0%, var(--accent-deep) 100%);
+}
+
+.et-login--side.et-has-image {
+	background: var(--login-bg-image) center / cover;
+}
+
+.et-login--side .et-title {
+	display: block;
+}
+
+@media (min-width: 900px) {
+	.et-login--side .et-login-shell {
+		align-items: stretch;
+	}
+
+	.et-login--side .et-brand-panel {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 40px;
+		flex: 1;
+		box-sizing: border-box;
+		padding: 48px 56px;
+		color: #ffffff;
+	}
+
+	/* Darken the bottom of a photo so the tagline reads */
+	.et-login--side.et-has-image .et-brand-panel {
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 55%);
+	}
+
+	.et-login--side .et-login-wrapper {
+		flex: 0 0 460px;
+		max-width: 460px;
+		display: flex;
+		align-items: center;
+		padding: 56px 48px;
+		background: var(--card-bg, #ffffff);
+		box-shadow: -24px 0 60px -30px rgba(0, 0, 0, 0.35);
+	}
+
+	.et-login--side .et-login-card {
+		width: 100%;
+		padding: 0;
+		background: transparent;
+		border: none;
+		box-shadow: none;
+	}
+
+	.et-login--side .et-login-header {
+		text-align: left;
+	}
+
+	.et-login--side .et-header-logo,
+	.et-login--side .et-tagline {
+		display: none;
+	}
+}
+
+
+/* =============================================================
+   Vívido — two-tone diagonal, card floating over the seam
+   ============================================================= */
+.et-login--vivid {
+	--vivid-second: var(--accent-deep);
+	background: linear-gradient(115deg, var(--accent) 0 54%, var(--vivid-second) 54% 100%);
+}
+
+/* The second tone: a richer neighbouring hue rather than a darker shade */
+@supports (color: oklch(from red l c h)) {
+	.et-login--vivid {
+		--vivid-second: oklch(from var(--accent) calc(l - 0.08) calc(c + 0.04) calc(h - 22));
+	}
+}
+
+.et-login--vivid .et-login-card {
+	border: none;
+	border-radius: calc(var(--border-radius, 12px) + 6px);
+	box-shadow:
+		0 2px 4px rgba(0, 0, 0, 0.06),
+		0 40px 80px -24px color-mix(in srgb, var(--accent-deep) 75%, black);
+}
+
+.et-login--vivid .et-tagline {
+	color: var(--ink-soft);
+}
+
+
+/* =============================================================
+   Vidro — frosted card over the image or an accent mesh
+   ============================================================= */
+.et-login--glass {
+	background:
+		radial-gradient(at 12% 18%, var(--accent) 0, transparent 46%),
+		radial-gradient(at 88% 16%, var(--accent-cool) 0, transparent 50%),
+		radial-gradient(at 72% 92%, var(--accent-warm) 0, transparent 52%),
+		color-mix(in oklch, var(--accent) 24%, white);
+}
+
+@supports (color: oklch(from red l c h)) {
+	.et-login--glass {
+		--accent-warm: oklch(from var(--accent) calc(l - 0.06) c calc(h - 28));
+		--accent-cool: oklch(from var(--accent) calc(l + 0.08) c calc(h + 38));
+	}
+}
+
+.et-login--glass.et-has-image {
+	background: var(--login-bg-image) center / cover;
+}
+
+.et-login--glass .et-login-card {
+	background: color-mix(in srgb, var(--card-bg, #ffffff) 58%, transparent);
+	-webkit-backdrop-filter: blur(24px) saturate(160%);
+	backdrop-filter: blur(24px) saturate(160%);
+	border: 1px solid rgba(255, 255, 255, 0.55);
+	box-shadow: 0 24px 60px -20px rgba(15, 23, 42, 0.35);
+}
+
+.et-login--glass .et-input {
+	background: rgba(255, 255, 255, 0.6);
+	border-color: rgba(255, 255, 255, 0.7);
+}
+
+.et-login--glass .et-input:focus {
+	background: rgba(255, 255, 255, 0.9);
+	border-color: var(--input-focus-ring, var(--accent));
+}
+
+.et-login--glass .et-tagline,
+.et-login--glass .et-hint {
+	color: #334155;
+}
+
+/* No backdrop-filter (old browsers): a solid card */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	.et-login--glass .et-login-card {
+		background: var(--card-bg, #ffffff);
+	}
+}
+
+
+/* =============================================================
+   Minimalista — no card, left aligned, underlined fields
+   ============================================================= */
+.et-login--minimal {
+	background: var(--card-bg, #ffffff);
+	border-top: 4px solid var(--accent);
+	box-sizing: border-box;
+}
+
+.et-login--minimal .et-login-shell {
+	min-height: calc(100vh - 4px);
+}
+
+.et-login--minimal .et-login-wrapper {
+	max-width: 400px;
+}
+
+/* Wide screens: the column sits in the left third, the rest stays empty */
+@media (min-width: 1100px) {
+	.et-login--minimal .et-login-shell {
+		justify-content: flex-start;
+		padding-left: 14vw;
+	}
+}
+
+.et-login--minimal .et-login-card {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+.et-login--minimal .et-login-header {
+	text-align: left;
+	margin-bottom: 36px;
+}
+
+.et-login--minimal .et-header-logo {
+	margin-bottom: 40px;
+}
+
+.et-login--minimal .et-logo {
+	max-height: 40px;
+}
+
+.et-login--minimal .et-title {
+	display: block;
+	font-size: 32px;
+	letter-spacing: -0.03em;
+}
+
+.et-login--minimal .et-label {
+	font-weight: 500;
+	color: var(--ink-soft);
+	margin-bottom: 2px;
+}
+
+.et-login--minimal .et-input {
+	background: transparent;
+	border: none;
+	border-bottom: 1.5px solid #cbd5e1;
+	border-radius: 0;
+	padding: 0 2px;
+	font-size: 15px;
+}
+
+.et-login--minimal .et-input-wrapper .et-input {
+	padding-right: 36px;
+}
+
+.et-login--minimal .et-input:focus {
+	background: transparent;
+	border-bottom-color: var(--accent);
+	box-shadow: 0 1.5px 0 0 var(--accent);
+}
+
+.et-login--minimal .et-pwd-toggle {
+	right: 2px;
+}
+
+.et-login--minimal .et-btn-primary {
+	box-shadow: none;
+	margin-top: 8px;
+}
+
+.et-login--minimal .et-back-btn {
+	text-align: left;
+}
+
+
+/* =============================================================
+   Noite — dark, the accent glowing from below
+   ============================================================= */
+.et-login--night {
+	--ink: #f1f5f9;
+	--ink-soft: #94a3b8;
+	--line: #262b33;
+	background:
+		radial-gradient(ellipse 80% 60% at 50% 112%,
+			color-mix(in oklch, var(--accent) 85%, transparent) 0%,
+			color-mix(in oklch, var(--accent) 25%, transparent) 45%,
+			transparent 72%),
+		#0d0f13;
+	color-scheme: dark;
+}
+
+.et-login--night .et-login-card {
+	background: #15181d;
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+}
+
+.et-login--night .et-title {
+	display: block;
+	color: var(--ink);
+	font-size: 20px;
+	margin-top: 4px;
+}
+
+.et-login--night .et-tagline,
+.et-login--night .et-hint,
+.et-login--night .et-back-btn,
+.et-login--night .et-success-msg {
+	color: var(--ink-soft);
+}
+
+.et-login--night .et-label {
+	color: #cbd5e1;
+}
+
+.et-login--night .et-input {
+	background: #1b1f25;
+	border-color: #2a3039;
+	color: var(--ink);
+}
+
+.et-login--night .et-input:focus {
+	background: #1f242b;
+	border-color: var(--input-focus-ring, var(--accent));
+}
+
+.et-login--night .et-input::placeholder {
+	color: #5b6472;
+}
+
+.et-login--night .et-pwd-toggle:hover {
+	color: #cbd5e1;
+}
+
+.et-login--night .et-error-banner {
+	background: rgba(220, 38, 38, 0.12);
+	border-color: rgba(248, 113, 113, 0.35);
+	color: #fca5a5;
+}
+
+.et-login--night .et-btn-social {
+	background: #1b1f25;
+	border-color: #2a3039;
+	color: var(--ink);
+}
+
+.et-login--night .et-btn-social:hover {
+	background: #222730;
+}
+
+
+/* =============================================================
+   Motion off for people who ask for it
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+	.entre-login-page *,
+	.entre-login-page *::before,
+	.entre-login-page *::after {
+		transition: none !important;
+		animation-duration: 0.01ms !important;
+	}
+
+	.et-btn-primary:hover:not(:disabled) {
+		transform: none;
 	}
 }

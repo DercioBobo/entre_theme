@@ -12,6 +12,7 @@
 			{% for name, value in css_vars.items() %}
 			{{ name }}: {{ value }};
 			{% endfor %}
+			--login-bg-image: {% if login_bg_url %}url("{{ login_bg_url }}"){% else %}none{% endif %};
 			{% if login_bg_url %}
 			--login-bg: url("{{ login_bg_url }}");
 			{% else %}
@@ -37,23 +38,36 @@
 	{% endif %}
 </head>
 
-<body class="entre-login-page">
+{#- Variant: et-login--<style>, see "Estilo da Página de Login" and login.css -#}
+<body class="entre-login-page et-login--{{ login_style }}{% if login_bg_url %} et-has-image{% endif %}">
+
+{%- macro brand_mark(extra_class="") -%}
+	{% if logo_url %}
+	<img src="{{ logo_url }}" class="et-logo {{ extra_class }}" alt="{{ company_name or 'Logo' }}">
+	{% else %}
+	{# No logo: the company's initial in the accent colour #}
+	<span class="et-monogram {{ extra_class }}" aria-hidden="true">{{ (company_name or "E")[:1] | upper }}</span>
+	{% endif %}
+{%- endmacro -%}
+
+<div class="et-login-shell">
+
+{# ── Brand panel: shown by the Dividido and Painel Lateral styles on wide screens ── #}
+<aside class="et-brand-panel">
+	<div class="et-brand-logo">{{ brand_mark() }}</div>
+	<p class="et-brand-tagline">{{ company_tagline or company_name }}</p>
+	{% if company_tagline and company_name %}
+	<p class="et-brand-foot">{{ company_name }}</p>
+	{% endif %}
+</aside>
 
 <main class="et-login-wrapper">
 	<div class="et-login-card">
 
-		{# ── Header: logo + tagline ── #}
+		{# ── Header: logo, title, tagline ── #}
 		<header class="et-login-header">
-			{% if logo_url %}
-			<img src="{{ logo_url }}" class="et-logo" alt="Logo">
-			{% else %}
-			<div class="et-logo-placeholder">
-				<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<rect width="40" height="40" rx="10" fill="var(--primary-color)"/>
-					<path d="M12 20h16M20 12v16" stroke="white" stroke-width="3" stroke-linecap="round"/>
-				</svg>
-			</div>
-			{% endif %}
+			<div class="et-header-logo">{{ brand_mark() }}</div>
+			<h1 class="et-title">{{ _("Iniciar sessão") }}</h1>
 			{% if company_tagline %}
 			<p class="et-tagline">{{ company_tagline }}</p>
 			{% endif %}
@@ -147,6 +161,8 @@
 
 	</div>{# .et-login-card #}
 </main>
+
+</div>{# .et-login-shell #}
 
 {# ── Minimal JS — no frappe desk stack, no jQuery ── #}
 <script>

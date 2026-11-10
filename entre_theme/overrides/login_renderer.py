@@ -3,6 +3,32 @@ from werkzeug.wrappers import Response
 
 from entre_theme.api import get_css_vars, get_font_url, get_settings_values
 
+# "Estilo da Página de Login" → body class et-login--<slug> (public/css/login.css)
+LOGIN_STYLES = {
+	"Clássico": "classic",
+	"Dividido": "split",
+	"Painel Lateral": "side",
+	"Vívido": "vivid",
+	"Vidro": "glass",
+	"Minimalista": "minimal",
+	"Noite": "night",
+}
+
+
+def get_company_name():
+	"""The name shown in the brand panel and as the monogram when there's no logo."""
+	for getter in (
+		lambda: frappe.db.get_single_value("Website Settings", "app_name"),
+		lambda: frappe.defaults.get_global_default("company"),
+	):
+		try:
+			name = getter()
+		except Exception:
+			name = None
+		if name and name != "Frappe":
+			return name
+	return ""
+
 
 class LoginPageRenderer:
 	"""
@@ -60,6 +86,8 @@ class LoginPageRenderer:
 			# The login accent (its own colour, or the global one): background gradient
 			"primary_color": css_vars["--primary-color"],
 			"favicon": favicon or "/assets/frappe/images/favicon.ico",
+			"login_style": LOGIN_STYLES.get(values["login_style"], "classic"),
+			"company_name": get_company_name(),
 			"font_url": get_font_url(values["font_family"]),
 			"custom_css": values["custom_css"],
 			"logo_url": logo_url,

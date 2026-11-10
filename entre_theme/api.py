@@ -11,6 +11,8 @@ DEFAULTS = {
 	"surface_color": "#ffffff",
 	"text_color": "#0f172a",
 	"border_color": "#edeef1",
+	# Página de login
+	"login_style": "Clássico",
 	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",

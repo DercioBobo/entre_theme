@@ -12,6 +12,7 @@
   "column_break_brand",
   "favicon",
   "section_login_page",
+  "login_style",
   "login_bg_url",
   "company_tagline",
   "tab_colors",
@@ -129,15 +130,24 @@
    "label": "Página de Login"
   },
   {
+   "fieldname": "login_style",
+   "fieldtype": "Select",
+   "label": "Estilo da Página de Login",
+   "options": "Clássico\nDividido\nPainel Lateral\nVívido\nVidro\nMinimalista\nNoite",
+   "default": "Clássico",
+   "description": "Clássico: cartão ao centro. Dividido: painel da marca à esquerda. Painel Lateral: imagem de fundo com o formulário à direita. Vívido: fundo na cor principal. Vidro: cartão translúcido sobre a imagem. Minimalista: sem cartão. Noite: escuro. As cores vêm da secção Página de Login no separador Cores."
+  },
+  {
    "fieldname": "login_bg_url",
    "fieldtype": "Attach Image",
-   "label": "Fundo da Página de Login"
+   "label": "Fundo da Página de Login",
+   "description": "Usada pelos estilos Clássico, Dividido, Painel Lateral e Vidro. Vazio: um fundo feito com a cor principal."
   },
   {
    "fieldname": "company_tagline",
    "fieldtype": "Data",
    "label": "Slogan",
-   "description": "Mostrado na página de login."
+   "description": "Na página de login; em destaque nos estilos Dividido e Painel Lateral."
   },
   {
    "fieldname": "tab_colors",
@@ -614,7 +624,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 20:00:00.000000",
+ "modified": "2026-11-10 21:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",
