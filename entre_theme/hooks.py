@@ -28,6 +28,13 @@ page_renderer = ["entre_theme.overrides.login_renderer.LoginPageRenderer"]
 # Install / Uninstall Hooks
 # ─────────────────────────────────────────────
 after_install = "entre_theme.install.after_install"
-# Re-render the "Entre Theme" Print Style (the template may have changed)
-after_migrate = "entre_theme.print_style.sync"
+# Fill in new settings; re-render the print style and print formats
+after_migrate = "entre_theme.install.after_migrate"
 before_uninstall = "entre_theme.install.before_uninstall"
+
+# ─────────────────────────────────────────────
+# Print formats: entre_print_context(doc) for templates/print/*.html
+# ─────────────────────────────────────────────
+jinja = {
+	"methods": ["entre_theme.print_utils.entre_print_context"],
+}

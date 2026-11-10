@@ -41,7 +41,80 @@
 		if (link.href !== url) link.href = url;
 	}
 
-	var BODY_CLASSES = ["et-navbar-glass", "et-hide-counts", "et-sidebar-divider", "et-ws-watermark", "et-no-anim"];
+	var BODY_CLASSES = [
+		"et-navbar-glass", "et-hide-counts", "et-sidebar-divider", "et-ws-watermark", "et-no-anim",
+		"et-logo-center", "et-logo-sidebar", "et-logo-sized"
+	];
+
+	// ── Logo in the sidebar ───────────────────────────────────────
+	// Frappe builds a sidebar per page, asynchronously, so a copy of the
+	// navbar logo is (re)inserted into the current page's sidebar whenever
+	// the DOM settles. The navbar logo hides only while that copy is
+	// visible (not on small screens, collapsed sidebars or pages without one).
+	var logoObserver = null;
+	var logoQueued = false;
+
+	function currentSidebar() {
+		var page = window.frappe && frappe.container && frappe.container.page;
+		var scope = page && page.nodeType === 1 ? page : document;
+		return scope.querySelector(".layout-side-section");
+	}
+
+	function syncSidebarLogo() {
+		logoQueued = false;
+		var body = document.body;
+		var on = body.classList.contains("et-logo-sidebar");
+		var navImg = document.querySelector(".navbar-home img");
+		var side = on && navImg ? currentSidebar() : null;
+		var visible = false;
+
+		if (side) {
+			var link = side.querySelector(":scope > .et-sidebar-logo");
+			if (!link) {
+				link = document.createElement("a");
+				link.className = "et-sidebar-logo";
+				link.href = "/app";
+				link.appendChild(document.createElement("img"));
+				side.insertBefore(link, side.firstChild);
+			}
+			var img = link.firstChild;
+			if (img.getAttribute("src") !== navImg.getAttribute("src")) {
+				img.setAttribute("src", navImg.getAttribute("src"));
+				img.setAttribute("alt", navImg.getAttribute("alt") || "");
+			}
+			visible = side.offsetWidth > 0 && side.offsetHeight > 0;
+		}
+		body.classList.toggle("et-logo-moved", visible);
+	}
+
+	function queueLogoSync() {
+		if (logoQueued) return;
+		logoQueued = true;
+		window.requestAnimationFrame(syncSidebarLogo);
+	}
+
+	function setupSidebarLogo(on) {
+		if (!on) {
+			if (logoObserver) {
+				logoObserver.disconnect();
+				logoObserver = null;
+			}
+			document.querySelectorAll(".et-sidebar-logo").forEach(function (el) { el.remove(); });
+			if (document.body) document.body.classList.remove("et-logo-moved");
+			return;
+		}
+		if (!logoObserver) {
+			logoObserver = new MutationObserver(queueLogoSync);
+			logoObserver.observe(document.body, {
+				childList: true,
+				subtree: true,
+				attributes: true,
+				attributeFilter: ["class", "style"]
+			});
+			window.addEventListener("resize", queueLogoSync);
+		}
+		queueLogoSync();
+	}
 
 	function setBodyClasses(classes) {
 		var body = document.body;
@@ -54,6 +127,7 @@
 		BODY_CLASSES.forEach(function (name) {
 			body.classList.toggle(name, (classes || []).indexOf(name) !== -1);
 		});
+		setupSidebarLogo(body.classList.contains("et-logo-sidebar"));
 	}
 
 	function apply(payload) {

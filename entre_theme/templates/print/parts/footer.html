@@ -1,0 +1,24 @@
+{#- Letter head footer and/or processing note, plus page numbers.
+    PDF with repeated header/footer: at the bottom of every page.
+    Browser: Frappe shows this block once, at the bottom. -#}
+{%- set footer_body -%}
+    {% if e.footer.letter_head %}
+    <div class="letter-head-footer">{{ e.footer.letter_head }}</div>
+    {% endif %}
+    {% if e.footer.note %}
+    <p class="print-footer-note">{{ e.footer.note }}</p>
+    {% endif %}
+{%- endset -%}
+
+{% if repeat %}
+<div id="footer-html" class="visible-pdf">
+    {{ footer_body }}
+    {% if e.footer.page_numbers %}
+    <p class="page-number">
+        Página <span class="page"></span> de <span class="topage"></span>
+    </p>
+    {% endif %}
+</div>
+{% else %}
+{{ footer_body }}
+{% endif %}

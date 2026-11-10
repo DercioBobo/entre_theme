@@ -1,0 +1,110 @@
+{#- =========================================================
+    ENTRE — documents with items (Cotação, Encomenda, Factura,
+    Nota de Crédito, Guia, and the purchase equivalents).
+
+    Data: entre_theme.print_utils.entre_print_context
+    Styles: the print format's own CSS (the "Entre Theme" print style)
+    Options: Entre Theme Settings > Impressão
+========================================================= -#}
+{%- set repeat = print_settings and print_settings.repeat_header_footer -%}
+{%- set show_lh = letter_head and not no_letterhead -%}
+{%- set e = entre_print_context(doc, footer if show_lh else "") -%}
+{%- set cols = 2 + (2 if e.show_uom else 1) + (2 if e.show_prices else 0) -%}
+
+{% include "entre_theme/templates/print/parts/header.html" %}
+
+
+{# ---------- SUBJECT ---------- #}
+{% if e.subject %}
+<p class="doc-subject">{{ e.subject }}</p>
+{% endif %}
+
+
+{# ---------- ITEMS ---------- #}
+<table class="table doc-table items-table">
+    <thead>
+    <tr>
+        <th style="width: 5%">Nr</th>
+        <th>Descrição</th>
+        <th class="text-right" style="width: 9%">Qtd.</th>
+        {% if e.show_uom %}<th style="width: 9%">Un.</th>{% endif %}
+        {% if e.show_prices %}
+        <th class="text-right" style="width: 14%">P. Unit.</th>
+        <th class="text-right" style="width: 15%">Total</th>
+        {% endif %}
+    </tr>
+    </thead>
+    <tbody>
+    {%- for row in e.items %}
+    {%- if row.group %}
+    <tr class="group-row">
+        <td colspan="{{ cols }}"><strong>{{ row.text }}</strong></td>
+    </tr>
+    {%- else %}
+    <tr>
+        <td>{{ row.n }}</td>
+        <td class="item-desc">{{ row.text }}</td>
+        <td class="text-right">{{ row.qty }}</td>
+        {% if e.show_uom %}<td>{{ row.uom }}</td>{% endif %}
+        {% if e.show_prices %}
+        <td class="text-right">{{ row.rate }}</td>
+        <td class="text-right">{{ row.amount }}</td>
+        {% endif %}
+    </tr>
+    {%- endif %}
+    {%- endfor %}
+    </tbody>
+</table>
+
+
+{# ---------- TOTALS ---------- #}
+{% if e.totals %}
+<div class="totals-wrap">
+    <table class="totals">
+        {% for row in e.totals %}
+        <tr{% if row.grand %} class="grand"{% endif %}>
+            <td>{{ row.label }}</td>
+            <td class="amount">{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if e.payment_status %}
+    <table class="payment-status">
+        {% if e.payment_status.full %}
+        <tr class="paid-full">
+            <td>Pago na totalidade</td>
+        </tr>
+        {% else %}
+        <tr class="paid">
+            <td>Valor pago</td>
+            <td class="amount">{{ e.payment_status.paid }}</td>
+        </tr>
+        <tr class="due">
+            <td>Total em dívida</td>
+            <td class="amount">{{ e.payment_status.due }}</td>
+        </tr>
+        {% endif %}
+    </table>
+    {% endif %}
+</div>
+<div class="clear"></div>
+
+{% if e.in_words %}
+<p class="doc-in-words">Valor por extenso: <b>{{ e.in_words }}</b></p>
+{% endif %}
+{% endif %}
+
+
+{# ---------- TERMS & CONDITIONS ---------- #}
+{% if e.terms %}
+<div class="doc-terms">
+    <div class="doc-terms-title">{{ e.terms.title }}</div>
+    <div class="doc-terms-body">
+        {{ e.terms.body }}
+    </div>
+</div>
+{% endif %}
+
+
+{% include "entre_theme/templates/print/parts/footer.html" %}

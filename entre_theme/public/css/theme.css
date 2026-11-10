@@ -102,8 +102,46 @@ body.et-navbar-glass .navbar {
 	color: var(--et-text) !important;
 }
 
-.navbar-home img {
-	max-height: 60px !important;
+/* ── Logo ───────────────────────────────────────────────────── */
+/* Nothing here applies with position and size both on "Padrão":
+   the logo stays exactly as Frappe draws it. */
+body.et-logo-sized .navbar-home img {
+	max-height: var(--et-logo-h) !important;
+	height: auto !important;
+	width: auto !important;
+}
+
+@media (min-width: 768px) {
+	body.et-logo-center .navbar > .container,
+	body.et-logo-center .navbar > .container-fluid {
+		position: relative;
+	}
+
+	body.et-logo-center .navbar-home {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		margin: 0 !important;
+	}
+}
+
+/* Sidebar mode: theme.js puts a copy of the logo at the top of the
+   current page's sidebar and sets et-logo-moved while it is visible. */
+body.et-logo-moved .navbar-home {
+	display: none !important;
+}
+
+.et-sidebar-logo {
+	display: block;
+	padding: 4px 12px 18px;
+}
+
+.et-sidebar-logo img {
+	display: block;
+	max-height: var(--et-sidebar-logo-h, 44px);
+	max-width: 100%;
+	width: auto;
 }
 
 /* ── Dropdown lists (search bar and link fields) ────────────── */

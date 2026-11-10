@@ -1,0 +1,94 @@
+{#- =========================================================
+    ENTRE — Payment Entry (Nota de Pagamento / Recibo)
+
+    The amount appears once highlighted (box), once in words (sentence)
+    and as the allocated total under the table. The summary block only
+    shows when there is an unallocated balance or deductions.
+
+    Data: entre_theme.print_utils.entre_print_context
+    Options: Entre Theme Settings > Impressão
+========================================================= -#}
+{%- set repeat = print_settings and print_settings.repeat_header_footer -%}
+{%- set show_lh = letter_head and not no_letterhead -%}
+{#- Payments: processing note only, no letter head footer (bank details) -#}
+{%- set e = entre_print_context(doc) -%}
+
+{% include "entre_theme/templates/print/parts/header.html" %}
+
+
+{# ---------- STATEMENT + AMOUNT ---------- #}
+<table class="receipt-statement">
+    <tr>
+        <td class="receipt-text">
+            <p>
+                {{ "Recebemos de" if e.is_receive else "Pagámos a" }}
+                <b>{{ e.party.name }}</b>,
+                no dia {{ e.pay_date }},
+                a quantia de <b>{{ e.amount_words }}</b>
+                {% if doc.mode_of_payment %}via {{ doc.mode_of_payment }}{% endif %}{% if doc.reference_no %}, com a referência <b>{{ doc.reference_no }}</b>{% endif %}.
+            </p>
+            {% if e.references %}
+            <p class="receipt-sub">Correspondente aos documentos descritos abaixo.</p>
+            {% endif %}
+        </td>
+        <td class="receipt-amount">
+            <span class="amount-label">{{ "Valor recebido" if e.is_receive else "Valor pago" }}</span>
+            <span class="amount-value">{{ e.amount }}</span>
+            <span class="amount-currency">{{ e.currency }}</span>
+        </td>
+    </tr>
+</table>
+
+
+{# ---------- REFERENCES ---------- #}
+{% if e.references %}
+<table class="table doc-table">
+    <thead>
+    <tr>
+        <th style="width: 5%">Nr</th>
+        <th>Documento</th>
+        <th class="text-right" style="width: 14%">Vencimento</th>
+        <th class="text-right" style="width: 16%">Total doc.</th>
+        <th class="text-right" style="width: 16%">Em dívida</th>
+        <th class="text-right" style="width: 16%">Valor pago</th>
+    </tr>
+    </thead>
+    <tbody>
+    {%- for row in e.references %}
+    <tr>
+        <td>{{ row.idx }}</td>
+        <td>{{ row.name }}</td>
+        <td class="text-right">{{ row.due_date }}</td>
+        <td class="text-right">{{ row.total }}</td>
+        <td class="text-right">{{ row.outstanding }}</td>
+        <td class="text-right">{{ row.allocated }}</td>
+    </tr>
+    {%- endfor %}
+    </tbody>
+    <tfoot>
+    <tr class="ref-total">
+        <td colspan="5" class="text-right">Total alocado</td>
+        <td class="text-right"><b>{{ e.total_allocated }}</b></td>
+    </tr>
+    </tfoot>
+</table>
+{% endif %}
+
+
+{# ---------- SUMMARY (only when it adds information) ---------- #}
+{% if e.extra %}
+<div class="totals-wrap">
+    <table class="totals">
+        {% for row in e.extra %}
+        <tr>
+            <td>{{ row.label }}</td>
+            <td class="amount">{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<div class="clear"></div>
+{% endif %}
+
+
+{% include "entre_theme/templates/print/parts/footer.html" %}

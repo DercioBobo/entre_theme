@@ -1,0 +1,61 @@
+{#- Letter head + party box + document info.
+    Repeats on every PDF page when Print Settings > "Repeat Header and Footer" is on. -#}
+<div {% if repeat %}id="header-html" class="hidden-pdf"{% endif %}>
+
+    {% if show_lh %}
+    <div class="letter-head">{{ letter_head }}</div>
+    {% endif %}
+
+    {% if e.party.name %}
+    {# Party box, sits top-right beside the letter head #}
+    <div class="client-anchor">
+        <div class="client-box">
+            <div class="doc-label">{{ e.party.label }}</div>
+            <div class="corners">
+                <span class="corner tl"></span>
+                <span class="corner tr"></span>
+                <span class="corner bl"></span>
+                <span class="corner br"></span>
+
+                <p class="client-name">{{ e.party.name }}</p>
+
+                {% if e.party.address %}
+                <div class="client-address">{{ e.party.address }}</div>
+                {% endif %}
+
+                {% if e.party.nuit %}<p class="client-nuit">NUIT: {{ e.party.nuit }}</p>{% endif %}
+                {% if e.party.email %}<p class="client-contact">Email: {{ e.party.email }}</p>{% endif %}
+                {% if e.party.phone %}<p class="client-contact">Tel: {{ e.party.phone }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Dates left, title + number right #}
+    <table class="doc-header">
+        <tr>
+            <td class="doc-dates">
+                <table class="meta-table">
+                    {% for row in e.meta %}
+                    <tr>
+                        <td class="k">{{ row.label }}</td>
+                        <td class="v">{{ row.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+            <td class="doc-meta">
+                <span class="doc-title">{{ e.title }}</span>
+                <span class="doc-number">{{ doc.name }}</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% if e.watermark %}
+<div class="doc-watermark">
+    <div class="doc-watermark-inner">
+        <img src="{{ e.watermark }}" alt="">
+    </div>
+</div>
+{% endif %}

@@ -628,6 +628,13 @@
     page-break-inside: avoid;
 }
 
+/* ===== Amount in words (optional, under the totals) ===== */
+.print-format .doc-in-words {
+    margin: 10px 0 0;
+    font-size: {{ fs(9) }};
+    color: #374151;
+}
+
 {% if custom_css %}
 /* ===== Custom CSS (Entre Theme Settings) ===== */
 {{ custom_css }}

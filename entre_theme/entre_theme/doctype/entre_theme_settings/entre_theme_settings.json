@@ -15,6 +15,8 @@
   "page_bg",
   "column_break_appearance",
   "navbar_style",
+  "navbar_logo_position",
+  "logo_size",
   "font_family",
   "border_radius",
   "enable_animations",
@@ -33,6 +35,26 @@
   "print_font_family",
   "print_font_size",
   "print_watermark_opacity",
+  "section_print_formats",
+  "manage_print_formats",
+  "set_default_print_formats",
+  "print_date_format",
+  "print_item_text",
+  "print_title_item_group",
+  "print_show_uom",
+  "column_break_print_formats",
+  "print_items_total_label",
+  "print_show_payment_status",
+  "print_show_in_words",
+  "print_show_terms",
+  "print_delivery_prices",
+  "section_print_footer",
+  "print_show_watermark",
+  "print_watermark",
+  "column_break_print_footer",
+  "print_show_page_numbers",
+  "print_footer_note",
+  "print_footer_note_everywhere",
   "tab_advanced",
   "custom_css",
   "print_custom_css"
@@ -96,6 +118,22 @@
    "options": "Vidro\nSólida",
    "default": "Vidro",
    "description": "Vidro: translúcida e desfocada. Sólida: fundo opaco."
+  },
+  {
+   "fieldname": "navbar_logo_position",
+   "fieldtype": "Select",
+   "label": "Posição do Logótipo",
+   "options": "Padrão\nCentro\nBarra Lateral",
+   "default": "Padrão",
+   "description": "Padrão: como no Frappe. Centro: no meio da barra superior. Barra Lateral: no topo da barra lateral (em ecrãs pequenos e páginas sem barra lateral fica na barra superior)."
+  },
+  {
+   "fieldname": "logo_size",
+   "fieldtype": "Select",
+   "label": "Tamanho do Logótipo",
+   "options": "Padrão\nPequeno\nMédio\nGrande",
+   "default": "Padrão",
+   "description": "Padrão: o tamanho original do Frappe."
   },
   {
    "fieldname": "font_family",
@@ -217,6 +255,142 @@
    "depends_on": "manage_print_style"
   },
   {
+   "fieldname": "section_print_formats",
+   "fieldtype": "Section Break",
+   "label": "Formatos de Impressão"
+  },
+  {
+   "fieldname": "manage_print_formats",
+   "fieldtype": "Check",
+   "label": "Criar os Formatos de Impressão \"Entre\"",
+   "default": "1",
+   "description": "Ao gravar, cria/actualiza os formatos Entre Cotação, Encomenda, Factura, Guia de Remessa, Recibo e os equivalentes de compras, para os documentos que existam no sistema. Para personalizar um formato além destas opções, duplique-o."
+  },
+  {
+   "fieldname": "set_default_print_formats",
+   "fieldtype": "Check",
+   "label": "Usar como Formato por Omissão em cada Documento",
+   "default": "0",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "print_date_format",
+   "fieldtype": "Select",
+   "label": "Formato das Datas",
+   "options": "dd-mm-yyyy\ndd/mm/yyyy\nyyyy-mm-dd",
+   "default": "dd-mm-yyyy",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "print_item_text",
+   "fieldtype": "Select",
+   "label": "Texto dos Artigos",
+   "options": "Descrição\nNome do Artigo",
+   "default": "Descrição",
+   "depends_on": "manage_print_formats",
+   "description": "Descrição: usa a descrição (ou o nome, se estiver vazia)."
+  },
+  {
+   "fieldname": "print_title_item_group",
+   "fieldtype": "Data",
+   "label": "Grupo de Artigo para Títulos",
+   "default": "Titulo",
+   "depends_on": "manage_print_formats",
+   "description": "Linhas com este Grupo de Artigo saem como títulos de secção, sem número nem valores. Vazio: desligado."
+  },
+  {
+   "fieldname": "print_show_uom",
+   "fieldtype": "Check",
+   "label": "Mostrar Coluna Unidade",
+   "default": "1",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "column_break_print_formats",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "print_items_total_label",
+   "fieldtype": "Data",
+   "label": "Texto do Total dos Artigos",
+   "default": "Equipamentos/Serviços",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "print_show_payment_status",
+   "fieldtype": "Check",
+   "label": "Mostrar Estado do Pagamento nas Facturas",
+   "default": "1",
+   "depends_on": "manage_print_formats",
+   "description": "Valor pago / em dívida, ou \"Pago na totalidade\"."
+  },
+  {
+   "fieldname": "print_show_in_words",
+   "fieldtype": "Check",
+   "label": "Mostrar Valor por Extenso nos Totais",
+   "default": "0",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "print_show_terms",
+   "fieldtype": "Check",
+   "label": "Mostrar Termos e Condições",
+   "default": "1",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "print_delivery_prices",
+   "fieldtype": "Check",
+   "label": "Mostrar Preços nas Guias",
+   "default": "1",
+   "depends_on": "manage_print_formats",
+   "description": "Guias de Remessa e de Recepção. Desligado: só quantidades."
+  },
+  {
+   "fieldname": "section_print_footer",
+   "fieldtype": "Section Break",
+   "label": "Marca de Água e Rodapé",
+   "depends_on": "manage_print_formats"
+  },
+  {
+   "fieldname": "print_show_watermark",
+   "fieldtype": "Check",
+   "label": "Mostrar Marca de Água",
+   "default": "1"
+  },
+  {
+   "fieldname": "print_watermark",
+   "fieldtype": "Attach Image",
+   "label": "Imagem da Marca de Água",
+   "depends_on": "print_show_watermark",
+   "description": "Vazio: usa a marca de água das Áreas de Trabalho ou o logótipo. A opacidade está acima."
+  },
+  {
+   "fieldname": "column_break_print_footer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "print_show_page_numbers",
+   "fieldtype": "Check",
+   "label": "Numerar Páginas",
+   "default": "1",
+   "description": "\"Página X de Y\" no PDF, com \"Repetir Cabeçalho e Rodapé\" ligado em Print Settings."
+  },
+  {
+   "fieldname": "print_footer_note",
+   "fieldtype": "Data",
+   "label": "Nota de Rodapé",
+   "default": "Processado por computador / EntreCloud ERP",
+   "description": "O nome da empresa é acrescentado no fim. Sai nos recibos e nos documentos sem rodapé no papel timbrado."
+  },
+  {
+   "fieldname": "print_footer_note_everywhere",
+   "fieldtype": "Check",
+   "label": "Mostrar a Nota em Todos os Documentos",
+   "default": "0",
+   "description": "Também por baixo do rodapé do papel timbrado."
+  },
+  {
    "fieldname": "tab_advanced",
    "fieldtype": "Tab Break",
    "label": "Avançado"
@@ -238,7 +412,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 16:00:00.000000",
+ "modified": "2026-11-10 19:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",
