@@ -23,6 +23,8 @@
 	/* Mixed in OKLCH: darker shades keep their colour instead of going brown */
 	--accent-deep: color-mix(in oklch, var(--accent) 74%, black);
 	--accent-light: color-mix(in oklch, var(--accent) 16%, white);
+	/* Accent as text on light backgrounds: darker, so light accents stay readable */
+	--accent-ink: color-mix(in oklch, var(--accent) 62%, black);
 	/* Neighbouring hues of the accent, for the Vidro mesh */
 	--accent-warm: var(--accent);
 	--accent-cool: var(--accent-light);
@@ -240,7 +242,7 @@
 	background: none;
 	border: none;
 	cursor: pointer;
-	color: var(--accent);
+	color: var(--accent-ink);
 	font-size: 13px;
 	font-weight: 500;
 	padding: 0;
@@ -363,8 +365,56 @@
 
 
 /* =============================================================
+   Style options (Entre Theme Settings > Página de Login)
+
+   Inputs set by api.get_login_theme:
+     --overlay-color, --overlay-opacity     film over the image
+     --panel-text-custom                    brand panel text
+     --vivid-second-custom                  Vívido second colour
+     --glass-blur, --glass-alpha            Vidro card
+     --night-bg, --glow-color               Noite
+   Body classes: et-overlay, et-panel-right, et-panel-narrow/-wide,
+     et-deco-dots/-none, et-no-panel-logo, et-no-logo-plate,
+     et-no-panel-tagline, et-vivid-vertical/-horizontal,
+     et-minimal-center, et-no-topline, et-no-glow
+   ============================================================= */
+
+/* ── Film (película) over the background image ── */
+/* Full-page image styles: the film covers the page, under the content */
+.et-has-image.et-overlay:is(.et-login--classic, .et-login--side, .et-login--glass)::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	background: var(--overlay-color, var(--accent));
+	opacity: var(--overlay-opacity, 0.8);
+	pointer-events: none;
+}
+
+.et-login-shell {
+	position: relative;
+	z-index: 1;
+}
+
+
+/* =============================================================
    Brand panel (split + side): logo, large tagline, company name
    ============================================================= */
+.et-brand-panel {
+	/* On the accent: Texto sobre a Cor Principal; or the chosen colour */
+	--panel-text: var(--panel-text-custom, var(--on-accent));
+}
+
+/* A photo without a film: white reads best, with a soft shadow on bright areas */
+.et-has-image:not(.et-overlay) .et-brand-panel {
+	--panel-text: var(--panel-text-custom, #ffffff);
+	text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+
+.et-brand-panel > * {
+	position: relative;
+	z-index: 1;
+}
+
 .et-brand-logo .et-logo {
 	max-height: 44px;
 	max-width: 200px;
@@ -374,8 +424,15 @@
 	border-radius: 12px;
 }
 
+.et-no-logo-plate .et-brand-logo .et-logo {
+	background: none;
+	padding: 0;
+	border-radius: 0;
+	max-height: 56px;
+}
+
 .et-brand-logo .et-monogram {
-	background: var(--on-accent);
+	background: var(--panel-text);
 	color: var(--accent);
 }
 
@@ -396,9 +453,58 @@
 	opacity: 0.8;
 }
 
+/* Hidden but keeping their place, so the layout doesn't jump */
+.et-no-panel-logo .et-brand-logo,
+.et-no-panel-tagline .et-brand-tagline {
+	visibility: hidden;
+}
+
+/* Decoration: one large ring (default), a dot grid, or nothing */
+.et-brand-panel::after {
+	content: "";
+	position: absolute;
+	width: 560px;
+	height: 560px;
+	right: -220px;
+	bottom: -240px;
+	border-radius: 50%;
+	border: 80px solid color-mix(in srgb, var(--panel-text) 9%, transparent);
+	pointer-events: none;
+}
+
+.et-deco-dots .et-brand-panel::after {
+	width: 280px;
+	height: 220px;
+	right: 40px;
+	bottom: 40px;
+	border: none;
+	border-radius: 0;
+	background-image: radial-gradient(color-mix(in srgb, var(--panel-text) 30%, transparent) 1.6px, transparent 1.8px);
+	background-size: 20px 20px;
+}
+
+.et-deco-none .et-brand-panel::after {
+	display: none;
+}
+
+/* Film or shade inside the panel (switched on per style below) */
+.et-brand-panel::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	display: none;
+}
+
+@media (min-width: 900px) {
+	.et-panel-right .et-login-shell {
+		flex-direction: row-reverse;
+	}
+}
+
 
 /* =============================================================
-   Dividido — brand panel left, form right
+   Dividido — brand panel on one side, form on the other
    ============================================================= */
 .et-login--split .et-title {
 	display: block;
@@ -423,30 +529,21 @@
 		flex: 0 0 46%;
 		box-sizing: border-box;
 		padding: 48px 56px;
-		color: var(--on-accent);
+		color: var(--panel-text);
 		background: linear-gradient(160deg, var(--accent) 0%, var(--accent-deep) 100%);
 	}
 
-	/* With a background image: the photo under an accent tint */
+	.et-login--split.et-panel-narrow .et-brand-panel { flex-basis: 36%; }
+	.et-login--split.et-panel-wide .et-brand-panel { flex-basis: 58%; }
+
 	.et-login--split.et-has-image .et-brand-panel {
-		background:
-			linear-gradient(160deg,
-				color-mix(in srgb, var(--accent) 80%, transparent) 0%,
-				color-mix(in srgb, var(--accent-deep) 92%, transparent) 100%),
-			var(--login-bg-image) center / cover;
+		background: var(--login-bg-image) center / cover;
 	}
 
-	/* One large quiet ring, bottom right */
-	.et-login--split .et-brand-panel::after {
-		content: "";
-		position: absolute;
-		width: 560px;
-		height: 560px;
-		right: -220px;
-		bottom: -240px;
-		border-radius: 50%;
-		border: 80px solid color-mix(in srgb, var(--on-accent) 9%, transparent);
-		pointer-events: none;
+	.et-login--split.et-has-image.et-overlay .et-brand-panel::before {
+		display: block;
+		background: var(--overlay-color, var(--accent));
+		opacity: var(--overlay-opacity, 0.8);
 	}
 
 	.et-login--split .et-login-wrapper {
@@ -480,7 +577,7 @@
 
 
 /* =============================================================
-   Painel Lateral — full background, form docked right
+   Painel Lateral — full background, form in a strip at one side
    ============================================================= */
 .et-login--side {
 	background: linear-gradient(150deg, var(--accent) 0%, var(--accent-deep) 100%);
@@ -500,6 +597,8 @@
 	}
 
 	.et-login--side .et-brand-panel {
+		position: relative;
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -507,11 +606,12 @@
 		flex: 1;
 		box-sizing: border-box;
 		padding: 48px 56px;
-		color: #ffffff;
+		color: var(--panel-text);
 	}
 
-	/* Darken the bottom of a photo so the tagline reads */
-	.et-login--side.et-has-image .et-brand-panel {
+	/* A photo without a film: darken its bottom so the tagline reads */
+	.et-login--side.et-has-image:not(.et-overlay) .et-brand-panel::before {
+		display: block;
 		background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 55%);
 	}
 
@@ -523,6 +623,14 @@
 		padding: 56px 48px;
 		background: var(--card-bg, #ffffff);
 		box-shadow: -24px 0 60px -30px rgba(0, 0, 0, 0.35);
+	}
+
+	/* Width of the brand area: a narrow panel means a wider form strip */
+	.et-login--side.et-panel-narrow .et-login-wrapper { flex-basis: 560px; max-width: 560px; }
+	.et-login--side.et-panel-wide .et-login-wrapper { flex-basis: 400px; max-width: 400px; }
+
+	.et-login--side.et-panel-right .et-login-wrapper {
+		box-shadow: 24px 0 60px -30px rgba(0, 0, 0, 0.35);
 	}
 
 	.et-login--side .et-login-card {
@@ -545,26 +653,31 @@
 
 
 /* =============================================================
-   Vívido — two-tone diagonal, card floating over the seam
+   Vívido — two tones of the accent, card floating over the seam
    ============================================================= */
 .et-login--vivid {
-	--vivid-second: var(--accent-deep);
-	background: linear-gradient(115deg, var(--accent) 0 54%, var(--vivid-second) 54% 100%);
+	--vivid-second: var(--vivid-second-custom, var(--accent-deep));
+	--vivid-angle: 115deg;
+	--vivid-stop: 54%;
+	background: linear-gradient(var(--vivid-angle), var(--accent) 0 var(--vivid-stop), var(--vivid-second) var(--vivid-stop) 100%);
 }
 
-/* The second tone: a richer neighbouring hue rather than a darker shade */
+/* Automatic second tone: a richer neighbouring hue rather than a darker shade */
 @supports (color: oklch(from red l c h)) {
 	.et-login--vivid {
-		--vivid-second: oklch(from var(--accent) calc(l - 0.08) calc(c + 0.04) calc(h - 22));
+		--vivid-second: var(--vivid-second-custom, oklch(from var(--accent) calc(l - 0.08) calc(c + 0.04) calc(h - 22)));
 	}
 }
+
+.et-login--vivid.et-vivid-vertical { --vivid-angle: 90deg; --vivid-stop: 50%; }
+.et-login--vivid.et-vivid-horizontal { --vivid-angle: 180deg; --vivid-stop: 50%; }
 
 .et-login--vivid .et-login-card {
 	border: none;
 	border-radius: calc(var(--border-radius, 12px) + 6px);
 	box-shadow:
 		0 2px 4px rgba(0, 0, 0, 0.06),
-		0 40px 80px -24px color-mix(in srgb, var(--accent-deep) 75%, black);
+		0 40px 80px -24px color-mix(in oklch, var(--vivid-second) 70%, black);
 }
 
 .et-login--vivid .et-tagline {
@@ -595,9 +708,9 @@
 }
 
 .et-login--glass .et-login-card {
-	background: color-mix(in srgb, var(--card-bg, #ffffff) 58%, transparent);
-	-webkit-backdrop-filter: blur(24px) saturate(160%);
-	backdrop-filter: blur(24px) saturate(160%);
+	background: color-mix(in srgb, var(--card-bg, #ffffff) var(--glass-alpha, 58%), transparent);
+	-webkit-backdrop-filter: blur(var(--glass-blur, 24px)) saturate(160%);
+	backdrop-filter: blur(var(--glass-blur, 24px)) saturate(160%);
 	border: 1px solid rgba(255, 255, 255, 0.55);
 	box-shadow: 0 24px 60px -20px rgba(15, 23, 42, 0.35);
 }
@@ -626,12 +739,16 @@
 
 
 /* =============================================================
-   Minimalista — no card, left aligned, underlined fields
+   Minimalista — no card, underlined fields
    ============================================================= */
 .et-login--minimal {
 	background: var(--card-bg, #ffffff);
 	border-top: 4px solid var(--accent);
 	box-sizing: border-box;
+}
+
+.et-login--minimal.et-no-topline {
+	border-top: none;
 }
 
 .et-login--minimal .et-login-shell {
@@ -644,7 +761,7 @@
 
 /* Wide screens: the column sits in the left third, the rest stays empty */
 @media (min-width: 1100px) {
-	.et-login--minimal .et-login-shell {
+	.et-login--minimal:not(.et-minimal-center) .et-login-shell {
 		justify-content: flex-start;
 		padding-left: 14vw;
 	}
@@ -722,17 +839,24 @@
 	--ink: #f1f5f9;
 	--ink-soft: #94a3b8;
 	--line: #262b33;
+	--glow: var(--glow-color, var(--accent));
+	--night-surface: color-mix(in srgb, var(--night-bg, #0d0f13) 90%, white);
+	--night-field: color-mix(in srgb, var(--night-bg, #0d0f13) 84%, white);
 	background:
 		radial-gradient(ellipse 80% 60% at 50% 112%,
-			color-mix(in oklch, var(--accent) 85%, transparent) 0%,
-			color-mix(in oklch, var(--accent) 25%, transparent) 45%,
+			color-mix(in oklch, var(--glow) 85%, transparent) 0%,
+			color-mix(in oklch, var(--glow) 25%, transparent) 45%,
 			transparent 72%),
-		#0d0f13;
+		var(--night-bg, #0d0f13);
 	color-scheme: dark;
 }
 
+.et-login--night.et-no-glow {
+	background: var(--night-bg, #0d0f13);
+}
+
 .et-login--night .et-login-card {
-	background: #15181d;
+	background: var(--night-surface);
 	border: 1px solid rgba(255, 255, 255, 0.06);
 	box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
 }
@@ -755,14 +879,18 @@
 	color: #cbd5e1;
 }
 
+.et-login--night .et-link-btn {
+	color: var(--accent);
+}
+
 .et-login--night .et-input {
-	background: #1b1f25;
-	border-color: #2a3039;
+	background: var(--night-field);
+	border-color: rgba(255, 255, 255, 0.1);
 	color: var(--ink);
 }
 
 .et-login--night .et-input:focus {
-	background: #1f242b;
+	background: color-mix(in srgb, var(--night-field) 92%, white);
 	border-color: var(--input-focus-ring, var(--accent));
 }
 
@@ -781,13 +909,13 @@
 }
 
 .et-login--night .et-btn-social {
-	background: #1b1f25;
-	border-color: #2a3039;
+	background: var(--night-field);
+	border-color: rgba(255, 255, 255, 0.1);
 	color: var(--ink);
 }
 
 .et-login--night .et-btn-social:hover {
-	background: #222730;
+	background: color-mix(in srgb, var(--night-field) 90%, white);
 }
 
 

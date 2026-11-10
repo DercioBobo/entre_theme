@@ -11,10 +11,47 @@
   "navbar_logo",
   "column_break_brand",
   "favicon",
-  "section_login_page",
+  "tab_login",
+  "section_login_style",
   "login_style",
   "login_bg_url",
+  "column_break_login_style",
   "company_tagline",
+  "section_login_overlay",
+  "login_overlay",
+  "column_break_login_overlay",
+  "login_overlay_color",
+  "login_overlay_opacity",
+  "section_login_panel",
+  "login_panel_side",
+  "login_panel_width",
+  "login_decoration",
+  "login_panel_text",
+  "column_break_login_panel",
+  "login_panel_logo",
+  "login_logo_plate",
+  "login_panel_tagline",
+  "section_login_vivid",
+  "login_vivid_second",
+  "column_break_login_vivid",
+  "login_vivid_angle",
+  "section_login_glass",
+  "login_glass_blur",
+  "column_break_login_glass",
+  "login_glass_opacity",
+  "section_login_minimal",
+  "login_minimal_align",
+  "column_break_login_minimal",
+  "login_minimal_line",
+  "section_login_night",
+  "login_night_bg",
+  "column_break_login_night",
+  "login_night_glow",
+  "login_night_glow_color",
+  "section_login_colors",
+  "login_accent",
+  "column_break_login_colors",
+  "login_card_bg",
   "tab_colors",
   "section_global_colors",
   "primary_color",
@@ -38,10 +75,6 @@
   "workspace_accent",
   "column_break_colors_workspace",
   "workspace_card_bg",
-  "section_colors_login",
-  "login_accent",
-  "column_break_colors_login",
-  "login_card_bg",
   "section_colors_print",
   "print_accent",
   "column_break_colors_print",
@@ -125,9 +158,14 @@
    "description": "Ícone no separador do navegador (PNG quadrado ou ICO). Aplica-se ao sistema, à página de login e ao site."
   },
   {
-   "fieldname": "section_login_page",
-   "fieldtype": "Section Break",
+   "fieldname": "tab_login",
+   "fieldtype": "Tab Break",
    "label": "Página de Login"
+  },
+  {
+   "fieldname": "section_login_style",
+   "fieldtype": "Section Break",
+   "label": "Estilo"
   },
   {
    "fieldname": "login_style",
@@ -135,19 +173,237 @@
    "label": "Estilo da Página de Login",
    "options": "Clássico\nDividido\nPainel Lateral\nVívido\nVidro\nMinimalista\nNoite",
    "default": "Clássico",
-   "description": "Clássico: cartão ao centro. Dividido: painel da marca à esquerda. Painel Lateral: imagem de fundo com o formulário à direita. Vívido: fundo na cor principal. Vidro: cartão translúcido sobre a imagem. Minimalista: sem cartão. Noite: escuro. As cores vêm da secção Página de Login no separador Cores."
+   "description": "Clássico: cartão ao centro. Dividido: painel da marca de um lado. Painel Lateral: imagem de fundo com o formulário numa faixa. Vívido: duas cores. Vidro: cartão translúcido. Minimalista: sem cartão. Noite: escuro. As opções de cada estilo aparecem em baixo."
   },
   {
    "fieldname": "login_bg_url",
    "fieldtype": "Attach Image",
-   "label": "Fundo da Página de Login",
-   "description": "Usada pelos estilos Clássico, Dividido, Painel Lateral e Vidro. Vazio: um fundo feito com a cor principal."
+   "label": "Imagem de Fundo",
+   "description": "Usada pelos estilos Clássico, Dividido, Painel Lateral e Vidro. Vazio: um fundo feito com a cor de destaque."
+  },
+  {
+   "fieldname": "column_break_login_style",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "company_tagline",
    "fieldtype": "Data",
    "label": "Slogan",
    "description": "Na página de login; em destaque nos estilos Dividido e Painel Lateral."
+  },
+  {
+   "fieldname": "section_login_overlay",
+   "fieldtype": "Section Break",
+   "label": "Imagem e Película",
+   "depends_on": "eval:[\"Clássico\", \"Dividido\", \"Painel Lateral\", \"Vidro\"].includes(doc.login_style)",
+   "description": "Só quando há Imagem de Fundo."
+  },
+  {
+   "fieldname": "login_overlay",
+   "fieldtype": "Check",
+   "label": "Aplicar Película sobre a Imagem",
+   "default": "1",
+   "description": "Uma camada de cor por cima da imagem, para o texto e o logótipo se lerem bem."
+  },
+  {
+   "fieldname": "column_break_login_overlay",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_overlay_color",
+   "fieldtype": "Color",
+   "label": "Cor da Película",
+   "description": "Vazio: a cor de destaque do login.",
+   "depends_on": "login_overlay"
+  },
+  {
+   "fieldname": "login_overlay_opacity",
+   "fieldtype": "Int",
+   "label": "Intensidade da Película (%)",
+   "default": "80",
+   "description": "0 = transparente, 100 = cor sólida.",
+   "depends_on": "login_overlay"
+  },
+  {
+   "fieldname": "section_login_panel",
+   "fieldtype": "Section Break",
+   "label": "Painel da Marca",
+   "depends_on": "eval:[\"Dividido\", \"Painel Lateral\"].includes(doc.login_style)"
+  },
+  {
+   "fieldname": "login_panel_side",
+   "fieldtype": "Select",
+   "label": "Lado do Painel",
+   "options": "Esquerda\nDireita",
+   "default": "Esquerda",
+   "description": "O formulário fica do lado oposto."
+  },
+  {
+   "fieldname": "login_panel_width",
+   "fieldtype": "Select",
+   "label": "Largura do Painel",
+   "options": "Estreito\nMédio\nLargo",
+   "default": "Médio"
+  },
+  {
+   "fieldname": "login_decoration",
+   "fieldtype": "Select",
+   "label": "Decoração",
+   "options": "Anel\nPontos\nNenhuma",
+   "default": "Anel"
+  },
+  {
+   "fieldname": "login_panel_text",
+   "fieldtype": "Color",
+   "label": "Cor do Texto do Painel",
+   "description": "Vazio: automática (Texto sobre a Cor Principal, ou branco sobre uma imagem sem película)."
+  },
+  {
+   "fieldname": "column_break_login_panel",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_panel_logo",
+   "fieldtype": "Check",
+   "label": "Mostrar Logótipo no Painel",
+   "default": "1"
+  },
+  {
+   "fieldname": "login_logo_plate",
+   "fieldtype": "Check",
+   "label": "Logótipo sobre Fundo Branco",
+   "default": "1",
+   "description": "Mantém qualquer logótipo legível sobre a cor ou a imagem.",
+   "depends_on": "login_panel_logo"
+  },
+  {
+   "fieldname": "login_panel_tagline",
+   "fieldtype": "Check",
+   "label": "Mostrar Slogan no Painel",
+   "default": "1",
+   "description": "Sem slogan, mostra o nome da empresa."
+  },
+  {
+   "fieldname": "section_login_vivid",
+   "fieldtype": "Section Break",
+   "label": "Opções do Estilo Vívido",
+   "depends_on": "eval:[\"Vívido\"].includes(doc.login_style)"
+  },
+  {
+   "fieldname": "login_vivid_second",
+   "fieldtype": "Color",
+   "label": "Segunda Cor",
+   "description": "Vazio: um tom vizinho da cor de destaque, escolhido automaticamente."
+  },
+  {
+   "fieldname": "column_break_login_vivid",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_vivid_angle",
+   "fieldtype": "Select",
+   "label": "Divisão",
+   "options": "Diagonal\nVertical\nHorizontal",
+   "default": "Diagonal"
+  },
+  {
+   "fieldname": "section_login_glass",
+   "fieldtype": "Section Break",
+   "label": "Opções do Estilo Vidro",
+   "depends_on": "eval:[\"Vidro\"].includes(doc.login_style)"
+  },
+  {
+   "fieldname": "login_glass_blur",
+   "fieldtype": "Select",
+   "label": "Desfoque",
+   "options": "Leve\nMédio\nForte",
+   "default": "Médio"
+  },
+  {
+   "fieldname": "column_break_login_glass",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_glass_opacity",
+   "fieldtype": "Int",
+   "label": "Opacidade do Cartão (%)",
+   "default": "58",
+   "description": "Mais baixo: mais transparente."
+  },
+  {
+   "fieldname": "section_login_minimal",
+   "fieldtype": "Section Break",
+   "label": "Opções do Estilo Minimalista",
+   "depends_on": "eval:[\"Minimalista\"].includes(doc.login_style)"
+  },
+  {
+   "fieldname": "login_minimal_align",
+   "fieldtype": "Select",
+   "label": "Posição do Formulário",
+   "options": "Esquerda\nCentro",
+   "default": "Esquerda",
+   "description": "Esquerda: no terço esquerdo dos ecrãs largos."
+  },
+  {
+   "fieldname": "column_break_login_minimal",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_minimal_line",
+   "fieldtype": "Check",
+   "label": "Linha de Destaque no Topo",
+   "default": "1"
+  },
+  {
+   "fieldname": "section_login_night",
+   "fieldtype": "Section Break",
+   "label": "Opções do Estilo Noite",
+   "depends_on": "eval:[\"Noite\"].includes(doc.login_style)"
+  },
+  {
+   "fieldname": "login_night_bg",
+   "fieldtype": "Color",
+   "label": "Cor de Fundo",
+   "default": "#0d0f13"
+  },
+  {
+   "fieldname": "column_break_login_night",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_night_glow",
+   "fieldtype": "Check",
+   "label": "Brilho por Baixo",
+   "default": "1"
+  },
+  {
+   "fieldname": "login_night_glow_color",
+   "fieldtype": "Color",
+   "label": "Cor do Brilho",
+   "description": "Vazio: a cor de destaque do login.",
+   "depends_on": "login_night_glow"
+  },
+  {
+   "fieldname": "section_login_colors",
+   "fieldtype": "Section Break",
+   "label": "Cores",
+   "description": "Vazio: usa as Cores Globais."
+  },
+  {
+   "fieldname": "login_accent",
+   "fieldtype": "Color",
+   "label": "Cor de Destaque",
+   "description": "Botão, links e película. Vazio: Cor Principal."
+  },
+  {
+   "fieldname": "column_break_login_colors",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_card_bg",
+   "fieldtype": "Color",
+   "label": "Fundo do Cartão / Formulário",
+   "description": "Vazio: usa Cartões e Superfícies."
   },
   {
    "fieldname": "tab_colors",
@@ -282,28 +538,6 @@
    "fieldname": "workspace_card_bg",
    "fieldtype": "Color",
    "label": "Fundo dos Cartões",
-   "description": "Vazio: usa Cartões e Superfícies."
-  },
-  {
-   "fieldname": "section_colors_login",
-   "fieldtype": "Section Break",
-   "label": "Página de Login",
-   "collapsible": 1
-  },
-  {
-   "fieldname": "login_accent",
-   "fieldtype": "Color",
-   "label": "Botão e Destaques",
-   "description": "Vazio: usa a cor global."
-  },
-  {
-   "fieldname": "column_break_colors_login",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "login_card_bg",
-   "fieldtype": "Color",
-   "label": "Fundo do Cartão",
    "description": "Vazio: usa Cartões e Superfícies."
   },
   {
@@ -624,7 +858,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 21:00:00.000000",
+ "modified": "2026-11-10 22:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",

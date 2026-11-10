@@ -11,8 +11,23 @@ DEFAULTS = {
 	"surface_color": "#ffffff",
 	"text_color": "#0f172a",
 	"border_color": "#edeef1",
-	# Página de login
+	# Página de login (options per style: see get_login_theme)
 	"login_style": "Clássico",
+	"login_overlay": 1,
+	"login_overlay_opacity": 80,
+	"login_panel_side": "Esquerda",
+	"login_panel_width": "Médio",
+	"login_decoration": "Anel",
+	"login_panel_logo": 1,
+	"login_logo_plate": 1,
+	"login_panel_tagline": 1,
+	"login_vivid_angle": "Diagonal",
+	"login_glass_blur": "Médio",
+	"login_glass_opacity": 58,
+	"login_minimal_align": "Esquerda",
+	"login_minimal_line": 1,
+	"login_night_bg": "#0d0f13",
+	"login_night_glow": 1,
 	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",
@@ -61,6 +76,8 @@ AREA_COLORS = (
 OPTIONAL = (
 	"custom_css", "print_custom_css", "logo_url", "navbar_logo", "favicon", "login_bg_url",
 	"company_tagline", "workspace_watermark", "print_watermark",
+	# Login style colours that default to something derived (accent, auto)
+	"login_overlay_color", "login_panel_text", "login_vivid_second", "login_night_glow_color",
 ) + AREA_COLORS
 
 CHECKS = {
@@ -80,6 +97,12 @@ CHECKS = {
 	"print_show_watermark",
 	"print_show_page_numbers",
 	"print_footer_note_everywhere",
+	"login_overlay",
+	"login_panel_logo",
+	"login_logo_plate",
+	"login_panel_tagline",
+	"login_minimal_line",
+	"login_night_glow",
 }
 
 # Text fields with a default where empty is a real choice ("off"). Their
@@ -220,6 +243,66 @@ def get_css_vars(values=None):
 		"--primary-text": v["primary_text_color"],
 		"--button-shadow": f"0 8px 20px -10px color-mix(in srgb, {accent} 60%, transparent)",
 	}
+
+
+# "Estilo da Página de Login" → body class et-login--<slug> (public/css/login.css)
+LOGIN_STYLES = {
+	"Clássico": "classic",
+	"Dividido": "split",
+	"Painel Lateral": "side",
+	"Vívido": "vivid",
+	"Vidro": "glass",
+	"Minimalista": "minimal",
+	"Noite": "night",
+}
+GLASS_BLUR = {"Leve": "12px", "Médio": "24px", "Forte": "40px"}
+
+
+def _percent(value, default):
+	try:
+		return max(0, min(100, int(value)))
+	except (TypeError, ValueError):
+		return default
+
+
+def get_login_theme(v):
+	"""The selected login style and its options, as (slug, css vars, body classes).
+
+	Colour options left empty fall back in CSS (to the login accent or an
+	automatic shade), so they are only emitted when set."""
+	style = LOGIN_STYLES.get(v["login_style"], "classic")
+	css = {
+		"--overlay-opacity": f"{_percent(v['login_overlay_opacity'], 80) / 100:g}",
+		"--glass-blur": GLASS_BLUR.get(v["login_glass_blur"], "24px"),
+		"--glass-alpha": f"{_percent(v['login_glass_opacity'], 58)}%",
+		"--night-bg": v["login_night_bg"],
+	}
+	for var, field in (
+		("--overlay-color", "login_overlay_color"),
+		("--panel-text-custom", "login_panel_text"),
+		("--vivid-second-custom", "login_vivid_second"),
+		("--glow-color", "login_night_glow_color"),
+	):
+		if v[field]:
+			css[var] = v[field]
+
+	flags = {
+		"et-overlay": v["login_overlay"],
+		"et-panel-right": v["login_panel_side"] == "Direita",
+		"et-panel-narrow": v["login_panel_width"] == "Estreito",
+		"et-panel-wide": v["login_panel_width"] == "Largo",
+		"et-deco-dots": v["login_decoration"] == "Pontos",
+		"et-deco-none": v["login_decoration"] == "Nenhuma",
+		"et-no-panel-logo": not v["login_panel_logo"],
+		"et-no-logo-plate": not v["login_logo_plate"],
+		"et-no-panel-tagline": not v["login_panel_tagline"],
+		"et-vivid-vertical": v["login_vivid_angle"] == "Vertical",
+		"et-vivid-horizontal": v["login_vivid_angle"] == "Horizontal",
+		"et-minimal-center": v["login_minimal_align"] == "Centro",
+		"et-no-topline": not v["login_minimal_line"],
+		"et-no-glow": not v["login_night_glow"],
+	}
+	return style, css, [name for name, on in flags.items() if on]
 
 
 def get_font_url(font_family):

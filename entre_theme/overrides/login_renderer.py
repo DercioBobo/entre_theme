@@ -1,19 +1,7 @@
 import frappe
 from werkzeug.wrappers import Response
 
-from entre_theme.api import get_css_vars, get_font_url, get_settings_values
-
-# "Estilo da Página de Login" → body class et-login--<slug> (public/css/login.css)
-LOGIN_STYLES = {
-	"Clássico": "classic",
-	"Dividido": "split",
-	"Painel Lateral": "side",
-	"Vívido": "vivid",
-	"Vidro": "glass",
-	"Minimalista": "minimal",
-	"Noite": "night",
-}
-
+from entre_theme.api import get_css_vars, get_font_url, get_login_theme, get_settings_values
 
 def get_company_name():
 	"""The name shown in the brand panel and as the monogram when there's no logo."""
@@ -81,12 +69,15 @@ class LoginPageRenderer:
 				favicon = ""
 
 		css_vars = get_css_vars(values)
+		login_style, style_vars, style_classes = get_login_theme(values)
+		css_vars.update(style_vars)
 		context.update({
 			"css_vars": css_vars,
 			# The login accent (its own colour, or the global one): background gradient
 			"primary_color": css_vars["--primary-color"],
 			"favicon": favicon or "/assets/frappe/images/favicon.ico",
-			"login_style": LOGIN_STYLES.get(values["login_style"], "classic"),
+			"login_style": login_style,
+			"login_classes": " ".join(style_classes),
 			"company_name": get_company_name(),
 			"font_url": get_font_url(values["font_family"]),
 			"custom_css": values["custom_css"],

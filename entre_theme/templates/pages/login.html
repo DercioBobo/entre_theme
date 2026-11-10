@@ -39,7 +39,7 @@
 </head>
 
 {#- Variant: et-login--<style>, see "Estilo da Página de Login" and login.css -#}
-<body class="entre-login-page et-login--{{ login_style }}{% if login_bg_url %} et-has-image{% endif %}">
+<body class="entre-login-page et-login--{{ login_style }} {{ login_classes }}{% if login_bg_url %} et-has-image{% endif %}">
 
 {%- macro brand_mark(extra_class="") -%}
 	{% if logo_url %}
