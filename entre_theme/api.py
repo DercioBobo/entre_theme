@@ -1,150 +1,106 @@
 import frappe
-from frappe import _
-import os
+
+# Single source of truth for defaults. Used by the desk (boot + API),
+# the login renderer and the install hook.
+DEFAULTS = {
+	"font_family": "Inter",
+	"enable_animations": 1,
+	"page_bg": "#f3f4f6",
+	"border_radius": "8px",
+	"card_bg": "#ffffff",
+	"card_border": "#e5e7eb",
+	"card_shadow": "0px 4px 6px rgba(0,0,0,0.05)",
+	"input_bg": "#f9fafb",
+	"input_border": "#d1d5db",
+	"input_focus_ring": "#2B5CE6",
+	"primary_color": "#2B5CE6",
+	"primary_color_hover": "#1e40af",
+	"primary_text_color": "#ffffff",
+	"button_shadow": 0,
+	"navbar_bg": "#1a1a2e",
+	"sidebar_bg": "#16213e",
+	"sidebar_active_bg": "#1f2937",
+	"sidebar_text": "#9ca3af",
+	"sidebar_text_active": "#ffffff",
+}
+
+TRANSITION = "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+BUTTON_SHADOW = "0px 4px 14px rgba(0,0,0,0.2)"
+
+# Google-hosted fonts offered in the settings Select. Inter ships with Frappe's
+# desk, but the standalone login page still needs to load it.
+GOOGLE_FONTS = {"Inter", "Roboto", "Outfit", "Open Sans", "Lato"}
 
 
-@frappe.whitelist(allow_guest=True)
-def get_theme_vars():
-	"""
-	Returns the CSS configuration variables from Entre Theme Settings as a dict.
-	Called by theme.js on every desk page load and by the login renderer.
-	Marked allow_guest=True so it can be called on the unauthenticated login page.
-	"""
+def get_settings_values():
+	"""Return the raw settings merged over DEFAULTS (never raises)."""
+	values = dict(DEFAULTS)
+	values.update({"custom_css": "", "logo_url": "", "login_bg_url": "", "company_tagline": ""})
 	try:
 		settings = frappe.get_single("Entre Theme Settings")
-		return {
-			"font_family": settings.font_family or "Inter",
-			"enable_animations": 1 if settings.enable_animations else 0,
-			"page_bg": settings.page_bg or "#f3f4f6",
-			"border_radius": settings.border_radius or "8px",
-
-			"card_bg": settings.card_bg or "#ffffff",
-			"card_border": settings.card_border or "#e5e7eb",
-			"card_shadow": settings.card_shadow or "0px 4px 6px rgba(0,0,0,0.05)",
-
-			"input_bg": settings.input_bg or "#f9fafb",
-			"input_border": settings.input_border or "#d1d5db",
-			"input_focus_ring": settings.input_focus_ring or "#2B5CE6",
-
-			"primary_color": settings.primary_color or "#2B5CE6",
-			"primary_color_hover": settings.primary_color_hover or "#1e40af",
-			"primary_text_color": settings.primary_text_color or "#ffffff",
-			"button_shadow": "0px 4px 14px rgba(0,0,0,0.2)" if settings.button_shadow else "none",
-
-			"navbar_bg": settings.navbar_bg or "#1a1a2e",
-			"sidebar_bg": settings.sidebar_bg or "#16213e",
-			"sidebar_active_bg": settings.sidebar_active_bg or "#1f2937",
-			"sidebar_text": settings.sidebar_text or "#9ca3af",
-			"sidebar_text_active": settings.sidebar_text_active or "#ffffff",
-			
-			"custom_css": settings.custom_css or "",
-		}
 	except Exception:
-		frappe.log_error(title="Entre Theme: get_theme_vars error", message=frappe.get_traceback())
-		# Fallback defaults matches install.py
-		return {
-			"font_family": "Inter",
-			"enable_animations": 1,
-			"page_bg": "#f3f4f6",
-			"border_radius": "8px",
-			"card_bg": "#ffffff",
-			"card_border": "#e5e7eb",
-			"card_shadow": "0px 4px 6px rgba(0,0,0,0.05)",
-			"input_bg": "#f9fafb",
-			"input_border": "#d1d5db",
-			"input_focus_ring": "#2B5CE6",
-			"primary_color": "#2B5CE6",
-			"primary_color_hover": "#1e40af",
-			"primary_text_color": "#ffffff",
-			"button_shadow": "none",
-			"navbar_bg": "#1a1a2e",
-			"sidebar_bg": "#16213e",
-			"sidebar_active_bg": "#1f2937",
-			"sidebar_text": "#9ca3af",
-			"sidebar_text_active": "#ffffff",
-			"custom_css": "",
-		}
+		# DocType may not exist yet during install / migrate.
+		return values
+
+	for key in values:
+		value = settings.get(key)
+		if key in ("enable_animations", "button_shadow"):
+			if value is not None:
+				values[key] = 1 if value else 0
+		elif value:
+			values[key] = value
+	return values
+
+
+def get_css_vars(values=None):
+	"""Map settings to the exact CSS custom properties used by the stylesheets."""
+	v = values or get_settings_values()
+	return {
+		"--font-family": f"'{v['font_family']}', system-ui, -apple-system, sans-serif",
+		"--page-bg": v["page_bg"],
+		"--border-radius": v["border_radius"],
+		"--transition": TRANSITION if v["enable_animations"] else "none",
+		"--card-bg": v["card_bg"],
+		"--card-border": v["card_border"],
+		"--card-shadow": v["card_shadow"],
+		"--input-bg": v["input_bg"],
+		"--input-border": v["input_border"],
+		"--input-focus-ring": v["input_focus_ring"],
+		"--primary-color": v["primary_color"],
+		"--primary-hover": v["primary_color_hover"],
+		"--primary-text": v["primary_text_color"],
+		"--button-shadow": BUTTON_SHADOW if v["button_shadow"] else "none",
+		"--navbar-bg": v["navbar_bg"],
+		"--sidebar-bg": v["sidebar_bg"],
+		"--sidebar-active-bg": v["sidebar_active_bg"],
+		"--sidebar-text": v["sidebar_text"],
+		"--sidebar-text-active": v["sidebar_text_active"],
+	}
+
+
+def get_font_url(font_family):
+	if font_family not in GOOGLE_FONTS:
+		return ""
+	family = font_family.replace(" ", "+")
+	return f"https://fonts.googleapis.com/css2?family={family}:wght@400;500;600;700&display=swap"
+
+
+def get_theme_payload():
+	values = get_settings_values()
+	return {
+		"vars": get_css_vars(values),
+		"font_family": values["font_family"],
+		"font_url": get_font_url(values["font_family"]),
+		"custom_css": values["custom_css"],
+	}
 
 
 @frappe.whitelist()
-def apply_theme():
-	"""
-	Writes a runtime CSS file (theme_runtime.css) to the app's public/css folder,
-	reflecting the current Entre Theme Settings values.
-	"""
-	if not frappe.has_permission("Entre Theme Settings", "write"):
-		frappe.throw(_("Not permitted"), frappe.PermissionError)
+def get_theme_vars():
+	"""Theme payload for the desk. Used by theme.js to refresh after saving settings."""
+	return get_theme_payload()
 
-	settings = frappe.get_single("Entre Theme Settings")
 
-	transition_value = (
-		"all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
-		if settings.enable_animations
-		else "none"
-	)
-	
-	btn_shadow = "0px 4px 14px rgba(0,0,0,0.2)" if settings.button_shadow else "none"
-
-	css_content = (
-		"/* Auto-generated by Entre Theme — do not edit manually */\n"
-		":root {\n"
-		"\t/* Tipografia & Global */\n"
-		f"\t--font-family: '{settings.font_family or 'Inter'}', system-ui, -apple-system, sans-serif;\n"
-		f"\t--page-bg: {settings.page_bg or '#f3f4f6'};\n"
-		f"\t--border-radius: {settings.border_radius or '8px'};\n"
-		f"\t--transition: {transition_value};\n\n"
-		
-		"\t/* Cartões & Widgets */\n"
-		f"\t--card-bg: {settings.card_bg or '#ffffff'};\n"
-		f"\t--card-border: {settings.card_border or '#e5e7eb'};\n"
-		f"\t--card-shadow: {settings.card_shadow or '0px 4px 6px rgba(0,0,0,0.05)'};\n\n"
-		
-		"\t/* Formulários & Inputs */\n"
-		f"\t--input-bg: {settings.input_bg or '#f9fafb'};\n"
-		f"\t--input-border: {settings.input_border or '#d1d5db'};\n"
-		f"\t--input-focus-ring: {settings.input_focus_ring or '#2B5CE6'};\n\n"
-		
-		"\t/* Botões Principais */\n"
-		f"\t--primary-color: {settings.primary_color or '#2B5CE6'};\n"
-		f"\t--primary-hover: {settings.primary_color_hover or '#1e40af'};\n"
-		f"\t--primary-text: {settings.primary_text_color or '#ffffff'};\n"
-		f"\t--button-shadow: {btn_shadow};\n\n"
-		
-		"\t/* Barra Lateral e Topo */\n"
-		f"\t--navbar-bg: {settings.navbar_bg or '#1a1a2e'};\n"
-		f"\t--sidebar-bg: {settings.sidebar_bg or '#16213e'};\n"
-		f"\t--sidebar-active-bg: {settings.sidebar_active_bg or '#1f2937'};\n"
-		f"\t--sidebar-text: {settings.sidebar_text or '#9ca3af'};\n"
-		f"\t--sidebar-text-active: {settings.sidebar_text_active or '#ffffff'};\n"
-		"}\n"
-	)
-
-	try:
-		# frappe.get_app_path returns the Python package dir, e.g.:
-		#   /path/to/bench/apps/entre_theme/entre_theme
-		# public/ is now a sibling inside that same folder:
-		#   /path/to/bench/apps/entre_theme/entre_theme/public
-		app_module_path = frappe.get_app_path("entre_theme")
-		runtime_css_path = os.path.join(app_module_path, "public", "css", "theme_runtime.css")
-
-		with open(runtime_css_path, "w", encoding="utf-8") as f:
-			f.write(css_content)
-
-		frappe.msgprint(
-			_(
-				"Theme settings written to <code>theme_runtime.css</code>.<br>"
-				"In production, run <code>bench build --app entre_theme</code> "
-				"to compile the updated assets."
-			),
-			title=_("Tema Aplicado"),
-			indicator="green",
-		)
-
-	except OSError:
-		frappe.log_error(
-			title="Entre Theme: Failed to write theme_runtime.css",
-			message=frappe.get_traceback(),
-		)
-		frappe.throw(
-			_("Could not write the CSS file. Check the Error Log for details.")
-		)
+def boot_session(bootinfo):
+	"""boot_session hook: ship the theme with the desk boot so it applies with no extra request."""
+	bootinfo.entre_theme = get_theme_payload()

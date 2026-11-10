@@ -9,8 +9,9 @@
 	{# ── Inline root vars so they apply before external CSS loads ── #}
 	<style>
 		:root {
-			--primary-color: {{ primary_color or "#2B5CE6" }};
-			--font-family: '{{ font_family or "Inter" }}', system-ui, -apple-system, sans-serif;
+			{% for name, value in css_vars.items() %}
+			{{ name }}: {{ value }};
+			{% endfor %}
 			{% if login_bg_url %}
 			--login-bg: url("{{ login_bg_url }}");
 			{% else %}
@@ -21,40 +22,19 @@
 		}
 	</style>
 
-	{# ── Login stylesheet ── #}
 	<link rel="icon" type="image/x-icon" href="/assets/frappe/images/favicon.ico">
 
-	<script src="https://cdn.tailwindcss.com"></script>
-	<script>
-		tailwind.config = {
-			theme: {
-				extend: {
-					colors: {
-						primary: 'var(--primary-color, #2B5CE6)',
-						'primary-hover': 'var(--primary-hover, #1e40af)',
-						'card-bg': 'var(--card-bg, #ffffff)',
-						'card-border': 'var(--card-border, #e5e7eb)',
-						'input-bg': 'var(--input-bg, #f8fafc)',
-						'input-border': 'var(--input-border, #e2e8f0)',
-						'input-focus': 'var(--input-focus-ring, #2B5CE6)',
-					},
-					borderRadius: {
-						theme: 'var(--border-radius, 16px)',
-					},
-					boxShadow: {
-						card: 'var(--card-shadow, 0 12px 48px rgba(0, 0, 0, 0.10))',
-						btn: 'var(--button-shadow, 0 4px 14px color-mix(in srgb, var(--primary-color, #2B5CE6) 30%, transparent))',
-					}
-				}
-			}
-		}
-	</script>
+	{% if font_url %}
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="{{ font_url }}">
+	{% endif %}
 
-	<!-- Inject backend-provided theme configuration (Custom CSS/CSS Variables) -->
+	{# ── Login stylesheet (this is a standalone page, so web_include_css never applies) ── #}
+	<link rel="stylesheet" href="/assets/entre_theme/css/login.css">
+
 	{% if custom_css %}
 	<style>{{ custom_css }}</style>
 	{% endif %}
-	<style id="theme-vars"></style>
 </head>
 
 <body class="entre-login-page">
@@ -264,9 +244,12 @@
 			if (err) { showError(err.message); return; }
 
 			if (data.message === "Logged In") {
-				// Redirect — respect next_url if present
+				// Redirect — respect redirect-to, but only to same-site paths
+				// (blocks open redirects like ?redirect-to=https://evil.com or //evil.com).
 				var params = new URLSearchParams(window.location.search);
-				window.location.href = params.get("redirect-to") || data.home_page || "/app";
+				var target = params.get("redirect-to") || "";
+				if (!/^\/(?![\/\\])/.test(target)) target = "";
+				window.location.href = target || data.home_page || "/app";
 			} else {
 				var msg = (data.exc_type === "AuthenticationError")
 					? "{{ _('Credenciais inválidas. Verifique o email e a palavra-passe.') }}"

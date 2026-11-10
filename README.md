@@ -18,8 +18,17 @@ bench build --app entre_theme
 
 - Custom Login Page
 - Re-themed desk navbar and sidebar
-- Admin settings page (Entre Theme Settings)
+- Admin settings page (Entre Theme Settings) — changes apply on save, no rebuild needed
 - Mobile responsive
+
+## How it works
+
+- Defaults live in `public/css/theme.css` as CSS custom properties.
+- Saved settings are sent with the desk boot payload (`boot_session` hook) and
+  applied by `public/js/theme.js` as inline variables on `<html>`.
+- The login page (`/login`) is served by a custom page renderer that inlines the
+  same variables server-side.
+- Fonts other than Inter are loaded from Google Fonts.
 
 ## License
 

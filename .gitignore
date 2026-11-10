@@ -13,8 +13,6 @@ yarn.lock
 package.json
 package-lock.json
 
-# Frappe runtime-generated CSS (seeded by after_install, not tracked)
-entre_theme/public/css/theme_runtime.css
 
 # IDE / OS
 .idea/
