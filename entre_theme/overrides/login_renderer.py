@@ -1,4 +1,5 @@
 import frappe
+from frappe import _
 from werkzeug.wrappers import Response
 
 from entre_theme.api import get_css_vars, get_font_url, get_login_theme, get_settings_values
@@ -68,6 +69,7 @@ class LoginPageRenderer:
 			except Exception:
 				favicon = ""
 
+		company_name = get_company_name()
 		css_vars = get_css_vars(values)
 		login_style, style_vars, style_classes = get_login_theme(values)
 		css_vars.update(style_vars)
@@ -78,7 +80,12 @@ class LoginPageRenderer:
 			"favicon": favicon or "/assets/frappe/images/favicon.ico",
 			"login_style": login_style,
 			"login_classes": " ".join(style_classes),
-			"company_name": get_company_name(),
+			"company_name": company_name,
+			"login_headline": values["login_headline"],
+			"login_subtext": values["login_subtext"],
+			"type_text": values["login_type_text"] or company_name or "Entre",
+			# Moldura uses the welcome text as the form title
+			"title_text": values["login_headline"] if login_style == "frame" else _("Iniciar sessão"),
 			"font_url": get_font_url(values["font_family"]),
 			"custom_css": values["custom_css"],
 			"logo_url": logo_url,

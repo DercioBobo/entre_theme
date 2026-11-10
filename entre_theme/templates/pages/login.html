@@ -50,15 +50,34 @@
 	{% endif %}
 {%- endmacro -%}
 
+{# ── Decorative layers: each style shows the ones it uses (login.css) ── #}
+<div class="et-deco" aria-hidden="true">
+	<div class="et-aurora"><span></span><span></span><span></span></div>
+	<div class="et-shapes"><span class="et-shape-1"></span><span class="et-shape-2"></span></div>
+	<div class="et-type-bg">{{ type_text }}</div>
+</div>
+
 <div class="et-login-shell">
 
-{# ── Brand panel: shown by the Dividido and Painel Lateral styles on wide screens ── #}
+{# ── Brand panel: shown by the panel styles on wide screens ── #}
 <aside class="et-brand-panel">
+	{# Moldura without an image: a landscape drawn in the accent colours #}
+	<div class="et-scene" aria-hidden="true">
+		<span class="et-scene-sun"></span>
+		<span class="et-scene-hill et-scene-hill-1"></span>
+		<span class="et-scene-hill et-scene-hill-2"></span>
+		<span class="et-scene-hill et-scene-hill-3"></span>
+	</div>
 	<div class="et-brand-logo">{{ brand_mark() }}</div>
 	<p class="et-brand-tagline">{{ company_tagline or company_name }}</p>
+	<div class="et-brand-hero">
+		<h2 class="et-brand-headline">{{ login_headline }}</h2>
+		{% if login_subtext %}<p class="et-brand-sub">{{ login_subtext }}</p>{% endif %}
+	</div>
 	{% if company_tagline and company_name %}
 	<p class="et-brand-foot">{{ company_name }}</p>
 	{% endif %}
+	{% if company_tagline %}<p class="et-brand-caption">{{ company_tagline }}</p>{% endif %}
 </aside>
 
 <main class="et-login-wrapper">
@@ -67,7 +86,7 @@
 		{# ── Header: logo, title, tagline ── #}
 		<header class="et-login-header">
 			<div class="et-header-logo">{{ brand_mark() }}</div>
-			<h1 class="et-title">{{ _("Iniciar sessão") }}</h1>
+			<h1 class="et-title">{{ title_text }}</h1>
 			{% if company_tagline %}
 			<p class="et-tagline">{{ company_tagline }}</p>
 			{% endif %}
@@ -80,21 +99,25 @@
 		<form id="et-form-login" class="et-form" novalidate>
 			<div class="et-field-group">
 				<label for="login_email" class="et-label">{{ _("Email ou Utilizador") }}</label>
-				<input
-					type="text"
-					id="login_email"
-					name="usr"
-					class="et-input"
-					placeholder="{{ _('name@empresa.com') }}"
-					autocomplete="username"
-					autofocus
-					required
-				>
+				<div class="et-input-wrapper">
+					<span class="et-field-icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+					<input
+						type="text"
+						id="login_email"
+						name="usr"
+						class="et-input"
+						placeholder="{{ _('name@empresa.com') }}"
+						autocomplete="username"
+						autofocus
+						required
+					>
+				</div>
 			</div>
 
 			<div class="et-field-group">
 				<label for="login_password" class="et-label">{{ _("Palavra-passe") }}</label>
-				<div class="et-input-wrapper">
+				<div class="et-input-wrapper et-has-toggle">
+					<span class="et-field-icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg></span>
 					<input
 						type="password"
 						id="login_password"
@@ -129,15 +152,18 @@
 
 			<div class="et-field-group">
 				<label for="forgot_email" class="et-label">{{ _("Email") }}</label>
-				<input
-					type="email"
-					id="forgot_email"
-					name="user"
-					class="et-input"
-					placeholder="{{ _('name@empresa.com') }}"
-					autocomplete="email"
-					required
-				>
+				<div class="et-input-wrapper">
+					<span class="et-field-icon" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg></span>
+					<input
+						type="email"
+						id="forgot_email"
+						name="user"
+						class="et-input"
+						placeholder="{{ _('name@empresa.com') }}"
+						autocomplete="email"
+						required
+					>
+				</div>
 			</div>
 
 			<button type="submit" id="et-btn-forgot" class="et-btn-primary">{{ _("Repor Palavra-passe") }}</button>

@@ -28,6 +28,17 @@ DEFAULTS = {
 	"login_minimal_line": 1,
 	"login_night_bg": "#0d0f13",
 	"login_night_glow": 1,
+	"login_headline": "Bem-vindo de volta",
+	"login_subtext": "Entre com os seus dados para continuar a trabalhar.",
+	"login_focus_logo_size": "Grande",
+	"login_frame_illustration": 1,
+	"login_duo_shapes": 1,
+	"login_aurora_tone": "Escuro",
+	"login_aurora_speed": "Lento",
+	"login_type_style": "Contorno",
+	"login_field_icons": 0,
+	"login_field_shape": "Padrão",
+	"login_button_shape": "Padrão",
 	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",
@@ -78,6 +89,8 @@ OPTIONAL = (
 	"company_tagline", "workspace_watermark", "print_watermark",
 	# Login style colours that default to something derived (accent, auto)
 	"login_overlay_color", "login_panel_text", "login_vivid_second", "login_night_glow_color",
+	"login_frame_bg", "login_duo_shape_1", "login_duo_shape_2", "login_aurora_color_1",
+	"login_aurora_color_2", "login_type_text", "login_type_bg", "login_type_color",
 ) + AREA_COLORS
 
 CHECKS = {
@@ -103,12 +116,15 @@ CHECKS = {
 	"login_panel_tagline",
 	"login_minimal_line",
 	"login_night_glow",
+	"login_frame_illustration",
+	"login_duo_shapes",
+	"login_field_icons",
 }
 
 # Text fields with a default where empty is a real choice ("off"). Their
 # defaults are written into the settings by install.seed_defaults, so an
 # empty value here means the user cleared it.
-ALLOW_EMPTY = {"print_title_item_group", "print_footer_note", "print_items_total_label"}
+ALLOW_EMPTY = {"print_title_item_group", "print_footer_note", "print_items_total_label", "login_subtext"}
 
 TRANSITION = "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
 
@@ -254,8 +270,16 @@ LOGIN_STYLES = {
 	"Vidro": "glass",
 	"Minimalista": "minimal",
 	"Noite": "night",
+	"Imersivo": "immersive",
+	"Foco": "focus",
+	"Moldura": "frame",
+	"Cartão Duplo": "duo",
+	"Aurora": "aurora",
+	"Tipográfico": "type",
 }
 GLASS_BLUR = {"Leve": "12px", "Médio": "24px", "Forte": "40px"}
+FOCUS_LOGO = {"Médio": "56px", "Grande": "80px", "Enorme": "112px"}
+AURORA_SPEED = {"Lento": "36s", "Normal": "22s", "Rápido": "12s"}
 
 
 def _percent(value, default):
@@ -276,12 +300,21 @@ def get_login_theme(v):
 		"--glass-blur": GLASS_BLUR.get(v["login_glass_blur"], "24px"),
 		"--glass-alpha": f"{_percent(v['login_glass_opacity'], 58)}%",
 		"--night-bg": v["login_night_bg"],
+		"--focus-logo-h": FOCUS_LOGO.get(v["login_focus_logo_size"], "80px"),
+		"--aurora-speed": AURORA_SPEED.get(v["login_aurora_speed"], "36s"),
 	}
 	for var, field in (
 		("--overlay-color", "login_overlay_color"),
 		("--panel-text-custom", "login_panel_text"),
 		("--vivid-second-custom", "login_vivid_second"),
 		("--glow-color", "login_night_glow_color"),
+		("--frame-bg-custom", "login_frame_bg"),
+		("--shape-1-custom", "login_duo_shape_1"),
+		("--shape-2-custom", "login_duo_shape_2"),
+		("--aurora-1-custom", "login_aurora_color_1"),
+		("--aurora-2-custom", "login_aurora_color_2"),
+		("--type-bg-custom", "login_type_bg"),
+		("--type-color-custom", "login_type_color"),
 	):
 		if v[field]:
 			css[var] = v[field]
@@ -301,6 +334,14 @@ def get_login_theme(v):
 		"et-minimal-center": v["login_minimal_align"] == "Centro",
 		"et-no-topline": not v["login_minimal_line"],
 		"et-no-glow": not v["login_night_glow"],
+		"et-no-illustration": not v["login_frame_illustration"],
+		"et-no-shapes": not v["login_duo_shapes"],
+		"et-aurora-light": v["login_aurora_tone"] == "Claro",
+		"et-aurora-still": v["login_aurora_speed"] == "Parado",
+		"et-type-filled": v["login_type_style"] == "Preenchido",
+		"et-icons": v["login_field_icons"],
+		"et-field-pill": v["login_field_shape"] == "Pílula",
+		"et-btn-pill": v["login_button_shape"] == "Pílula",
 	}
 	return style, css, [name for name, on in flags.items() if on]
 

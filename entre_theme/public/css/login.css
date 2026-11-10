@@ -16,6 +16,12 @@
      glass    frosted card over the image or an accent mesh
      minimal  no card, left-aligned column, underlined inputs
      night    dark, accent glowing from below
+     immersive full photo, big welcome text, form on the image
+     focus    centred logo, see-through pill fields
+     frame    rounded frame: form + framed image or drawn landscape
+     duo      split card over large geometric shapes
+     aurora   drifting ribbons of colour behind a frosted card
+     type     the company name, huge, as the background
    ============================================================= */
 
 .entre-login-page {
@@ -188,7 +194,7 @@
 	appearance: none;
 }
 
-.et-input-wrapper .et-input {
+.et-has-toggle .et-input {
 	padding-right: 44px;
 }
 
@@ -205,6 +211,7 @@
 /* ── Password toggle ── */
 .et-pwd-toggle {
 	position: absolute;
+	z-index: 1;
 	right: 12px;
 	top: 50%;
 	transform: translateY(-50%);
@@ -808,7 +815,7 @@
 	font-size: 15px;
 }
 
-.et-login--minimal .et-input-wrapper .et-input {
+.et-login--minimal .et-has-toggle .et-input {
 	padding-right: 36px;
 }
 
@@ -916,6 +923,958 @@
 
 .et-login--night .et-btn-social:hover {
 	background: color-mix(in srgb, var(--night-field) 90%, white);
+}
+
+
+/* =============================================================
+   Shared pieces used by the newer styles
+   ============================================================= */
+
+/* Decorative layers (aurora, shapes, big type): hidden unless a style uses them */
+.et-deco {
+	position: fixed;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.et-deco > *,
+.et-brand-hero,
+.et-brand-caption,
+.et-scene {
+	display: none;
+}
+
+/* Visually hidden, still read by screen readers */
+.et-sr-label {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	margin: 0;
+}
+
+/* ── Formulário: icons in the fields, pill shapes ── */
+.et-field-icon {
+	display: none;
+	position: absolute;
+	left: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--ink-muted);
+	pointer-events: none;
+	transition: color 0.15s;
+	/* Above inputs that create their own layer (backdrop-filter) */
+	z-index: 1;
+}
+
+.et-input-wrapper:focus-within .et-field-icon {
+	color: var(--accent-ink);
+}
+
+.et-icons .et-field-icon,
+.et-login--focus .et-field-icon {
+	display: flex;
+}
+
+.et-icons .et-input {
+	padding-left: 42px;
+}
+
+.et-field-pill .et-input {
+	border-radius: 999px;
+	padding-left: 20px;
+}
+
+.et-field-pill.et-icons .et-input {
+	padding-left: 46px;
+}
+
+.et-field-pill.et-icons .et-field-icon {
+	left: 18px;
+}
+
+.et-btn-pill .et-btn-primary,
+.et-btn-pill .et-btn-social {
+	border-radius: 999px;
+}
+
+/* Minimalista keeps its underlined fields; icons sit on the line */
+.et-login--minimal.et-icons .et-input {
+	padding-left: 28px;
+}
+
+.et-login--minimal .et-field-icon {
+	left: 2px;
+}
+
+.et-login--minimal.et-field-pill .et-input {
+	border-radius: 0;
+}
+
+
+/* =============================================================
+   Imersivo — the photo fills the screen; welcome text on one
+   side, the form straight on the image on the other
+   ============================================================= */
+.et-login--immersive {
+	--panel-text: var(--panel-text-custom, #ffffff);
+	background: linear-gradient(150deg, var(--accent-deep) 0%, #0b0f19 100%);
+	color: var(--panel-text);
+}
+
+.et-login--immersive.et-has-image {
+	background: var(--login-bg-image) center / cover;
+}
+
+.et-login--immersive .et-brand-panel {
+	--panel-text: var(--panel-text-custom, #ffffff);
+}
+
+/* Dark film by default, lighter than the 80% used for coloured films */
+.et-has-image.et-overlay:is(.et-login--immersive, .et-login--focus)::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	background: var(--overlay-color, #0b0f19);
+	opacity: calc(var(--overlay-opacity, 0.8) * 0.75);
+	pointer-events: none;
+}
+
+.et-login--immersive .et-login-card {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+.et-login--immersive .et-title {
+	display: block;
+	color: var(--panel-text);
+	font-size: 30px;
+	text-align: center;
+}
+
+.et-login--immersive .et-tagline,
+.et-login--immersive .et-label,
+.et-login--immersive .et-hint,
+.et-login--immersive .et-success-msg {
+	color: color-mix(in srgb, var(--panel-text) 88%, transparent);
+}
+
+.et-login--immersive .et-input {
+	background: #ffffff;
+	border-color: transparent;
+}
+
+.et-login--immersive .et-link-btn,
+.et-login--immersive .et-back-btn {
+	color: var(--panel-text);
+	opacity: 0.9;
+}
+
+.et-login--immersive .et-btn-primary {
+	box-shadow: 0 16px 34px -14px rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 900px) {
+	.et-login--immersive .et-login-shell {
+		gap: 6vw;
+		padding: 0 7vw;
+		box-sizing: border-box;
+	}
+
+	.et-login--immersive .et-brand-panel {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		flex: 1;
+		max-width: 620px;
+		color: var(--panel-text);
+	}
+
+	.et-login--immersive .et-brand-logo,
+	.et-login--immersive .et-brand-tagline,
+	.et-login--immersive .et-brand-foot,
+	.et-login--immersive .et-brand-panel::after,
+	.et-login--immersive .et-header-logo,
+	.et-login--immersive .et-tagline {
+		display: none;
+	}
+
+	.et-login--immersive .et-brand-hero {
+		display: block;
+	}
+
+	.et-login--immersive .et-brand-headline {
+		margin: 0 0 20px;
+		font-size: clamp(48px, 5.6vw, 88px);
+		font-weight: 800;
+		line-height: 0.98;
+		letter-spacing: -0.035em;
+		max-width: 9ch;
+	}
+
+	.et-login--immersive .et-brand-sub {
+		margin: 0;
+		font-size: 16px;
+		line-height: 1.6;
+		max-width: 42ch;
+		opacity: 0.85;
+	}
+
+	.et-login--immersive .et-login-wrapper {
+		flex: 0 0 400px;
+		padding: 0;
+	}
+}
+
+
+/* =============================================================
+   Foco — centred logo, see-through pill fields over the photo
+   ============================================================= */
+.et-login--focus {
+	background: linear-gradient(160deg, var(--accent-deep) 0%, #111827 100%);
+	color: #ffffff;
+}
+
+.et-login--focus.et-has-image {
+	background: var(--login-bg-image) center / cover;
+}
+
+.et-login--focus .et-login-wrapper {
+	max-width: 400px;
+}
+
+.et-login--focus .et-login-card {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+.et-login--focus .et-login-header {
+	margin-bottom: 44px;
+}
+
+.et-login--focus .et-header-logo {
+	margin-bottom: 18px;
+}
+
+.et-login--focus .et-logo {
+	max-height: var(--focus-logo-h, 80px);
+	max-width: 80%;
+}
+
+.et-login--focus .et-monogram {
+	width: var(--focus-logo-h, 80px);
+	height: var(--focus-logo-h, 80px);
+	border-radius: 30%;
+	font-size: calc(var(--focus-logo-h, 80px) * 0.46);
+	box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.6);
+}
+
+.et-login--focus .et-tagline {
+	color: rgba(255, 255, 255, 0.82);
+	font-size: 15px;
+}
+
+/* The placeholders carry the meaning; labels stay for screen readers */
+.et-login--focus .et-label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+.et-login--focus .et-field-group {
+	margin-bottom: 14px;
+}
+
+.et-login--focus .et-input {
+	height: 54px;
+	border-radius: 999px;
+	padding-left: 50px;
+	background: rgba(255, 255, 255, 0.14);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	color: #ffffff;
+	font-size: 15px;
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+}
+
+.et-login--focus .et-input::placeholder {
+	color: rgba(255, 255, 255, 0.68);
+}
+
+.et-login--focus .et-input:focus {
+	background: rgba(255, 255, 255, 0.22);
+	border-color: rgba(255, 255, 255, 0.6);
+	box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12);
+}
+
+.et-login--focus .et-field-icon,
+.et-login--focus .et-input-wrapper:focus-within .et-field-icon {
+	left: 21px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.et-login--focus .et-pwd-toggle {
+	right: 20px;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.et-login--focus .et-pwd-toggle:hover {
+	color: #ffffff;
+}
+
+.et-login--focus .et-forgot-row {
+	justify-content: center;
+	margin: 4px 0 18px;
+}
+
+.et-login--focus .et-link-btn,
+.et-login--focus .et-back-btn,
+.et-login--focus .et-hint,
+.et-login--focus .et-success-msg,
+.et-login--focus .et-divider {
+	color: rgba(255, 255, 255, 0.85);
+}
+
+.et-login--focus .et-btn-primary {
+	height: 56px;
+	border-radius: 999px;
+	font-size: 16px;
+	box-shadow: 0 18px 36px -16px color-mix(in srgb, var(--accent) 80%, black);
+}
+
+.et-login--focus .et-btn-social {
+	background: rgba(255, 255, 255, 0.12);
+	border-color: rgba(255, 255, 255, 0.2);
+	color: #ffffff;
+	border-radius: 999px;
+}
+
+.et-login--focus .et-divider::before,
+.et-login--focus .et-divider::after {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+
+/* =============================================================
+   Moldura — a large rounded frame on a coloured background:
+   the form on one side, a framed image (or a drawn landscape)
+   with the tagline as a caption on the other
+   ============================================================= */
+.et-login--frame {
+	--frame-shell: color-mix(in srgb, var(--card-bg, #ffffff) 93%, #64748b);
+	background: var(--frame-bg-custom, linear-gradient(135deg, var(--accent-deep) 0%, color-mix(in oklch, var(--accent-deep) 70%, #4c1d95) 100%));
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	box-sizing: border-box;
+}
+
+@supports (color: oklch(from red l c h)) {
+	.et-login--frame {
+		background: var(--frame-bg-custom, linear-gradient(135deg,
+			oklch(from var(--accent) calc(l - 0.2) calc(c * 0.75) h) 0%,
+			oklch(from var(--accent) calc(l - 0.26) calc(c * 0.6) calc(h - 45)) 100%));
+	}
+}
+
+.et-login--frame .et-login-shell {
+	width: 100%;
+	max-width: 1180px;
+	min-height: auto;
+	background: var(--frame-shell);
+	border-radius: 36px;
+	padding: 14px;
+	box-sizing: border-box;
+	box-shadow: 0 50px 100px -40px rgba(0, 0, 0, 0.55);
+}
+
+.et-login--frame .et-login-card {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 28px 10px;
+}
+
+.et-login--frame .et-title {
+	display: block;
+	font-size: 34px;
+	letter-spacing: -0.025em;
+	margin-bottom: 6px;
+}
+
+.et-login--frame .et-header-logo {
+	margin-bottom: 22px;
+}
+
+.et-login--frame .et-logo {
+	max-height: 40px;
+}
+
+.et-login--frame .et-input {
+	background: var(--card-bg, #ffffff);
+	border-color: transparent;
+	height: 52px;
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.et-login--frame .et-btn-primary {
+	height: 52px;
+	box-shadow: 0 16px 30px -14px color-mix(in srgb, var(--accent) 75%, black);
+}
+
+@media (min-width: 900px) {
+	.et-login--frame .et-login-shell {
+		min-height: min(760px, calc(100vh - 48px));
+		align-items: stretch;
+	}
+
+	.et-login--frame .et-login-wrapper {
+		flex: 1;
+		max-width: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 32px;
+	}
+
+	.et-login--frame .et-login-card {
+		width: 100%;
+		max-width: 360px;
+	}
+
+	.et-login--frame .et-brand-panel {
+		display: block;
+		position: relative;
+		overflow: hidden;
+		flex: 0 0 52%;
+		border-radius: 26px;
+		background: linear-gradient(170deg, var(--accent) 0%, var(--accent-deep) 100%);
+	}
+
+	.et-login--frame.et-has-image .et-brand-panel {
+		background: var(--login-bg-image) center / cover;
+	}
+
+	/* The panel shows only the picture and the caption */
+	.et-login--frame .et-brand-logo,
+	.et-login--frame .et-brand-tagline,
+	.et-login--frame .et-brand-hero,
+	.et-login--frame .et-brand-foot,
+	.et-login--frame .et-brand-panel::after {
+		display: none;
+	}
+
+	.et-login--frame .et-brand-caption {
+		display: block;
+		position: absolute;
+		left: 40px;
+		right: 40px;
+		bottom: 40px;
+		margin: 0;
+		color: #ffffff;
+		font-size: 24px;
+		font-weight: 500;
+		line-height: 1.3;
+		max-width: 22ch;
+		text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+	}
+
+	/* Over a photo: shade the bottom so the caption reads */
+	.et-login--frame.et-has-image.et-overlay .et-brand-panel::before {
+		display: block;
+		background: linear-gradient(to top, var(--overlay-color, #000000) 0%, transparent 62%);
+		opacity: var(--overlay-opacity, 0.8);
+	}
+
+	/* No photo: a landscape drawn in the accent colours */
+	.et-login--frame:not(.et-has-image):not(.et-no-illustration) .et-scene {
+		display: block;
+	}
+}
+
+.et-scene {
+	position: absolute;
+	inset: 0;
+	--hill-1: color-mix(in oklch, var(--accent) 82%, black);
+	--hill-2: color-mix(in oklch, var(--accent) 62%, black);
+	--hill-3: color-mix(in oklch, var(--accent) 42%, black);
+	background: linear-gradient(to bottom,
+		color-mix(in oklch, var(--accent) 30%, white) 0%,
+		color-mix(in oklch, var(--accent) 62%, white) 48%,
+		var(--accent) 100%);
+}
+
+@supports (color: oklch(from red l c h)) {
+	.et-scene {
+		--hill-1: oklch(from var(--accent) calc(l - 0.07) c calc(h - 14));
+		--hill-2: oklch(from var(--accent) calc(l - 0.19) calc(c * 0.9) calc(h - 32));
+		--hill-3: oklch(from var(--accent) calc(l - 0.33) calc(c * 0.7) calc(h - 52));
+	}
+}
+
+.et-scene-sun {
+	position: absolute;
+	width: 30%;
+	aspect-ratio: 1;
+	left: 14%;
+	top: 20%;
+	border-radius: 50%;
+	background: radial-gradient(circle, #fffaf0 0 52%, rgba(255, 250, 240, 0.55) 58%, rgba(255, 250, 240, 0) 72%);
+}
+
+.et-scene-hill {
+	position: absolute;
+	border-radius: 50%;
+}
+
+.et-scene-hill-1 {
+	left: -30%;
+	width: 115%;
+	height: 58%;
+	bottom: -24%;
+	background: var(--hill-1);
+}
+
+.et-scene-hill-2 {
+	right: -40%;
+	width: 120%;
+	height: 50%;
+	bottom: -26%;
+	background: var(--hill-2);
+}
+
+.et-scene-hill-3 {
+	left: -15%;
+	width: 135%;
+	height: 36%;
+	bottom: -22%;
+	background: var(--hill-3);
+}
+
+
+/* =============================================================
+   Cartão Duplo — a split card (welcome panel + form) floating
+   over large geometric shapes
+   ============================================================= */
+.et-login--duo {
+	--shape-1: var(--shape-1-custom, color-mix(in oklch, var(--accent) 45%, #facc15));
+	--shape-2: var(--shape-2-custom, color-mix(in oklch, var(--accent) 45%, #ef4444));
+	background: var(--page-bg, #f1f3f2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	box-sizing: border-box;
+}
+
+@supports (color: oklch(from red l c h)) {
+	.et-login--duo {
+		--shape-1: var(--shape-1-custom, oklch(from var(--accent) calc(l + 0.14) c calc(h + 55)));
+		--shape-2: var(--shape-2-custom, oklch(from var(--accent) calc(l - 0.02) c calc(h - 50)));
+	}
+}
+
+.et-login--duo .et-shapes {
+	display: block;
+	position: absolute;
+	inset: 0;
+}
+
+.et-login--duo.et-no-shapes .et-shapes {
+	display: none;
+}
+
+.et-shape-1 {
+	position: absolute;
+	width: 48vmin;
+	aspect-ratio: 1;
+	left: -14vmin;
+	bottom: -18vmin;
+	border-radius: 50%;
+	background: var(--shape-1);
+}
+
+.et-shape-2 {
+	position: absolute;
+	width: 42vmin;
+	height: 42vmin;
+	right: -4vmin;
+	top: -6vmin;
+	background: var(--shape-2);
+	clip-path: polygon(28% 0, 100% 0, 100% 78%);
+}
+
+.et-login--duo .et-login-shell {
+	width: 100%;
+	max-width: 940px;
+	min-height: auto;
+	background: var(--card-bg, #ffffff);
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 40px 80px -30px rgba(15, 23, 42, 0.35);
+}
+
+.et-login--duo .et-login-card {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+.et-login--duo .et-title {
+	display: block;
+	color: var(--accent-ink);
+	font-size: 30px;
+	text-align: center;
+}
+
+.et-login--duo .et-input {
+	background: color-mix(in srgb, var(--card-bg, #ffffff) 93%, #64748b);
+	border-color: transparent;
+}
+
+@media (min-width: 900px) {
+	.et-login--duo .et-login-shell {
+		min-height: 560px;
+		align-items: stretch;
+	}
+
+	.et-login--duo .et-login-wrapper {
+		flex: 1;
+		max-width: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 56px 48px;
+	}
+
+	.et-login--duo .et-login-card {
+		width: 100%;
+		max-width: 340px;
+		padding: 0;
+	}
+
+	.et-login--duo .et-header-logo,
+	.et-login--duo .et-tagline {
+		display: none;
+	}
+
+	.et-login--duo .et-brand-panel {
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		flex: 0 0 40%;
+		box-sizing: border-box;
+		padding: 56px 44px;
+		color: var(--panel-text);
+		background: linear-gradient(155deg, var(--accent) 0%, var(--accent-deep) 100%);
+	}
+
+	.et-login--duo .et-brand-tagline,
+	.et-login--duo .et-brand-foot {
+		display: none;
+	}
+
+	.et-login--duo .et-brand-logo {
+		position: absolute;
+		top: 24px;
+		left: 24px;
+	}
+
+	.et-login--duo .et-brand-logo .et-logo {
+		max-height: 30px;
+		padding: 6px 10px;
+		border-radius: 8px;
+	}
+
+	.et-login--duo .et-brand-logo .et-monogram {
+		width: 36px;
+		height: 36px;
+		font-size: 16px;
+		border-radius: 10px;
+	}
+
+	.et-login--duo .et-brand-hero {
+		display: block;
+	}
+
+	.et-login--duo .et-brand-headline {
+		margin: 0 0 14px;
+		font-size: 34px;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+	}
+
+	.et-login--duo .et-brand-sub {
+		margin: 0 auto;
+		font-size: 15px;
+		line-height: 1.6;
+		max-width: 28ch;
+		opacity: 0.9;
+	}
+
+	/* Two soft diamonds instead of the ring */
+	.et-login--duo .et-brand-panel::before,
+	.et-login--duo .et-brand-panel::after {
+		display: block;
+		inset: auto;
+		border: none;
+		border-radius: 8px;
+		transform: rotate(45deg);
+		background: color-mix(in srgb, var(--panel-text) 16%, transparent);
+	}
+
+	.et-login--duo .et-brand-panel::before {
+		width: 64px;
+		height: 64px;
+		top: 14%;
+		right: 20%;
+	}
+
+	.et-login--duo .et-brand-panel::after {
+		width: 38px;
+		height: 38px;
+		bottom: 16%;
+		right: 14%;
+		left: auto;
+	}
+}
+
+
+/* =============================================================
+   Aurora — ribbons of colour drifting slowly behind a frosted card
+   ============================================================= */
+.et-login--aurora {
+	--aurora-1: var(--accent);
+	--aurora-2: var(--aurora-1-custom, color-mix(in oklch, var(--accent) 50%, #22d3ee));
+	--aurora-3: var(--aurora-2-custom, color-mix(in oklch, var(--accent) 50%, #a855f7));
+	--ink: #f1f5f9;
+	--ink-soft: #a3adbd;
+	background: #070a14;
+	color-scheme: dark;
+}
+
+@supports (color: oklch(from red l c h)) {
+	.et-login--aurora {
+		--aurora-2: var(--aurora-1-custom, oklch(from var(--accent) l c calc(h + 75)));
+		--aurora-3: var(--aurora-2-custom, oklch(from var(--accent) l c calc(h - 70)));
+	}
+}
+
+.et-login--aurora .et-aurora {
+	display: block;
+	position: absolute;
+	inset: -25%;
+	opacity: 0.8;
+}
+
+/* Soft-edged blobs (gradients, not filters): cheap to animate */
+.et-aurora span {
+	position: absolute;
+	width: 70vmax;
+	height: 46vmax;
+	border-radius: 50%;
+	background: radial-gradient(closest-side, var(--blob) 0%, color-mix(in srgb, var(--blob) 45%, transparent) 45%, transparent 100%);
+	animation: et-aurora-a var(--aurora-speed, 36s) ease-in-out infinite alternate;
+	will-change: transform;
+}
+
+.et-aurora span:nth-child(1) { --blob: var(--aurora-1); top: 10%; left: 5%; }
+.et-aurora span:nth-child(2) {
+	--blob: var(--aurora-2);
+	top: 30%;
+	right: 0;
+	animation-name: et-aurora-b;
+	animation-delay: calc(var(--aurora-speed, 36s) * -0.4);
+}
+.et-aurora span:nth-child(3) {
+	--blob: var(--aurora-3);
+	bottom: 5%;
+	left: 25%;
+	animation-delay: calc(var(--aurora-speed, 36s) * -0.7);
+}
+
+@keyframes et-aurora-a {
+	0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+	50% { transform: translate(14vw, 9vh) rotate(24deg) scale(1.15); }
+	100% { transform: translate(-8vw, 16vh) rotate(-12deg) scale(0.92); }
+}
+
+@keyframes et-aurora-b {
+	0% { transform: translate(0, 0) rotate(0deg) scale(1.05); }
+	50% { transform: translate(-16vw, -6vh) rotate(-20deg) scale(0.9); }
+	100% { transform: translate(6vw, -14vh) rotate(16deg) scale(1.12); }
+}
+
+.et-aurora-still .et-aurora span {
+	animation: none;
+}
+
+.et-login--aurora .et-login-card {
+	background: rgba(12, 15, 26, 0.5);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
+	-webkit-backdrop-filter: blur(22px) saturate(150%);
+	backdrop-filter: blur(22px) saturate(150%);
+}
+
+.et-login--aurora .et-title {
+	display: block;
+	color: var(--ink);
+	font-size: 22px;
+	margin-top: 4px;
+}
+
+.et-login--aurora .et-tagline,
+.et-login--aurora .et-hint,
+.et-login--aurora .et-back-btn,
+.et-login--aurora .et-success-msg,
+.et-login--aurora .et-divider {
+	color: var(--ink-soft);
+}
+
+.et-login--aurora .et-label {
+	color: #d4dae3;
+}
+
+.et-login--aurora .et-input {
+	background: rgba(255, 255, 255, 0.07);
+	border-color: rgba(255, 255, 255, 0.14);
+	color: var(--ink);
+}
+
+.et-login--aurora .et-input:focus {
+	background: rgba(255, 255, 255, 0.11);
+	border-color: var(--input-focus-ring, var(--accent));
+}
+
+.et-login--aurora .et-input::placeholder {
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.et-login--aurora .et-link-btn {
+	color: var(--accent);
+}
+
+.et-login--aurora .et-btn-social {
+	background: rgba(255, 255, 255, 0.07);
+	border-color: rgba(255, 255, 255, 0.14);
+	color: var(--ink);
+}
+
+/* Light tone */
+.et-login--aurora.et-aurora-light {
+	--ink: #0f172a;
+	--ink-soft: #475569;
+	background: #f6f7fb;
+	color-scheme: light;
+}
+
+.et-login--aurora.et-aurora-light .et-aurora {
+	opacity: 0.6;
+}
+
+.et-login--aurora.et-aurora-light .et-login-card {
+	background: rgba(255, 255, 255, 0.6);
+	border-color: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 30px 70px -30px rgba(15, 23, 42, 0.3);
+}
+
+.et-login--aurora.et-aurora-light .et-label {
+	color: #374151;
+}
+
+.et-login--aurora.et-aurora-light .et-input {
+	background: rgba(255, 255, 255, 0.7);
+	border-color: rgba(255, 255, 255, 0.9);
+	color: #1e293b;
+}
+
+.et-login--aurora.et-aurora-light .et-input::placeholder {
+	color: #94a3b8;
+}
+
+.et-login--aurora.et-aurora-light .et-link-btn {
+	color: var(--accent-ink);
+}
+
+.et-login--aurora.et-aurora-light .et-btn-social {
+	background: rgba(255, 255, 255, 0.7);
+	border-color: rgba(255, 255, 255, 0.9);
+	color: #374151;
+}
+
+
+/* =============================================================
+   Tipográfico — the company name, huge, as the background;
+   the form overlaps it
+   ============================================================= */
+.et-login--type {
+	--type-bg: var(--type-bg-custom, color-mix(in oklch, var(--accent) 12%, white));
+	--type-color: var(--type-color-custom, var(--accent));
+	background: var(--type-bg);
+}
+
+.et-login--type .et-type-bg {
+	display: block;
+	position: absolute;
+	left: -0.04em;
+	right: 0;
+	bottom: -0.1em;
+	margin: 0;
+	font-size: clamp(110px, 21vw, 380px);
+	font-weight: 800;
+	line-height: 0.84;
+	letter-spacing: -0.06em;
+	color: transparent;
+	-webkit-text-stroke: 2px var(--type-color);
+	overflow-wrap: anywhere;
+	user-select: none;
+}
+
+.et-login--type.et-type-filled .et-type-bg {
+	color: var(--type-color);
+	-webkit-text-stroke: 0;
+	opacity: 0.16;
+}
+
+.et-login--type .et-login-card {
+	border: none;
+	border-radius: calc(var(--border-radius, 12px) + 6px);
+	box-shadow:
+		0 2px 4px rgba(15, 23, 42, 0.05),
+		0 40px 80px -30px color-mix(in oklch, var(--type-color) 45%, black);
+}
+
+.et-login--type .et-title {
+	display: block;
+	font-size: 24px;
+	margin-top: 4px;
+}
+
+@media (min-width: 900px) {
+	.et-login--type .et-login-shell {
+		justify-content: flex-end;
+		align-items: flex-start;
+		padding: 12vh 9vw 0 0;
+		box-sizing: border-box;
+	}
 }
 
 
