@@ -91,6 +91,13 @@
   "column_break_login_form",
   "login_field_shape",
   "login_button_shape",
+  "section_login_notice",
+  "login_notice",
+  "login_notice_type",
+  "login_notice_until",
+  "column_break_login_notice",
+  "login_footer_links",
+  "login_copyright",
   "tab_colors",
   "section_global_colors",
   "primary_color",
@@ -121,6 +128,15 @@
   "print_accent",
   "column_break_colors_print",
   "print_dark_color",
+  "section_dark_mode",
+  "dark_theme",
+  "dark_primary_color",
+  "dark_navbar_bg",
+  "column_break_dark_mode",
+  "dark_page_bg",
+  "dark_surface_color",
+  "dark_text_color",
+  "dark_border_color",
   "tab_appearance",
   "navbar_style",
   "navbar_logo_position",
@@ -158,6 +174,29 @@
   "column_break_workspace",
   "show_workspace_watermark",
   "workspace_watermark",
+  "tab_extras",
+  "splash_screen",
+  "splash_logo",
+  "splash_logo_size",
+  "column_break_splash",
+  "splash_indicator",
+  "splash_text",
+  "splash_bg",
+  "section_emails",
+  "email_theme",
+  "email_style",
+  "email_show_logo",
+  "email_logo",
+  "preview_email",
+  "column_break_emails",
+  "email_accent",
+  "email_bg",
+  "email_footer_text",
+  "section_web",
+  "web_theme",
+  "web_error_logo",
+  "column_break_web",
+  "web_hide_chrome",
   "tab_print",
   "manage_print_style",
   "set_default_print_style",
@@ -731,6 +770,52 @@
    "default": "Padrão"
   },
   {
+   "fieldname": "section_login_notice",
+   "fieldtype": "Section Break",
+   "label": "Aviso e Rodapé",
+   "depends_on": "custom_login",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "login_notice",
+   "fieldtype": "Small Text",
+   "label": "Aviso",
+   "description": "Por cima do formulário, ex.: «Sistema em manutenção no sábado, das 8h às 12h.» Vazio: sem aviso."
+  },
+  {
+   "fieldname": "login_notice_type",
+   "fieldtype": "Select",
+   "label": "Tipo de Aviso",
+   "options": "Informação\nAviso\nImportante",
+   "default": "Informação",
+   "depends_on": "login_notice",
+   "description": "Informação: azul. Aviso: laranja. Importante: vermelho."
+  },
+  {
+   "fieldname": "login_notice_until",
+   "fieldtype": "Datetime",
+   "label": "Mostrar Até",
+   "depends_on": "login_notice",
+   "description": "Depois desta data o aviso desaparece sozinho. Vazio: até o apagar."
+  },
+  {
+   "fieldname": "column_break_login_notice",
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
+  },
+  {
+   "fieldname": "login_footer_links",
+   "fieldtype": "Small Text",
+   "label": "Ligações no Rodapé",
+   "description": "Uma por linha, no formato Texto | endereço. Ex.: Suporte | https://exemplo.co.mz/suporte. Vazio: sem ligações."
+  },
+  {
+   "fieldname": "login_copyright",
+   "fieldtype": "Check",
+   "label": "Mostrar © Ano e Nome da Empresa",
+   "default": "0"
+  },
+  {
    "fieldname": "tab_colors",
    "fieldtype": "Tab Break",
    "label": "Cores"
@@ -905,6 +990,66 @@
    "fieldtype": "Color",
    "label": "Cor Escura (cabeçalhos e totais)",
    "description": "Vazio: usa a Cor Escura global."
+  },
+  {
+   "fieldname": "section_dark_mode",
+   "fieldtype": "Section Break",
+   "label": "Modo Escuro",
+   "description": "Quando um utilizador escolhe o tema escuro do Frappe (menu do utilizador → Alternar Tema)."
+  },
+  {
+   "fieldname": "dark_theme",
+   "fieldtype": "Select",
+   "label": "No Modo Escuro",
+   "options": "Tema com Cores Escuras\nFrappe Escuro Original",
+   "default": "Tema com Cores Escuras",
+   "description": "Frappe Escuro Original: no modo escuro o tema não se aplica (só o logótipo e o ícone ficam)."
+  },
+  {
+   "fieldname": "dark_primary_color",
+   "fieldtype": "Color",
+   "label": "Cor Principal no Modo Escuro",
+   "depends_on": "eval:doc.dark_theme!='Frappe Escuro Original'",
+   "description": "Vazio: a mesma Cor Principal. Útil quando a cor é escura de mais para fundos escuros."
+  },
+  {
+   "fieldname": "dark_navbar_bg",
+   "fieldtype": "Color",
+   "label": "Fundo da Barra Superior",
+   "depends_on": "eval:doc.dark_theme!='Frappe Escuro Original'",
+   "description": "Vazio: o Fundo dos Cartões escuro."
+  },
+  {
+   "fieldname": "column_break_dark_mode",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dark_page_bg",
+   "fieldtype": "Color",
+   "label": "Fundo da Página",
+   "depends_on": "eval:doc.dark_theme!='Frappe Escuro Original'",
+   "description": "Vazio: #161616."
+  },
+  {
+   "fieldname": "dark_surface_color",
+   "fieldtype": "Color",
+   "label": "Fundo dos Cartões",
+   "depends_on": "eval:doc.dark_theme!='Frappe Escuro Original'",
+   "description": "Vazio: #1f1f1f."
+  },
+  {
+   "fieldname": "dark_text_color",
+   "fieldtype": "Color",
+   "label": "Texto",
+   "depends_on": "eval:doc.dark_theme!='Frappe Escuro Original'",
+   "description": "Vazio: #f3f4f6."
+  },
+  {
+   "fieldname": "dark_border_color",
+   "fieldtype": "Color",
+   "label": "Contornos",
+   "depends_on": "eval:doc.dark_theme!='Frappe Escuro Original'",
+   "description": "Vazio: branco a 8%."
   },
   {
    "fieldname": "tab_appearance",
@@ -1149,6 +1294,160 @@
    "description": "Vazio: usa o Logótipo."
   },
   {
+   "fieldname": "tab_extras",
+   "fieldtype": "Tab Break",
+   "label": "Carregamento, Emails e Site"
+  },
+  {
+   "fieldname": "splash_screen",
+   "fieldtype": "Check",
+   "label": "Ecrã de Carregamento com a Marca",
+   "default": "1",
+   "description": "O ecrã que aparece enquanto o sistema abre. Desligado: o do Frappe."
+  },
+  {
+   "fieldname": "splash_logo",
+   "fieldtype": "Attach Image",
+   "label": "Logótipo",
+   "depends_on": "splash_screen",
+   "description": "Vazio: o logótipo da barra superior (Geral)."
+  },
+  {
+   "fieldname": "splash_logo_size",
+   "fieldtype": "Select",
+   "label": "Tamanho do Logótipo",
+   "options": "Pequeno\nMédio\nGrande",
+   "default": "Médio",
+   "depends_on": "splash_screen"
+  },
+  {
+   "fieldname": "column_break_splash",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "splash_indicator",
+   "fieldtype": "Select",
+   "label": "Indicador",
+   "options": "Barra\nCírculo\nPulsar\nNenhum",
+   "default": "Barra",
+   "depends_on": "splash_screen",
+   "description": "Barra: uma faixa a correr. Círculo: a rodar. Pulsar: o logótipo pulsa."
+  },
+  {
+   "fieldname": "splash_text",
+   "fieldtype": "Data",
+   "label": "Texto",
+   "depends_on": "splash_screen",
+   "description": "Por baixo do logótipo, ex.: A preparar o seu espaço… Vazio: sem texto."
+  },
+  {
+   "fieldname": "splash_bg",
+   "fieldtype": "Color",
+   "label": "Fundo",
+   "depends_on": "splash_screen",
+   "description": "Vazio: o Fundo da Página (no modo escuro, o fundo escuro)."
+  },
+  {
+   "fieldname": "section_emails",
+   "fieldtype": "Section Break",
+   "label": "Emails",
+   "description": "O aspecto de todos os emails que o sistema envia (facturas, notificações, palavras-passe…)."
+  },
+  {
+   "fieldname": "email_theme",
+   "fieldtype": "Check",
+   "label": "Emails com a Marca",
+   "default": "0",
+   "description": "Desligado: o email do Frappe, sem alterações. Pré-visualize antes de ligar."
+  },
+  {
+   "fieldname": "email_style",
+   "fieldtype": "Select",
+   "label": "Estilo",
+   "options": "Cartão\nSimples",
+   "default": "Cartão",
+   "depends_on": "email_theme",
+   "description": "Cartão: o email num cartão sobre um fundo suave. Simples: fundo branco com a linha da cor principal."
+  },
+  {
+   "fieldname": "email_show_logo",
+   "fieldtype": "Check",
+   "label": "Mostrar o Logótipo",
+   "default": "1",
+   "depends_on": "email_theme"
+  },
+  {
+   "fieldname": "email_logo",
+   "fieldtype": "Attach Image",
+   "label": "Logótipo do Email",
+   "depends_on": "eval:doc.email_theme && doc.email_show_logo",
+   "description": "Vazio: o logótipo da Conta de Email (se tiver) ou o Logótipo (Geral). Use PNG ou JPG: muitos programas de email não mostram SVG."
+  },
+  {
+   "fieldname": "preview_email",
+   "fieldtype": "Button",
+   "label": "Pré-visualizar Email"
+  },
+  {
+   "fieldname": "column_break_emails",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email_accent",
+   "fieldtype": "Color",
+   "label": "Cor de Destaque",
+   "depends_on": "email_theme",
+   "description": "Vazio: a Cor Principal."
+  },
+  {
+   "fieldname": "email_bg",
+   "fieldtype": "Color",
+   "label": "Fundo",
+   "depends_on": "eval:doc.email_theme && doc.email_style=='Cartão'",
+   "description": "Vazio: o Fundo da Página."
+  },
+  {
+   "fieldname": "email_footer_text",
+   "fieldtype": "Small Text",
+   "label": "Texto do Rodapé",
+   "depends_on": "email_theme",
+   "description": "Ex.: morada, NUIT, telefone. Aparece em todos os emails, por cima do rodapé da Conta de Email."
+  },
+  {
+   "fieldname": "section_web",
+   "fieldtype": "Section Break",
+   "label": "Site, Portal e Páginas de Erro",
+   "description": "Páginas fora do sistema: erros (404, sem permissão), mensagens, /me e formulários web."
+  },
+  {
+   "fieldname": "web_theme",
+   "fieldtype": "Select",
+   "label": "Aplicar o Tema a",
+   "options": "Desligado\nPáginas de Erro e Mensagens\nTodo o Site e Portal",
+   "default": "Páginas de Erro e Mensagens",
+   "description": "Desligado: como o Frappe. Páginas de Erro e Mensagens: só esses cartões. Todo o Site e Portal: também botões, campos, fonte e barra do site."
+  },
+  {
+   "fieldname": "web_error_logo",
+   "fieldtype": "Check",
+   "label": "Logótipo nas Páginas de Erro",
+   "default": "1",
+   "depends_on": "eval:doc.web_theme!='Desligado'",
+   "description": "O logótipo no cartão e em vez da ilustração do 404."
+  },
+  {
+   "fieldname": "column_break_web",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "web_hide_chrome",
+   "fieldtype": "Check",
+   "label": "Esconder o Cabeçalho e o Rodapé do Site nas Páginas de Erro",
+   "default": "0",
+   "depends_on": "eval:doc.web_theme!='Desligado'",
+   "description": "Só o cartão no ecrã, sem o menu do site."
+  },
+  {
    "fieldname": "tab_print",
    "fieldtype": "Tab Break",
    "label": "Impressão"
@@ -1355,7 +1654,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-11 14:00:00.000000",
+ "modified": "2026-11-10 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",

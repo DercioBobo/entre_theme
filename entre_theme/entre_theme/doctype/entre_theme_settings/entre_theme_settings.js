@@ -9,6 +9,8 @@ const PREVIEW_FIELDS = [
 	'text_color', 'border_color', 'border_radius', 'font_family', 'primary_buttons',
 	'navbar_accent', 'navbar_bg', 'navbar_text', 'sidebar_accent', 'sidebar_text',
 	'workspace_accent', 'workspace_card_bg', 'login_accent', 'login_card_bg',
+	'dark_theme', 'dark_primary_color', 'dark_page_bg', 'dark_surface_color', 'dark_text_color',
+	'dark_border_color', 'dark_navbar_bg',
 ];
 
 // Layout fields: never exported / imported
@@ -49,83 +51,121 @@ function accentText(doc, accent) {
 }
 
 // ── Live preview ───────────────────────────────────────────────────
+const mix = (c, pct, base) => `color-mix(in srgb, ${c} ${pct}%, ${base || 'transparent'})`;
+
+// Colours of the mini desk: the light theme, or the dark one ("Modo Escuro")
+function deskColors(d, dark) {
+	const accent = (dark && d.dark_primary_color) || d.primary_color || '#ec932c';
+	if (!dark) {
+		const surface = d.surface_color || '#ffffff';
+		const text = d.text_color || '#0f172a';
+		return {
+			accent, surface, text,
+			page: d.page_bg || '#f5f6f8',
+			border: d.border_color || '#edeef1',
+			navBg: d.navbar_bg || surface,
+			navText: d.navbar_text || text,
+			sideText: d.sidebar_text || text,
+			wsCard: d.workspace_card_bg || surface,
+			ink: (c) => `color-mix(in oklch, ${c} 62%, black)`,
+		};
+	}
+	const surface = d.dark_surface_color || '#1f1f1f';
+	const text = d.dark_text_color || '#f3f4f6';
+	return {
+		accent, surface, text,
+		page: d.dark_page_bg || '#161616',
+		border: d.dark_border_color || 'rgba(255,255,255,.08)',
+		navBg: d.dark_navbar_bg || surface,
+		navText: text,
+		sideText: text,
+		wsCard: surface,
+		ink: (c) => `color-mix(in oklch, ${c} 72%, white)`,
+	};
+}
+
+function miniDesk(d, c, radius) {
+	const navAccent = d.navbar_accent || c.accent;
+	const sideAccent = d.sidebar_accent || c.accent;
+	const wsAccent = d.workspace_accent || c.accent;
+	const darkButtons = d.primary_buttons === 'Escuro (Frappe)';
+	const btnBg = darkButtons ? '#171717' : c.accent;
+	const btnText = darkButtons ? '#ffffff' : accentText(d, c.accent);
+	return `
+		<div style="flex:2 1 360px;border:1px solid ${c.border};border-radius:12px;overflow:hidden;background:${c.page};color:${c.text}">
+			<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${c.navBg};
+				border-top:2px solid ${navAccent};border-bottom:1px solid ${c.border};color:${c.navText}">
+				<span style="width:18px;height:18px;border-radius:5px;background:${navAccent}"></span>
+				<span style="opacity:.8">Vendas › Clientes</span>
+				<span style="margin-left:auto;background:${mix(c.navText, 6, c.navBg)};border-radius:8px;padding:3px 10px;opacity:.75">Pesquisar…</span>
+			</div>
+			<div style="display:flex;gap:12px;padding:12px">
+				<div style="width:110px;color:${c.sideText}">
+					<div style="padding:5px 8px;border-radius:8px;background:${mix(sideAccent, 12)};font-weight:600;
+						box-shadow:inset 3px 0 0 ${sideAccent}">Início</div>
+					<div style="padding:5px 8px;opacity:.75">Vendas</div>
+					<div style="padding:5px 8px;opacity:.75">Stock</div>
+				</div>
+				<div style="flex:1;display:flex;flex-direction:column;gap:10px">
+					<div style="background:${c.wsCard};border:1px solid ${c.border};border-radius:${radius};padding:10px 12px">
+						<div style="font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+							<span style="width:3px;height:12px;border-radius:2px;background:${wsAccent}"></span>Contabilidade
+						</div>
+						<div style="display:flex;align-items:center;gap:8px">
+							<span style="width:22px;height:22px;border-radius:7px;background:${mix(wsAccent, 14)};
+								color:${c.ink(wsAccent)};display:inline-flex;align-items:center;justify-content:center">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+									stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
+							Factura de Venda
+						</div>
+					</div>
+					<div style="display:flex;align-items:center;gap:8px">
+						<span style="background:${btnBg};color:${btnText};border-radius:8px;padding:5px 12px;font-weight:600">Guardar</span>
+						<span style="background:${c.surface};border:1px solid ${c.border};border-radius:8px;padding:5px 12px">Cancelar</span>
+						<span style="background:${mix(c.accent, 12)};color:${c.ink(c.accent)};border-radius:999px;padding:2px 9px;font-weight:500">Activo</span>
+					</div>
+				</div>
+			</div>
+		</div>`;
+}
+
+function miniLogin(d, radius) {
+	const accent = d.login_accent || d.primary_color || '#ec932c';
+	const card = d.login_card_bg || d.surface_color || '#ffffff';
+	const text = d.text_color || '#0f172a';
+	const border = d.border_color || '#edeef1';
+	const ink = `color-mix(in oklch, ${accent} 62%, black)`;
+	return `
+		<div style="flex:1 1 200px;border:1px solid ${border};border-radius:12px;display:flex;align-items:center;justify-content:center;
+			padding:18px;color:${text};background:linear-gradient(135deg, ${mix(accent, 10, 'white')}, ${mix(accent, 20, 'white')})">
+			<div style="width:100%;max-width:200px;background:${card};border-radius:${radius};padding:14px;
+				box-shadow:0 10px 30px -12px rgba(15,23,42,.25)">
+				<div style="width:28px;height:28px;border-radius:8px;background:${accent};color:${accentText(d, accent)};
+					display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 10px">E</div>
+				<div style="height:22px;border-radius:6px;background:${mix(text, 6, card)};margin-bottom:6px"></div>
+				<div style="height:22px;border-radius:6px;background:${mix(text, 6, card)};margin-bottom:8px"></div>
+				<div style="text-align:right;color:${ink};margin-bottom:8px">Esqueceu a palavra-passe?</div>
+				<div style="background:${accent};color:${accentText(d, accent)};border-radius:8px;padding:6px;
+					text-align:center;font-weight:600">Entrar</div>
+			</div>
+		</div>`;
+}
+
 function renderPreview(frm) {
 	const field = frm.fields_dict.colors_preview;
 	if (!field) return;
 	const d = frm.doc;
-	const accent = d.primary_color || '#ec932c';
-	const surface = d.surface_color || '#ffffff';
-	const text = d.text_color || '#0f172a';
-	const border = d.border_color || '#edeef1';
-	const page = d.page_bg || '#f5f6f8';
 	const radius = d.border_radius || '12px';
 	const font = !d.font_family || d.font_family === 'Padrão do Frappe'
 		? 'system-ui, sans-serif' : `'${d.font_family}', system-ui, sans-serif`;
-	const navAccent = d.navbar_accent || accent;
-	const navBg = d.navbar_bg || surface;
-	const navText = d.navbar_text || text;
-	const sideAccent = d.sidebar_accent || accent;
-	const sideText = d.sidebar_text || text;
-	const wsAccent = d.workspace_accent || accent;
-	const wsCard = d.workspace_card_bg || surface;
-	const loginAccent = d.login_accent || accent;
-	const loginCard = d.login_card_bg || surface;
-	const darkButtons = d.primary_buttons === 'Escuro (Frappe)';
-	const btnBg = darkButtons ? '#171717' : accent;
-	const btnText = darkButtons ? '#ffffff' : accentText(d, accent);
-	const mix = (c, pct, base) => `color-mix(in srgb, ${c} ${pct}%, ${base || 'transparent'})`;
-	const ink = (c) => `color-mix(in oklch, ${c} 62%, black)`;
+	const darkOn = d.dark_theme !== 'Frappe Escuro Original';
+	const label = (text) => `<div style="flex-basis:100%;font-size:11px;opacity:.6;margin-top:4px">${text}</div>`;
 
 	field.$wrapper.html(`
-		<div style="display:flex;gap:16px;flex-wrap:wrap;font-family:${font};font-size:12px;color:${text}">
-			<div style="flex:2 1 360px;border:1px solid ${border};border-radius:12px;overflow:hidden;background:${page}">
-				<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${navBg};
-					border-top:2px solid ${navAccent};border-bottom:1px solid ${border};color:${navText}">
-					<span style="width:18px;height:18px;border-radius:5px;background:${navAccent}"></span>
-					<span style="opacity:.8">Vendas › Clientes</span>
-					<span style="margin-left:auto;background:${mix(navText, 6, navBg)};border-radius:8px;padding:3px 10px;opacity:.75">Pesquisar…</span>
-				</div>
-				<div style="display:flex;gap:12px;padding:12px">
-					<div style="width:110px;color:${sideText}">
-						<div style="padding:5px 8px;border-radius:8px;background:${mix(sideAccent, 12)};font-weight:600;
-							box-shadow:inset 3px 0 0 ${sideAccent}">Início</div>
-						<div style="padding:5px 8px;opacity:.75">Vendas</div>
-						<div style="padding:5px 8px;opacity:.75">Stock</div>
-					</div>
-					<div style="flex:1;display:flex;flex-direction:column;gap:10px">
-						<div style="background:${wsCard};border:1px solid ${border};border-radius:${radius};padding:10px 12px">
-							<div style="font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px">
-								<span style="width:3px;height:12px;border-radius:2px;background:${wsAccent}"></span>Contabilidade
-							</div>
-							<div style="display:flex;align-items:center;gap:8px">
-								<span style="width:22px;height:22px;border-radius:7px;background:${mix(wsAccent, 14)};
-									color:${ink(wsAccent)};display:inline-flex;align-items:center;justify-content:center">
-									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-										stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span>
-								Factura de Venda
-							</div>
-						</div>
-						<div style="display:flex;align-items:center;gap:8px">
-							<span style="background:${btnBg};color:${btnText};border-radius:8px;padding:5px 12px;font-weight:600">Guardar</span>
-							<span style="background:${surface};border:1px solid ${border};border-radius:8px;padding:5px 12px">Cancelar</span>
-							<span style="background:${mix(accent, 12)};color:${ink(accent)};border-radius:999px;padding:2px 9px;font-weight:500">Activo</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div style="flex:1 1 200px;border:1px solid ${border};border-radius:12px;display:flex;align-items:center;justify-content:center;
-				padding:18px;background:linear-gradient(135deg, ${mix(loginAccent, 10, 'white')}, ${mix(loginAccent, 20, 'white')})">
-				<div style="width:100%;max-width:200px;background:${loginCard};border-radius:${radius};padding:14px;
-					box-shadow:0 10px 30px -12px rgba(15,23,42,.25)">
-					<div style="width:28px;height:28px;border-radius:8px;background:${loginAccent};color:${accentText(d, loginAccent)};
-						display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 10px">E</div>
-					<div style="height:22px;border-radius:6px;background:${mix(text, 6, loginCard)};margin-bottom:6px"></div>
-					<div style="height:22px;border-radius:6px;background:${mix(text, 6, loginCard)};margin-bottom:8px"></div>
-					<div style="text-align:right;color:${ink(loginAccent)};margin-bottom:8px">Esqueceu a palavra-passe?</div>
-					<div style="background:${loginAccent};color:${accentText(d, loginAccent)};border-radius:8px;padding:6px;
-						text-align:center;font-weight:600">Entrar</div>
-				</div>
-			</div>
+		<div style="display:flex;gap:16px;flex-wrap:wrap;font-family:${font};font-size:12px">
+			${miniDesk(d, deskColors(d, false), radius)}
+			${miniLogin(d, radius)}
+			${darkOn ? label(__('Modo Escuro')) + miniDesk(d, deskColors(d, true), radius) : ''}
 		</div>`);
 }
 
@@ -142,6 +182,12 @@ function checkContrast(frm) {
 	const body = contrast(d.text_color, d.surface_color);
 	if (body !== null && body < 4.5) {
 		warnings.push(__('O Texto sobre os Cartões é difícil de ler (contraste {0}:1).', [body.toFixed(1)]));
+	}
+	if (d.dark_theme !== 'Frappe Escuro Original' && (d.dark_text_color || d.dark_surface_color)) {
+		const dark = contrast(d.dark_text_color || '#f3f4f6', d.dark_surface_color || '#1f1f1f');
+		if (dark !== null && dark < 4.5) {
+			warnings.push(__('No Modo Escuro, o Texto sobre os Cartões é difícil de ler (contraste {0}:1).', [dark.toFixed(1)]));
+		}
 	}
 	if (warnings.length) {
 		frm.set_intro(warnings.join('<br>'), 'orange');
@@ -240,6 +286,29 @@ const events = {
 						indicator: 'blue',
 					});
 				});
+			},
+		});
+	},
+
+	preview_email(frm) {
+		frappe.call({
+			method: 'entre_theme.emails.preview_email',
+			args: { values: themeValues(frm) },
+			freeze: true,
+			callback(r) {
+				if (!r.message) return;
+				const dialog = new frappe.ui.Dialog({
+					title: __('Pré-visualização do Email'),
+					size: 'large',
+					fields: [{ fieldtype: 'HTML', fieldname: 'preview' }],
+				});
+				// Sandboxed: the email's HTML can't run scripts or reach the desk
+				const frame = document.createElement('iframe');
+				frame.style.cssText = 'width:100%;height:70vh;border:0;border-radius:8px;background:#fff';
+				frame.setAttribute('sandbox', '');
+				frame.srcdoc = r.message;
+				dialog.fields_dict.preview.$wrapper.empty().append(frame);
+				dialog.show();
 			},
 		});
 	},

@@ -4,6 +4,35 @@ from werkzeug.wrappers import Response
 
 from entre_theme.api import get_css_vars, get_font_url, get_login_theme, get_settings_values
 
+NOTICE_TYPES = {"Informação": "info", "Aviso": "warning", "Importante": "alert"}
+SAFE_LINK = ("http://", "https://", "mailto:", "tel:", "/")
+
+
+def get_login_notice(v):
+	"""The notice above the form, or None (empty, or past "Mostrar até")."""
+	text = (v["login_notice"] or "").strip()
+	if not text:
+		return None
+	if v["login_notice_until"]:
+		try:
+			if frappe.utils.now_datetime() > frappe.utils.get_datetime(v["login_notice_until"]):
+				return None
+		except Exception:
+			pass
+	return {"text": text, "type": NOTICE_TYPES.get(v["login_notice_type"], "info")}
+
+
+def get_footer_links(v):
+	""""Texto | endereço" per line; lines without a safe address are skipped."""
+	links = []
+	for line in (v["login_footer_links"] or "").splitlines():
+		label, sep, url = line.partition("|")
+		label, url = label.strip(), url.strip()
+		if sep and label and url.lower().startswith(SAFE_LINK) and not url.startswith("//"):
+			links.append({"label": label, "url": url})
+	return links
+
+
 def get_company_name():
 	"""The name shown in the brand panel and as the monogram when there's no logo."""
 	for getter in (
@@ -94,6 +123,12 @@ class LoginPageRenderer:
 			"logo_url": logo_url,
 			"login_bg_url": values["login_bg_url"],
 			"company_tagline": values["company_tagline"],
+			"login_notice": get_login_notice(values),
+			"footer_links": get_footer_links(values),
+			"copyright": (
+				f"© {frappe.utils.now_datetime().year} {company_name}".strip()
+				if values["login_copyright"] else ""
+			),
 		})
 
 		html = frappe.render_template("entre_theme/templates/pages/login.html", context)

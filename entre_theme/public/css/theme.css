@@ -47,17 +47,19 @@
 	--et-ink-mix: 62%;
 }
 
-/* Frappe's dark theme: same layout, dark surfaces. Only the accent
-   colours carry over from the settings. */
+/* Frappe's dark theme: same layout, dark surfaces. The colours come from
+   "Modo Escuro" in the settings (--et-*-dark, set by theme.js only while
+   the dark theme is on); unset ones use these built-in shades. With
+   "Frappe Escuro Original", theme.js drops every class and variable. */
 :root[data-theme="dark"] {
-	--et-page-bg: #161616;
-	--et-card-bg: #1f1f1f;
-	--et-text: #f3f4f6;
-	--et-border: rgba(255, 255, 255, 0.08);
-	--et-navbar-solid-bg: #1f1f1f;
-	--et-navbar-bg: rgba(23, 23, 23, 0.72);
-	--et-search-bg: #262626;
-	--et-search-focus-bg: #1f1f1f;
+	--et-page-bg: var(--et-page-bg-dark, #161616);
+	--et-card-bg: var(--et-surface-dark, #1f1f1f);
+	--et-text: var(--et-text-dark, #f3f4f6);
+	--et-border: var(--et-border-dark, rgba(255, 255, 255, 0.08));
+	--et-navbar-solid-bg: var(--et-navbar-bg-dark, var(--et-card-bg));
+	--et-navbar-bg: color-mix(in srgb, var(--et-navbar-solid-bg) 72%, transparent);
+	--et-search-bg: color-mix(in srgb, var(--et-text) 6%, var(--et-card-bg));
+	--et-search-focus-bg: var(--et-card-bg);
 	--et-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
 	--et-ink-base: white;
 	--et-ink-mix: 72%;

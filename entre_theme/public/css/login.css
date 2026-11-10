@@ -141,6 +141,56 @@
 }
 
 /* ── Success message ── */
+/* Notice from the settings: tinted from its own colour, so it reads on
+   light and dark cards alike */
+.et-notice {
+	--notice: #2563eb;
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	padding: 10px 14px;
+	margin-bottom: 18px;
+	border-radius: var(--border-radius, 8px);
+	border: 1px solid color-mix(in srgb, var(--notice) 30%, transparent);
+	background: color-mix(in srgb, var(--notice) 10%, transparent);
+	font-size: 13px;
+	line-height: 1.5;
+	text-align: left;
+}
+.et-notice span {
+	white-space: pre-line;
+}
+.et-notice svg {
+	flex: none;
+	margin-top: 2px;
+	color: var(--notice);
+}
+.et-notice--warning { --notice: #d97706; }
+.et-notice--alert { --notice: #dc2626; }
+
+/* Footer links and © inside the card */
+.et-login-footer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 6px 16px;
+	margin-top: 22px;
+	padding-top: 16px;
+	border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+	font-size: 12px;
+	opacity: 0.75;
+}
+.et-login-footer a {
+	color: inherit;
+	text-decoration: none;
+}
+.et-login-footer a:hover {
+	text-decoration: underline;
+}
+.et-copyright {
+	opacity: 0.85;
+}
+
 .et-success-msg {
 	text-align: center;
 	padding: 20px 0 10px;

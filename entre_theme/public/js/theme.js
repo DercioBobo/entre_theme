@@ -158,18 +158,61 @@
 		});
 	}
 
+	// ── Dark mode ─────────────────────────────────────────────────
+	// Frappe sets data-theme="dark" on <html> (also when "Automático"
+	// resolves to dark). The theme then layers the dark colours over the
+	// light ones, or, with "Frappe Escuro Original", steps aside entirely.
+	var lastPayload = null;
+	var appliedVars = [];
+	var themeObserver = null;
+
+	function isDark() {
+		return document.documentElement.getAttribute("data-theme") === "dark";
+	}
+
+	function watchTheme() {
+		if (themeObserver) return;
+		themeObserver = new MutationObserver(function () {
+			if (lastPayload) apply(lastPayload);
+		});
+		themeObserver.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["data-theme"]
+		});
+	}
+
 	function apply(payload) {
 		if (!payload || !payload.vars) return;
+		lastPayload = payload;
+		watchTheme();
 		var root = document.documentElement;
-		Object.keys(payload.vars).forEach(function (name) {
-			// "" = not set (e.g. an area colour that follows the global one)
-			if (payload.vars[name]) root.style.setProperty(name, payload.vars[name]);
-			else root.style.removeProperty(name);
+		var off = isDark() && payload.dark_off;
+		var vars = {};
+		if (!off) {
+			Object.keys(payload.vars).forEach(function (name) { vars[name] = payload.vars[name]; });
+			if (isDark() && payload.vars_dark) {
+				Object.keys(payload.vars_dark).forEach(function (name) { vars[name] = payload.vars_dark[name]; });
+			}
+		}
+		// Drop variables from an earlier apply that no longer have a value
+		appliedVars.forEach(function (name) {
+			if (!vars[name]) root.style.removeProperty(name);
 		});
+		appliedVars = [];
+		Object.keys(vars).forEach(function (name) {
+			// "" = not set (e.g. an area colour that follows the global one)
+			if (vars[name]) {
+				root.style.setProperty(name, vars[name]);
+				appliedVars.push(name);
+			} else {
+				root.style.removeProperty(name);
+			}
+		});
+		// Branding (logo, favicon) stays in every mode
 		applyLogo(payload.app_logo);
 		applyFavicon(payload.favicon);
-		setBodyClasses(payload.body_classes);
-		loadFont(payload);
+		setBodyClasses(off ? [] : payload.body_classes);
+		loadFont(off ? {} : payload);
 		setStyleTag("entre-custom-css", payload.custom_css);
 	}
 

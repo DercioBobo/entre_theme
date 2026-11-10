@@ -41,6 +41,22 @@ DEFAULTS = {
 	"login_field_icons": 0,
 	"login_field_shape": "Padrão",
 	"login_button_shape": "Padrão",
+	"login_notice_type": "Informação",
+	"login_copyright": 0,
+	# Modo escuro
+	"dark_theme": "Tema com Cores Escuras",
+	# Ecrã de carregamento
+	"splash_screen": 1,
+	"splash_logo_size": "Médio",
+	"splash_indicator": "Barra",
+	# Emails
+	"email_theme": 0,
+	"email_style": "Cartão",
+	"email_show_logo": 1,
+	# Site, portal e páginas de erro
+	"web_theme": "Páginas de Erro e Mensagens",
+	"web_error_logo": 1,
+	"web_hide_chrome": 0,
 	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",
@@ -105,6 +121,12 @@ AREA_COLORS = (
 	"print_accent", "print_dark_color",
 )
 
+# Dark-mode colours: empty means the built-in dark shade (see theme.css).
+DARK_COLORS = (
+	"dark_primary_color", "dark_page_bg", "dark_surface_color",
+	"dark_text_color", "dark_border_color", "dark_navbar_bg",
+)
+
 # Fields with no default: empty means "not set".
 OPTIONAL = (
 	"custom_css", "print_custom_css", "logo_url", "navbar_logo", "favicon", "login_bg_url",
@@ -113,7 +135,10 @@ OPTIONAL = (
 	"login_overlay_color", "login_panel_text", "login_vivid_second", "login_night_glow_color",
 	"login_frame_bg", "login_duo_shape_1", "login_duo_shape_2", "login_aurora_color_1",
 	"login_aurora_color_2", "login_type_text", "login_type_bg", "login_type_color",
-) + AREA_COLORS
+	"login_notice", "login_notice_until", "login_footer_links",
+	"splash_logo", "splash_text", "splash_bg",
+	"email_logo", "email_accent", "email_bg", "email_footer_text",
+) + AREA_COLORS + DARK_COLORS
 
 CHECKS = {
 	"auto_text_on_accent",
@@ -157,6 +182,12 @@ CHECKS = {
 	"login_frame_illustration",
 	"login_duo_shapes",
 	"login_field_icons",
+	"login_copyright",
+	"splash_screen",
+	"email_theme",
+	"email_show_logo",
+	"web_error_logo",
+	"web_hide_chrome",
 }
 
 # Text fields with a default where empty is a real choice ("off"). Their
@@ -322,6 +353,21 @@ def get_desk_vars(v):
 	}
 
 
+def get_dark_vars(v):
+	"""Variables applied by theme.js only while Frappe's dark theme is on.
+	Unset colours are "" (theme.css then uses its built-in dark shades)."""
+	accent = v["dark_primary_color"] or v["primary_color"]
+	return {
+		"--et-primary": accent,
+		"--et-accent-text": accent_text(v, accent),
+		"--et-page-bg-dark": v["dark_page_bg"],
+		"--et-surface-dark": v["dark_surface_color"],
+		"--et-text-dark": v["dark_text_color"],
+		"--et-border-dark": v["dark_border_color"],
+		"--et-navbar-bg-dark": v["dark_navbar_bg"],
+	}
+
+
 def get_body_classes(v):
 	"""On/off parts of the desk theme, as classes on <body>."""
 	classes = {
@@ -474,6 +520,9 @@ def get_theme_payload():
 	values = get_settings_values()
 	return {
 		"vars": get_desk_vars(values),
+		"vars_dark": get_dark_vars(values),
+		# "Frappe Escuro Original": no theme at all while the dark theme is on
+		"dark_off": values["dark_theme"] == "Frappe Escuro Original",
 		"body_classes": get_body_classes(values),
 		"font_family": values["font_family"],
 		"font_url": get_font_url(values["font_family"]),

@@ -15,6 +15,14 @@ app_include_js = [
 	"/assets/entre_theme/js/theme.js",
 ]
 
+# Website, portal and error pages (rules gated by body classes, see website.py)
+web_include_css = [
+	"/assets/entre_theme/css/web.css",
+]
+
+# Loading screen (/app) and website pages: entre_theme.website
+update_website_context = ["entre_theme.website.update_website_context"]
+
 # Theme values ship with the desk boot payload (read by theme.js)
 boot_session = "entre_theme.api.boot_session"
 
@@ -33,8 +41,13 @@ after_migrate = "entre_theme.install.after_migrate"
 before_uninstall = "entre_theme.install.before_uninstall"
 
 # ─────────────────────────────────────────────
-# Print formats: entre_print_context(doc) for templates/print/*.html
+# Jinja methods: entre_print_context(doc) for templates/print/*.html,
+# entre_email_context() for the email template
 # ─────────────────────────────────────────────
 jinja = {
-	"methods": ["entre_theme.print_utils.entre_print_context"],
+	"methods": [
+		"entre_theme.print_utils.entre_print_context",
+		# Branded emails: templates/emails/standard.html (see emails.py)
+		"entre_theme.emails.entre_email_context",
+	],
 }

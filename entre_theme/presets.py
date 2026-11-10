@@ -10,10 +10,11 @@ saves, so a preset can be reviewed and fine-tuned first.
 
 import frappe
 
-from entre_theme.api import AREA_COLORS, DEFAULTS
+from entre_theme.api import AREA_COLORS, DARK_COLORS, DEFAULTS
 
 # Every per-area / per-style colour back to "follow the global colour"
 _CLEAR_COLORS = {field: "" for field in AREA_COLORS if not field.startswith("print_")}
+_CLEAR_COLORS.update({field: "" for field in DARK_COLORS})
 _CLEAR_COLORS.update({
 	"login_overlay_color": "",
 	"login_panel_text": "",
@@ -53,6 +54,7 @@ def _look(**values):
 		"navbar_logo_position": "Padrão",
 		"logo_size": "Padrão",
 		"enable_animations": 1,
+		"dark_theme": DEFAULTS["dark_theme"],
 	})
 	look.update(values)
 	return look

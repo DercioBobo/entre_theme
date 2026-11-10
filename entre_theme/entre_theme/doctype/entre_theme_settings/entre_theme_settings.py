@@ -1,7 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
-from entre_theme import print_formats, print_style
+from entre_theme import print_formats, print_style, website
 from entre_theme.api import get_settings_values, sync_favicon
 
 
@@ -14,3 +14,4 @@ class EntreThemeSettings(Document):
 		sync_favicon(values)
 		print_style.sync(values)
 		print_formats.sync(values)
+		website.sync_splash(values)
