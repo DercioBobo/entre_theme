@@ -47,9 +47,19 @@ class LoginPageRenderer:
 			except Exception:
 				logo_url = ""
 
+		favicon = values["favicon"]
+		if not favicon:
+			try:
+				favicon = frappe.db.get_single_value("Website Settings", "favicon") or ""
+			except Exception:
+				favicon = ""
+
+		css_vars = get_css_vars(values)
 		context.update({
-			"css_vars": get_css_vars(values),
-			"primary_color": values["primary_color"],
+			"css_vars": css_vars,
+			# The login accent (its own colour, or the global one): background gradient
+			"primary_color": css_vars["--primary-color"],
+			"favicon": favicon or "/assets/frappe/images/favicon.ico",
 			"font_url": get_font_url(values["font_family"]),
 			"custom_css": values["custom_css"],
 			"logo_url": logo_url,

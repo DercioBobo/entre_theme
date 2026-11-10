@@ -4,6 +4,9 @@ from entre_theme.api import DEFAULTS
 
 SETTINGS = "Entre Theme Settings"
 
+# Old defaults of fields that now fall back to a global colour when empty
+FORMER_DEFAULTS = {"print_dark_color": "#111111"}
+
 
 def after_install():
 	"""Seed Entre Theme Settings with defaults on a fresh install."""
@@ -34,9 +37,16 @@ def seed_defaults():
 	stored = set(frappe.db.sql_list("select field from `tabSingles` where doctype = %s", SETTINGS))
 	if not stored:
 		return  # never saved: after_install / first save fills everything
-	missing = {key: value for key, value in DEFAULTS.items() if key not in stored}
-	if missing:
-		frappe.db.set_single_value(SETTINGS, missing)
+	updates = {key: value for key, value in DEFAULTS.items() if key not in stored}
+
+	# Fields that became per-area overrides of a global colour: a value still
+	# equal to the old default would pin the area, so clear it to follow the global.
+	for key, old_default in FORMER_DEFAULTS.items():
+		if key in stored and frappe.db.get_single_value(SETTINGS, key) == old_default:
+			updates[key] = ""
+
+	if updates:
+		frappe.db.set_single_value(SETTINGS, updates)
 		frappe.clear_document_cache(SETTINGS, SETTINGS)
 
 

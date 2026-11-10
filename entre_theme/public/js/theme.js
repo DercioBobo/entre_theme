@@ -130,12 +130,40 @@
 		setupSidebarLogo(body.classList.contains("et-logo-sidebar"));
 	}
 
+	// ── Logo & favicon ────────────────────────────────────────────
+	// theme.js runs after frappe.boot is set but before the desk draws the
+	// navbar, so patching boot.app_logo_url is enough on page load; the
+	// <img> update covers a live refresh after saving the settings.
+	var frappeLogo; // Frappe's own logo, restored when the setting is cleared
+
+	function applyLogo(url) {
+		if (!window.frappe || !frappe.boot) return;
+		if (frappeLogo === undefined) frappeLogo = frappe.boot.app_logo_url || "";
+		var src = url || frappeLogo;
+		if (!src) return;
+		frappe.boot.app_logo_url = src;
+		document.querySelectorAll(".navbar-home img").forEach(function (img) {
+			if (img.getAttribute("src") !== src) img.setAttribute("src", src);
+		});
+	}
+
+	function applyFavicon(url) {
+		if (!url) return; // the server-side favicon (Website Settings) stays
+		document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]').forEach(function (link) {
+			if (link.getAttribute("href") !== url) link.setAttribute("href", url);
+		});
+	}
+
 	function apply(payload) {
 		if (!payload || !payload.vars) return;
 		var root = document.documentElement;
 		Object.keys(payload.vars).forEach(function (name) {
-			root.style.setProperty(name, payload.vars[name]);
+			// "" = not set (e.g. an area colour that follows the global one)
+			if (payload.vars[name]) root.style.setProperty(name, payload.vars[name]);
+			else root.style.removeProperty(name);
 		});
+		applyLogo(payload.app_logo);
+		applyFavicon(payload.favicon);
 		setBodyClasses(payload.body_classes);
 		loadFont(payload);
 		setStyleTag("entre-custom-css", payload.custom_css);

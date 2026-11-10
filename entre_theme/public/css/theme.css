@@ -13,46 +13,85 @@
    ============================================================= */
 
 /* ── Tokens ─────────────────────────────────────────────────── */
-/* --et-accent, --et-accent-text, --et-page-bg-light, --et-radius,
-   --et-font and --et-ws-watermark-img are set inline by theme.js;
-   the values here are the fallbacks (same as api.DEFAULTS). */
+/* Inputs, set inline on <html> by theme.js from Entre Theme Settings
+   (the fallbacks here match api.DEFAULTS):
+
+     Global colours     --et-primary, --et-accent-text, --et-page-bg-light,
+                        --et-surface-light, --et-text-light, --et-border-light
+     Area colours       --et-navbar-accent, --et-navbar-bg-light,
+     (unset = global)   --et-navbar-text-light, --et-sidebar-accent,
+                        --et-sidebar-text-light, --et-ws-accent,
+                        --et-ws-card-bg-light
+     Shape & type       --et-radius, --et-font, --et-ws-watermark-img
+
+   Names ending in -light are backgrounds/text for the light theme only;
+   Frappe's dark theme keeps its own surfaces (below). The rules read the
+   resolved tokens (--et-accent, --et-card-bg, --et-text, ...), which each
+   area redefines from its own colour or the global one. */
 :root {
-	--et-accent: #ec932c;
+	--et-accent: var(--et-primary, #ec932c);
 	--et-accent-text: #ffffff;
 	--et-radius: 12px;
 
 	--et-page-bg: var(--et-page-bg-light, #f5f6f8);
-	--et-card-bg: #ffffff;
-	--et-text: #0f172a;
-	--et-text-soft: #334155;
-	--et-icon-muted: #94a3b8;
-	--et-border: rgba(15, 23, 42, 0.07);
-	--et-navbar-bg: rgba(255, 255, 255, 0.72);
-	--et-navbar-solid-bg: #ffffff;
-	--et-search-bg: #f1f3f6;
-	--et-search-focus-bg: #ffffff;
+	--et-card-bg: var(--et-surface-light, #ffffff);
+	--et-text: var(--et-text-light, #0f172a);
+	--et-border: var(--et-border-light, rgba(15, 23, 42, 0.07));
+	--et-navbar-solid-bg: var(--et-navbar-bg-light, var(--et-card-bg));
+	--et-navbar-bg: color-mix(in srgb, var(--et-navbar-solid-bg) 72%, transparent);
+	--et-search-bg: color-mix(in srgb, var(--et-text) 5%, var(--et-card-bg));
+	--et-search-focus-bg: var(--et-card-bg);
+}
 
+/* Frappe's dark theme: same layout, dark surfaces. Only the accent
+   colours carry over from the settings. */
+:root[data-theme="dark"] {
+	--et-page-bg: #161616;
+	--et-card-bg: #1f1f1f;
+	--et-text: #f3f4f6;
+	--et-border: rgba(255, 255, 255, 0.08);
+	--et-navbar-solid-bg: #1f1f1f;
+	--et-navbar-bg: rgba(23, 23, 23, 0.72);
+	--et-search-bg: #262626;
+	--et-search-focus-bg: #1f1f1f;
+}
+
+/* ── Area colours ───────────────────────────────────────────── */
+.navbar {
+	--et-accent: var(--et-navbar-accent, var(--et-primary, #ec932c));
+}
+.layout-side-section {
+	--et-accent: var(--et-sidebar-accent, var(--et-primary, #ec932c));
+}
+body[data-route^="Workspaces"] .layout-main-section {
+	--et-accent: var(--et-ws-accent, var(--et-primary, #ec932c));
+}
+
+:root:not([data-theme="dark"]) .navbar {
+	--et-text: var(--et-navbar-text-light, var(--et-text-light, #0f172a));
+}
+:root:not([data-theme="dark"]) .layout-side-section {
+	--et-text: var(--et-sidebar-text-light, var(--et-text-light, #0f172a));
+}
+:root:not([data-theme="dark"]) body[data-route^="Workspaces"] .layout-main-section {
+	--et-card-bg: var(--et-ws-card-bg-light, var(--et-surface-light, #ffffff));
+}
+
+/* Shades derived from the accent and text. A custom property is resolved
+   where it is declared, so these are re-declared on every element that
+   sets its own colours, or an area would get the global shades. */
+:root,
+.navbar,
+.layout-side-section,
+body[data-route^="Workspaces"] .layout-main-section {
+	--et-text-soft: color-mix(in srgb, var(--et-text) 80%, var(--et-card-bg));
+	--et-icon-muted: color-mix(in srgb, var(--et-text) 45%, var(--et-card-bg));
 	--et-accent-soft: color-mix(in srgb, var(--et-accent) 8%, transparent);
 	--et-accent-tint: color-mix(in srgb, var(--et-accent) 12%, transparent);
 	--et-accent-border: color-mix(in srgb, var(--et-accent) 28%, transparent);
 	--et-accent-ring: color-mix(in srgb, var(--et-accent) 50%, transparent);
 	--et-accent-glow: color-mix(in srgb, var(--et-accent) 18%, transparent);
 	--et-accent-line: color-mix(in srgb, var(--et-accent) 16%, transparent);
-}
-
-/* Frappe's dark theme: same layout, dark surfaces. The page background
-   setting only applies to the light theme. */
-:root[data-theme="dark"] {
-	--et-page-bg: #161616;
-	--et-card-bg: #1f1f1f;
-	--et-text: #f3f4f6;
-	--et-text-soft: #cbd5e1;
-	--et-icon-muted: #64748b;
-	--et-border: rgba(255, 255, 255, 0.08);
-	--et-navbar-bg: rgba(23, 23, 23, 0.72);
-	--et-navbar-solid-bg: #1f1f1f;
-	--et-search-bg: #262626;
-	--et-search-focus-bg: #1f1f1f;
 }
 
 body {

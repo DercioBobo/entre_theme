@@ -3,10 +3,15 @@ import frappe
 # Single source of truth for defaults. Used by the desk (boot + API),
 # the login renderer, the print style and the install hook.
 DEFAULTS = {
-	# Aparência
+	# Cores globais (each area can override them, see AREA_COLORS)
 	"primary_color": "#ec932c",
 	"primary_text_color": "#ffffff",
+	"dark_color": "#111111",
 	"page_bg": "#f5f6f8",
+	"surface_color": "#ffffff",
+	"text_color": "#0f172a",
+	"border_color": "#edeef1",
+	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",
 	"enable_animations": 1,
@@ -20,8 +25,6 @@ DEFAULTS = {
 	# Impressão
 	"manage_print_style": 1,
 	"set_default_print_style": 0,
-	"print_accent": "",
-	"print_dark_color": "#111111",
 	"print_font_family": "Nunito Sans",
 	"print_font_size": 9,
 	"print_watermark_opacity": 0.06,
@@ -43,11 +46,20 @@ DEFAULTS = {
 	"print_footer_note_everywhere": 0,
 }
 
+# Per-area colours: empty means "use the global colour" (see resolve_colors).
+AREA_COLORS = (
+	"navbar_accent", "navbar_bg", "navbar_text",
+	"sidebar_accent", "sidebar_text",
+	"workspace_accent", "workspace_card_bg",
+	"login_accent", "login_card_bg",
+	"print_accent", "print_dark_color",
+)
+
 # Fields with no default: empty means "not set".
 OPTIONAL = (
-	"custom_css", "print_custom_css", "logo_url", "login_bg_url", "company_tagline",
-	"workspace_watermark", "print_watermark",
-)
+	"custom_css", "print_custom_css", "logo_url", "navbar_logo", "favicon", "login_bg_url",
+	"company_tagline", "workspace_watermark", "print_watermark",
+) + AREA_COLORS
 
 CHECKS = {
 	"enable_animations",
@@ -113,16 +125,58 @@ def get_watermark(v):
 	return v["workspace_watermark"] or v["logo_url"]
 
 
+def get_navbar_logo(v):
+	"""Empty: keep Frappe's own (Navbar Settings)."""
+	return v["navbar_logo"] or v["logo_url"]
+
+
+def sync_favicon(v):
+	"""Write the favicon into Website Settings, which Frappe uses for the
+	desk, the website and its own pages. Empty: Website Settings is left alone."""
+	if not v["favicon"]:
+		return
+	try:
+		if not frappe.get_meta("Website Settings").has_field("favicon"):
+			return
+		if frappe.db.get_single_value("Website Settings", "favicon") != v["favicon"]:
+			frappe.db.set_single_value("Website Settings", "favicon", v["favicon"])
+			frappe.clear_cache()
+	except Exception:
+		frappe.log_error(title="Entre Theme: could not set the favicon")
+
+
+def area_color(v, area_field, global_field):
+	"""An area's own colour, or the global one when the area has none."""
+	return v[area_field] or v[global_field]
+
+
 def get_desk_vars(v):
-	"""CSS custom properties read by public/css/theme.css."""
+	"""CSS custom properties read by public/css/theme.css.
+
+	Area colours are passed as-is ("" when unset): theme.css falls back to
+	the global colour, and theme.js removes a variable whose value is "".
+	Backgrounds and text end in -light: Frappe's dark theme ignores them."""
 	watermark = get_watermark(v)
 	navbar_logo_h, sidebar_logo_h = LOGO_SIZES.get(v["logo_size"], (None, LOGO_SIZES["Médio"][1]))
 	return {
 		"--et-logo-h": f"{navbar_logo_h}px" if navbar_logo_h else "auto",
 		"--et-sidebar-logo-h": f"{sidebar_logo_h}px",
-		"--et-accent": v["primary_color"],
+		# Global
+		"--et-primary": v["primary_color"],
 		"--et-accent-text": v["primary_text_color"],
 		"--et-page-bg-light": v["page_bg"],
+		"--et-surface-light": v["surface_color"],
+		"--et-text-light": v["text_color"],
+		"--et-border-light": v["border_color"],
+		# Areas
+		"--et-navbar-accent": v["navbar_accent"],
+		"--et-navbar-bg-light": v["navbar_bg"],
+		"--et-navbar-text-light": v["navbar_text"],
+		"--et-sidebar-accent": v["sidebar_accent"],
+		"--et-sidebar-text-light": v["sidebar_text"],
+		"--et-ws-accent": v["workspace_accent"],
+		"--et-ws-card-bg-light": v["workspace_card_bg"],
+		# Shape & type
 		"--et-radius": v["border_radius"],
 		"--et-font": f"'{v['font_family']}', system-ui, -apple-system, sans-serif",
 		"--et-ws-watermark-img": f'url("{watermark}")' if watermark else "none",
@@ -147,14 +201,14 @@ def get_body_classes(v):
 def get_css_vars(values=None):
 	"""Variables used by the standalone login page (public/css/login.css)."""
 	v = values or get_settings_values()
-	accent = v["primary_color"]
+	accent = area_color(v, "login_accent", "primary_color")
 	return {
 		"--font-family": f"'{v['font_family']}', system-ui, -apple-system, sans-serif",
 		"--page-bg": v["page_bg"],
 		"--border-radius": v["border_radius"],
 		"--transition": TRANSITION if v["enable_animations"] else "none",
-		"--card-bg": "#ffffff",
-		"--card-border": "rgba(15, 23, 42, 0.07)",
+		"--card-bg": area_color(v, "login_card_bg", "surface_color"),
+		"--card-border": v["border_color"],
 		"--card-shadow": "0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -8px rgba(15, 23, 42, 0.12)",
 		"--input-bg": "#f1f3f6",
 		"--input-border": "transparent",
@@ -181,6 +235,8 @@ def get_theme_payload():
 		"font_family": values["font_family"],
 		"font_url": get_font_url(values["font_family"]),
 		"custom_css": values["custom_css"],
+		"app_logo": get_navbar_logo(values),
+		"favicon": values["favicon"],
 	}
 
 

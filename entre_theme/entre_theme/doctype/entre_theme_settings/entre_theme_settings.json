@@ -6,17 +6,50 @@
  "engine": "InnoDB",
  "field_order": [
   "tab_general",
+  "section_brand",
   "logo_url",
+  "navbar_logo",
+  "column_break_brand",
+  "favicon",
+  "section_login_page",
   "login_bg_url",
   "company_tagline",
-  "tab_appearance",
+  "tab_colors",
+  "section_global_colors",
   "primary_color",
   "primary_text_color",
+  "dark_color",
+  "column_break_global_colors",
   "page_bg",
-  "column_break_appearance",
+  "surface_color",
+  "text_color",
+  "border_color",
+  "section_colors_navbar",
+  "navbar_accent",
+  "navbar_bg",
+  "column_break_colors_navbar",
+  "navbar_text",
+  "section_colors_sidebar",
+  "sidebar_accent",
+  "column_break_colors_sidebar",
+  "sidebar_text",
+  "section_colors_workspace",
+  "workspace_accent",
+  "column_break_colors_workspace",
+  "workspace_card_bg",
+  "section_colors_login",
+  "login_accent",
+  "column_break_colors_login",
+  "login_card_bg",
+  "section_colors_print",
+  "print_accent",
+  "column_break_colors_print",
+  "print_dark_color",
+  "tab_appearance",
   "navbar_style",
   "navbar_logo_position",
   "logo_size",
+  "column_break_appearance",
   "font_family",
   "border_radius",
   "enable_animations",
@@ -29,8 +62,6 @@
   "tab_print",
   "manage_print_style",
   "set_default_print_style",
-  "print_accent",
-  "print_dark_color",
   "column_break_print",
   "print_font_family",
   "print_font_size",
@@ -66,10 +97,36 @@
    "label": "Geral"
   },
   {
+   "fieldname": "section_brand",
+   "fieldtype": "Section Break",
+   "label": "Marca"
+  },
+  {
    "fieldname": "logo_url",
    "fieldtype": "Attach Image",
    "label": "Logótipo",
-   "description": "Usado na página de login e, se não houver outro, como marca de água das áreas de trabalho."
+   "description": "O logótipo principal: barra superior, página de login e marcas de água (quando não há outro definido)."
+  },
+  {
+   "fieldname": "navbar_logo",
+   "fieldtype": "Attach Image",
+   "label": "Logótipo da Barra Superior",
+   "description": "Só se quiser um logótipo diferente na barra superior (por exemplo, uma versão compacta). Vazio: usa o Logótipo, ou o do Frappe se também estiver vazio."
+  },
+  {
+   "fieldname": "column_break_brand",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "favicon",
+   "fieldtype": "Attach Image",
+   "label": "Favicon",
+   "description": "Ícone no separador do navegador (PNG quadrado ou ICO). Aplica-se ao sistema, à página de login e ao site."
+  },
+  {
+   "fieldname": "section_login_page",
+   "fieldtype": "Section Break",
+   "label": "Página de Login"
   },
   {
    "fieldname": "login_bg_url",
@@ -83,33 +140,188 @@
    "description": "Mostrado na página de login."
   },
   {
-   "fieldname": "tab_appearance",
+   "fieldname": "tab_colors",
    "fieldtype": "Tab Break",
-   "label": "Aparência"
+   "label": "Cores"
+  },
+  {
+   "fieldname": "section_global_colors",
+   "fieldtype": "Section Break",
+   "label": "Cores Globais",
+   "description": "Usadas em todo o sistema, na página de login e na impressão. Cada área abaixo pode ter cores próprias: deixe vazio para usar a global. Fundos e textos aplicam-se ao tema claro; o tema escuro do Frappe mantém os seus."
   },
   {
    "fieldname": "primary_color",
    "fieldtype": "Color",
-   "label": "Cor de Destaque",
+   "label": "Cor Principal",
    "default": "#ec932c",
-   "description": "Barra superior, ícones dos atalhos, cartões, menu lateral e página de login."
+   "description": "A cor da marca: destaques, ícones, item activo, página de login e impressão."
   },
   {
    "fieldname": "primary_text_color",
    "fieldtype": "Color",
-   "label": "Texto sobre a Cor de Destaque",
+   "label": "Texto sobre a Cor Principal",
    "default": "#ffffff"
+  },
+  {
+   "fieldname": "dark_color",
+   "fieldtype": "Color",
+   "label": "Cor Escura",
+   "description": "Cabeçalhos de tabelas e totais na impressão.",
+   "default": "#111111"
+  },
+  {
+   "fieldname": "column_break_global_colors",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "page_bg",
    "fieldtype": "Color",
    "label": "Fundo da Página",
    "default": "#f5f6f8",
-   "description": "Só no tema claro; o tema escuro do Frappe usa fundos escuros próprios."
+   "description": "Tema claro."
   },
   {
-   "fieldname": "column_break_appearance",
+   "fieldname": "surface_color",
+   "fieldtype": "Color",
+   "label": "Cartões e Superfícies",
+   "description": "Tema claro.",
+   "default": "#ffffff"
+  },
+  {
+   "fieldname": "text_color",
+   "fieldtype": "Color",
+   "label": "Texto",
+   "description": "Tema claro.",
+   "default": "#0f172a"
+  },
+  {
+   "fieldname": "border_color",
+   "fieldtype": "Color",
+   "label": "Linhas e Contornos",
+   "description": "Tema claro.",
+   "default": "#edeef1"
+  },
+  {
+   "fieldname": "section_colors_navbar",
+   "fieldtype": "Section Break",
+   "label": "Barra Superior",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "navbar_accent",
+   "fieldtype": "Color",
+   "label": "Linha e Destaques",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "navbar_bg",
+   "fieldtype": "Color",
+   "label": "Fundo",
+   "description": "Vazio: usa Cartões e Superfícies."
+  },
+  {
+   "fieldname": "column_break_colors_navbar",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "navbar_text",
+   "fieldtype": "Color",
+   "label": "Texto",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "section_colors_sidebar",
+   "fieldtype": "Section Break",
+   "label": "Barra Lateral",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "sidebar_accent",
+   "fieldtype": "Color",
+   "label": "Item Activo e Ícones",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "column_break_colors_sidebar",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sidebar_text",
+   "fieldtype": "Color",
+   "label": "Texto",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "section_colors_workspace",
+   "fieldtype": "Section Break",
+   "label": "Áreas de Trabalho",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "workspace_accent",
+   "fieldtype": "Color",
+   "label": "Ícones e Títulos dos Cartões",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "column_break_colors_workspace",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "workspace_card_bg",
+   "fieldtype": "Color",
+   "label": "Fundo dos Cartões",
+   "description": "Vazio: usa Cartões e Superfícies."
+  },
+  {
+   "fieldname": "section_colors_login",
+   "fieldtype": "Section Break",
+   "label": "Página de Login",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "login_accent",
+   "fieldtype": "Color",
+   "label": "Botão e Destaques",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "column_break_colors_login",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_card_bg",
+   "fieldtype": "Color",
+   "label": "Fundo do Cartão",
+   "description": "Vazio: usa Cartões e Superfícies."
+  },
+  {
+   "fieldname": "section_colors_print",
+   "fieldtype": "Section Break",
+   "label": "Impressão",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "print_accent",
+   "fieldtype": "Color",
+   "label": "Cor de Destaque",
+   "description": "Vazio: usa a cor global."
+  },
+  {
+   "fieldname": "column_break_colors_print",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "print_dark_color",
+   "fieldtype": "Color",
+   "label": "Cor Escura (cabeçalhos e totais)",
+   "description": "Vazio: usa a Cor Escura global."
+  },
+  {
+   "fieldname": "tab_appearance",
+   "fieldtype": "Tab Break",
+   "label": "Aparência"
   },
   {
    "fieldname": "navbar_style",
@@ -134,6 +346,10 @@
    "options": "Padrão\nPequeno\nMédio\nGrande",
    "default": "Padrão",
    "description": "Padrão: o tamanho original do Frappe."
+  },
+  {
+   "fieldname": "column_break_appearance",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "font_family",
@@ -210,20 +426,6 @@
    "default": "0",
    "depends_on": "manage_print_style",
    "description": "Selecciona \"Entre Theme\" em Print Settings."
-  },
-  {
-   "fieldname": "print_accent",
-   "fieldtype": "Color",
-   "label": "Cor de Destaque na Impressão",
-   "depends_on": "manage_print_style",
-   "description": "Vazio: usa a Cor de Destaque."
-  },
-  {
-   "fieldname": "print_dark_color",
-   "fieldtype": "Color",
-   "label": "Cor Escura (cabeçalhos e totais)",
-   "default": "#111111",
-   "depends_on": "manage_print_style"
   },
   {
    "fieldname": "column_break_print",
@@ -412,7 +614,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 19:00:00.000000",
+ "modified": "2026-11-10 20:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",

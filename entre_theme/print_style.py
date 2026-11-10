@@ -11,7 +11,7 @@ import os
 import frappe
 from jinja2 import Environment
 
-from entre_theme.api import get_settings_values
+from entre_theme.api import area_color, get_settings_values
 
 PRINT_STYLE = "Entre Theme"
 TEMPLATE = os.path.join(os.path.dirname(__file__), "templates", "print", "print_style.css")
@@ -42,8 +42,8 @@ def render(values=None):
 		template = Environment(autoescape=False, keep_trailing_newline=True).from_string(f.read())
 
 	return template.render(
-		accent=v["print_accent"] or v["primary_color"],
-		dark=v["print_dark_color"],
+		accent=area_color(v, "print_accent", "primary_color"),
+		dark=area_color(v, "print_dark_color", "dark_color"),
 		font_stack=f"'{font}', Arial, sans-serif" if font != "Arial" else "Arial, sans-serif",
 		font_url=font_url,
 		fs=fs,
