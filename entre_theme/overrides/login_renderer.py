@@ -36,9 +36,12 @@ class LoginPageRenderer:
 		self.doctype = doctype
 
 	def can_render(self):
-		"""Return True only for the /login path."""
+		"""Only /login, and only while "Usar a Página de Login do Tema" is on;
+		otherwise Frappe serves its own login page."""
 		clean_path = self.path.split("?")[0].strip("/")
-		return clean_path == "login"
+		if clean_path != "login":
+			return False
+		return bool(get_settings_values()["custom_login"])
 
 	def render(self):
 		context = frappe._dict()

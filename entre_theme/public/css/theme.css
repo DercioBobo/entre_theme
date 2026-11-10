@@ -41,6 +41,10 @@
 	--et-navbar-bg: color-mix(in srgb, var(--et-navbar-solid-bg) 72%, transparent);
 	--et-search-bg: color-mix(in srgb, var(--et-text) 5%, var(--et-card-bg));
 	--et-search-focus-bg: var(--et-card-bg);
+	--et-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.05);
+	/* Mixing base for --et-accent-ink: darker on light pages, lighter on dark */
+	--et-ink-base: black;
+	--et-ink-mix: 62%;
 }
 
 /* Frappe's dark theme: same layout, dark surfaces. Only the accent
@@ -54,6 +58,9 @@
 	--et-navbar-bg: rgba(23, 23, 23, 0.72);
 	--et-search-bg: #262626;
 	--et-search-focus-bg: #1f1f1f;
+	--et-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+	--et-ink-base: white;
+	--et-ink-mix: 72%;
 }
 
 /* ── Area colours ───────────────────────────────────────────── */
@@ -92,6 +99,8 @@ body[data-route^="Workspaces"] .layout-main-section {
 	--et-accent-ring: color-mix(in srgb, var(--et-accent) 50%, transparent);
 	--et-accent-glow: color-mix(in srgb, var(--et-accent) 18%, transparent);
 	--et-accent-line: color-mix(in srgb, var(--et-accent) 16%, transparent);
+	/* The accent as readable text (links, tinted labels), even for light accents */
+	--et-accent-ink: color-mix(in oklch, var(--et-accent) var(--et-ink-mix), var(--et-ink-base));
 }
 
 body {
@@ -99,7 +108,7 @@ body {
 }
 
 /* ── Navbar ─────────────────────────────────────────────────── */
-.navbar {
+body.et-theme-navbar .navbar {
 	/* The search dropdown paints itself with --bg-color, which the
 	   workspace watermark makes transparent. */
 	--bg-color: var(--et-card-bg);
@@ -109,14 +118,14 @@ body {
 	box-shadow: 0 6px 20px -12px rgba(15, 23, 42, 0.18) !important;
 }
 
-body.et-navbar-glass .navbar {
+body.et-theme-navbar.et-navbar-glass .navbar {
 	background: var(--et-navbar-bg) !important;
 	-webkit-backdrop-filter: saturate(180%) blur(16px);
 	backdrop-filter: saturate(180%) blur(16px);
 }
 
-.navbar .search-bar .form-control,
-.navbar #navbar-search {
+body.et-theme-navbar .navbar .search-bar .form-control,
+body.et-theme-navbar .navbar #navbar-search {
 	background: var(--et-search-bg) !important;
 	border: 1px solid transparent !important;
 	border-radius: 10px !important;
@@ -124,20 +133,20 @@ body.et-navbar-glass .navbar {
 	transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.navbar .search-bar .form-control:focus,
-.navbar #navbar-search:focus {
+body.et-theme-navbar .navbar .search-bar .form-control:focus,
+body.et-theme-navbar .navbar #navbar-search:focus {
 	background: var(--et-search-focus-bg) !important;
 	border-color: var(--et-accent-border) !important;
 	box-shadow: 0 0 0 3px var(--et-accent-soft) !important;
 }
 
-.navbar .nav-link,
-.navbar .dropdown-toggle {
+body.et-theme-navbar .navbar .nav-link,
+body.et-theme-navbar .navbar .dropdown-toggle {
 	color: var(--et-text-soft) !important;
 }
 
-.navbar .nav-link:hover,
-.navbar .dropdown-toggle:hover {
+body.et-theme-navbar .navbar .nav-link:hover,
+body.et-theme-navbar .navbar .dropdown-toggle:hover {
 	color: var(--et-text) !important;
 }
 
@@ -184,9 +193,9 @@ body.et-logo-moved .navbar-home {
 }
 
 /* ── Dropdown lists (search bar and link fields) ────────────── */
-.awesomplete > ul,
-ul[id^="awesomplete_list"],
-.search-bar ul[role="listbox"] {
+body.et-theme-fields .awesomplete > ul,
+body.et-theme-fields ul[id^="awesomplete_list"],
+body.et-theme-fields .search-bar ul[role="listbox"] {
 	background: var(--et-card-bg) !important;
 	background-color: var(--et-card-bg) !important;
 	opacity: 1 !important;
@@ -198,23 +207,23 @@ ul[id^="awesomplete_list"],
 
 /* One highlight at a time: the keyboard selection (Frappe pre-selects the
    first result for Enter) gives way to the row under the mouse. */
-.awesomplete > ul > li:hover,
-.awesomplete > ul > li[aria-selected="true"] {
+body.et-theme-fields .awesomplete > ul > li:hover,
+body.et-theme-fields .awesomplete > ul > li[aria-selected="true"] {
 	background: var(--et-accent-soft) !important;
 	color: var(--et-text) !important;
 }
 
-.awesomplete > ul:hover > li[aria-selected="true"]:not(:hover) {
+body.et-theme-fields .awesomplete > ul:hover > li[aria-selected="true"]:not(:hover) {
 	background: transparent !important;
 }
 
 /* ── Workspace page ─────────────────────────────────────────── */
-body[data-route^="Workspaces"] {
+body.et-theme-workspace[data-route^="Workspaces"] {
 	--bg-color: var(--et-page-bg);
 	background: var(--et-page-bg) !important;
 }
 
-body[data-route^="Workspaces"] .layout-main-section {
+body.et-theme-workspace[data-route^="Workspaces"] .layout-main-section {
 	background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
@@ -257,7 +266,7 @@ body[data-route^="Workspaces"] .layout-main-section {
 }
 
 /* ── Workspace cards ────────────────────────────────────────── */
-body[data-route^="Workspaces"] .widget:not(.spacer) {
+body.et-theme-workspace[data-route^="Workspaces"] .widget:not(.spacer) {
 	background: var(--et-card-bg) !important;
 	border: 1px solid var(--et-border) !important;
 	border-radius: var(--et-radius) !important;
@@ -267,47 +276,47 @@ body[data-route^="Workspaces"] .widget:not(.spacer) {
 	transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
 }
 
-body[data-route^="Workspaces"] .widget:not(.spacer):hover {
+body.et-theme-workspace[data-route^="Workspaces"] .widget:not(.spacer):hover {
 	border-color: var(--et-accent-border) !important;
 }
 
-body[data-route^="Workspaces"] .widget.spacer {
+body.et-theme-workspace[data-route^="Workspaces"] .widget.spacer {
 	background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
 }
 
 /* ── Shortcuts ──────────────────────────────────────────────── */
-.widget.shortcut-widget-box {
+body.et-theme-workspace .widget.shortcut-widget-box {
 	padding: 14px 16px !important;
 }
 
-.widget.shortcut-widget-box:hover {
+body.et-theme-workspace .widget.shortcut-widget-box:hover {
 	transform: translateY(-1px) !important;
 	box-shadow:
 		0 2px 4px rgba(15, 23, 42, 0.05),
 		0 8px 20px -10px var(--et-accent-glow) !important;
 }
 
-.widget.shortcut-widget-box:focus-visible {
+body.et-theme-workspace .widget.shortcut-widget-box:focus-visible {
 	outline: 2px solid var(--et-accent-ring) !important;
 	outline-offset: 2px;
 }
 
-.shortcut-widget-box .widget-head {
+body.et-theme-workspace .shortcut-widget-box .widget-head {
 	display: flex !important;
 	align-items: center;
 	justify-content: space-between;
 	gap: 8px;
 }
 
-.shortcut-widget-box .widget-title {
+body.et-theme-workspace .shortcut-widget-box .widget-title {
 	font-weight: 500;
 	color: var(--et-text);
 }
 
 /* Label with an icon tile in front of it */
-.shortcut-widget-box .widget-label {
+body.et-theme-workspace .shortcut-widget-box .widget-label {
 	flex: 1;
 	min-width: 0;
 	position: relative;
@@ -318,7 +327,7 @@ body[data-route^="Workspaces"] .widget.spacer {
 	justify-content: center;
 }
 
-.shortcut-widget-box .widget-label::before {
+body.et-theme-workspace .shortcut-widget-box .widget-label::before {
 	content: "";
 	position: absolute;
 	left: 0;
@@ -331,7 +340,7 @@ body[data-route^="Workspaces"] .widget.spacer {
 	transition: background 0.2s ease;
 }
 
-.shortcut-widget-box .widget-label::after {
+body.et-theme-workspace .shortcut-widget-box .widget-label::after {
 	content: "";
 	position: absolute;
 	left: 8px;
@@ -345,29 +354,29 @@ body[data-route^="Workspaces"] .widget.spacer {
 	transition: background 0.2s ease;
 }
 
-.shortcut-widget-box:hover .widget-label::before {
+body.et-theme-workspace .shortcut-widget-box:hover .widget-label::before {
 	background: var(--et-accent);
 }
 
-.shortcut-widget-box:hover .widget-label::after {
+body.et-theme-workspace .shortcut-widget-box:hover .widget-label::after {
 	background: var(--et-accent-text);
 }
 
-.shortcut-widget-box .widget-control {
+body.et-theme-workspace .shortcut-widget-box .widget-control {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	flex-shrink: 0;
 }
 
-.shortcut-widget-box .widget-control svg {
+body.et-theme-workspace .shortcut-widget-box .widget-control svg {
 	margin-left: 0 !important;
 	--icon-stroke: var(--et-accent);
 	opacity: 0;
 	transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.shortcut-widget-box:hover .widget-control svg {
+body.et-theme-workspace .shortcut-widget-box:hover .widget-control svg {
 	opacity: 1;
 	transform: translate(2px, -2px);
 }
@@ -377,11 +386,11 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 }
 
 /* ── Link cards ─────────────────────────────────────────────── */
-.links-widget-box.widget:not(.spacer) {
+body.et-theme-workspace .links-widget-box.widget:not(.spacer) {
 	padding: 16px !important;
 }
 
-.links-widget-box .widget-head {
+body.et-theme-workspace .links-widget-box .widget-head {
 	margin: -16px -16px 10px !important;
 	padding: 14px 16px !important;
 	background: var(--et-accent-soft);
@@ -389,7 +398,7 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	border-radius: calc(var(--et-radius) - 1px) calc(var(--et-radius) - 1px) 0 0;
 }
 
-.links-widget-box .widget-title {
+body.et-theme-workspace .links-widget-box .widget-title {
 	display: flex;
 	align-items: center;
 	gap: 8px;
@@ -399,7 +408,7 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	letter-spacing: -0.01em;
 }
 
-.links-widget-box .widget-title::before {
+body.et-theme-workspace .links-widget-box .widget-title::before {
 	content: "";
 	flex-shrink: 0;
 	width: 4px;
@@ -408,13 +417,13 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	background: var(--et-accent);
 }
 
-.links-widget-box .widget-body {
+body.et-theme-workspace .links-widget-box .widget-body {
 	display: flex;
 	flex-direction: column;
 	gap: 2px;
 }
 
-.links-widget-box .link-item {
+body.et-theme-workspace .links-widget-box .link-item {
 	display: block;
 	padding: 8px 10px !important;
 	margin: 0 -10px;
@@ -424,19 +433,19 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	transition: background 0.15s ease, color 0.15s ease;
 }
 
-.links-widget-box .link-item,
-.links-widget-box .link-content {
+body.et-theme-workspace .links-widget-box .link-item,
+body.et-theme-workspace .links-widget-box .link-content {
 	max-width: none !important;
 }
 
-.links-widget-box .link-content {
+body.et-theme-workspace .links-widget-box .link-content {
 	display: flex !important;
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
 }
 
-.links-widget-box .link-text {
+body.et-theme-workspace .links-widget-box .link-text {
 	flex: 1;
 	min-width: 0;
 	font-size: 13.5px;
@@ -446,7 +455,7 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	text-overflow: ellipsis;
 }
 
-.links-widget-box .link-content svg {
+body.et-theme-workspace .links-widget-box .link-content svg {
 	flex-shrink: 0;
 	margin-left: 8px !important;
 	--icon-stroke: var(--et-accent);
@@ -455,30 +464,30 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.links-widget-box .link-item:hover {
+body.et-theme-workspace .links-widget-box .link-item:hover {
 	background: var(--et-accent-soft);
 	color: var(--et-text) !important;
 }
 
-.links-widget-box .link-item:hover svg {
+body.et-theme-workspace .links-widget-box .link-item:hover svg {
 	opacity: 1;
 	transform: none;
 }
 
-.links-widget-box .link-item:focus-visible {
+body.et-theme-workspace .links-widget-box .link-item:focus-visible {
 	outline: 2px solid var(--et-accent-ring);
 	outline-offset: -2px;
 }
 
 @media (hover: none) {
-	.links-widget-box .link-content svg {
+	body.et-theme-workspace .links-widget-box .link-content svg {
 		opacity: 0.5;
 		transform: none;
 	}
 }
 
 /* ── Sidebar ────────────────────────────────────────────────── */
-.desk-sidebar .standard-sidebar-label {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-label {
 	font-size: 11px !important;
 	font-weight: 600 !important;
 	letter-spacing: 0.06em;
@@ -486,31 +495,31 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	margin-top: 6px;
 }
 
-.desk-sidebar .standard-sidebar-item {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item {
 	position: relative;
 	border-radius: 8px !important;
 	margin-bottom: 1px;
 	transition: background 0.15s ease, color 0.15s ease;
 }
 
-.desk-sidebar .standard-sidebar-item:hover {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item:hover {
 	background: var(--et-accent-soft) !important;
 }
 
-.desk-sidebar .standard-sidebar-item .sidebar-item-label {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item .sidebar-item-label {
 	color: var(--et-text-soft);
 	font-weight: 500;
 }
 
-.desk-sidebar .standard-sidebar-item .sidebar-item-icon svg {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item .sidebar-item-icon svg {
 	--icon-stroke: var(--et-icon-muted);
 }
 
-.desk-sidebar .standard-sidebar-item.selected {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item.selected {
 	background: var(--et-accent-tint) !important;
 }
 
-.desk-sidebar .standard-sidebar-item.selected::before {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item.selected::before {
 	content: "";
 	position: absolute;
 	left: 0;
@@ -521,12 +530,12 @@ body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
 	background: var(--et-accent);
 }
 
-.desk-sidebar .standard-sidebar-item.selected .sidebar-item-label {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item.selected .sidebar-item-label {
 	color: var(--et-text) !important;
 	font-weight: 600;
 }
 
-.desk-sidebar .standard-sidebar-item.selected .sidebar-item-icon svg {
+body.et-theme-sidebar .desk-sidebar .standard-sidebar-item.selected .sidebar-item-icon svg {
 	--icon-stroke: var(--et-accent);
 }
 
@@ -540,4 +549,429 @@ body.et-no-anim *::after {
 body.et-no-anim .widget.shortcut-widget-box:hover,
 body.et-no-anim .shortcut-widget-box:hover .widget-control svg {
 	transform: none !important;
+}
+
+
+/* =============================================================
+   Lists and forms (Entre Theme Settings > Aparência >
+   Listas e Formulários). Each part sits behind a body class,
+   so switching an option off returns that part to Frappe's look:
+     et-btn-accent          primary buttons, active tabs, checkboxes
+     et-page-cards          grey page, list/form frames as cards
+     et-tint-blue           blue status pills in the accent
+     et-fit-lists           list card ends at its rows
+     et-hide-list-activity  no like / comment counters on rows
+   Selectors follow Frappe v15 (desk/list.scss, desk/form.scss,
+   desk/page.scss, common/buttons.scss).
+   ============================================================= */
+
+/* ── Accent everywhere: Frappe's own variables ──────────────── */
+/* --primary: active tab underline, checked boxes, "primary-light"
+   buttons (e.g. a Filter button with filters applied).
+   --btn-primary: the background of every .btn-primary. */
+body.et-btn-accent {
+	--primary: var(--et-accent);
+	--btn-primary: var(--et-accent);
+}
+
+body.et-btn-accent .btn.btn-primary {
+	color: var(--et-accent-text) !important;
+	background-color: var(--et-accent) !important;
+	border-color: var(--et-accent) !important;
+	box-shadow: 0 1px 2px color-mix(in srgb, var(--et-accent) 30%, transparent);
+	transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.et-btn-accent .btn.btn-primary:hover,
+body.et-btn-accent .btn.btn-primary:focus-visible {
+	background-color: color-mix(in oklch, var(--et-accent) 88%, black) !important;
+	border-color: color-mix(in oklch, var(--et-accent) 88%, black) !important;
+	box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--et-accent) 55%, transparent);
+}
+
+/* Frappe swaps to an inverted colour while pressed */
+body.et-btn-accent .btn.btn-primary:active,
+[data-theme="dark"] body.et-btn-accent .btn-primary:active {
+	color: var(--et-accent-text) !important;
+	background-color: color-mix(in oklch, var(--et-accent) 78%, black) !important;
+}
+
+body.et-btn-accent .btn.btn-primary:disabled,
+body.et-btn-accent .btn.btn-primary.disabled {
+	opacity: 0.55;
+	box-shadow: none;
+}
+
+/* Active form tab: a firmer underline in the accent */
+body.et-theme-tabs .form-tabs-list .form-tabs .nav-item .nav-link.active {
+	border-bottom: 2px solid var(--et-accent) !important;
+	color: var(--et-text) !important;
+}
+
+body.et-theme-tabs .form-tabs-list .form-tabs .nav-item .nav-link:hover:not(.active) {
+	color: var(--et-text);
+}
+
+/* Focus ring on fields: the accent instead of Frappe's grey */
+body.et-theme-fields .frappe-control .form-control:focus,
+body.et-theme-fields .page-form .form-control:focus,
+body.et-theme-fields .frappe-control .ql-editor:focus {
+	border-color: var(--et-accent-border) !important;
+	box-shadow: 0 0 0 3px var(--et-accent-tint) !important;
+}
+
+/* ── Status pills: blue follows the accent ──────────────────── */
+body.et-tint-blue .indicator-pill.blue,
+body.et-tint-blue .indicator-pill-right.blue,
+body.et-tint-blue .indicator-pill-round.blue {
+	--bg-blue: var(--et-accent-tint);
+	--text-on-blue: var(--et-accent-ink);
+}
+
+body.et-tint-blue .indicator-pill,
+body.et-tint-blue .indicator-pill-right {
+	font-weight: 500;
+}
+
+
+/* ── Pages as cards, like the workspaces ────────────────────── */
+body.et-page-cards {
+	--bg-color: var(--et-page-bg);
+	background: var(--et-page-bg) !important;
+}
+
+/* List and report frame */
+body.et-page-cards:not([data-route^="Workspaces"]) .layout-main-section.frappe-card {
+	background: var(--et-card-bg);
+	border: 1px solid var(--et-border) !important;
+	border-radius: var(--et-radius) !important;
+	box-shadow: var(--et-card-shadow) !important;
+}
+
+/* Form frame (tabs + fields) */
+body.et-page-cards .std-form-layout > .form-layout > .form-page {
+	border: 1px solid var(--et-border);
+	border-radius: var(--et-radius);
+	box-shadow: var(--et-card-shadow);
+}
+
+body.et-page-cards .form-tabs-list {
+	border-bottom-color: var(--et-border);
+	border-radius: var(--et-radius) var(--et-radius) 0 0;
+}
+
+/* Sidebar filters (list) and sidebar boxes: quieter on the grey page */
+body.et-page-cards .list-sidebar .sidebar-action,
+body.et-page-cards .list-sidebar .dropdown-toggle {
+	background: var(--et-card-bg);
+	border: 1px solid var(--et-border);
+	border-radius: 8px;
+}
+
+
+/* ── List view ──────────────────────────────────────────────── */
+/* Row hover and focus in the accent tint */
+body.et-theme-lists .frappe-list {
+	--highlight-color: var(--et-accent-soft);
+}
+
+body.et-theme-lists .list-row-container .list-row-border {
+	border-bottom-color: var(--et-border);
+}
+
+/* Column header: a light accent tint instead of grey */
+body.et-theme-lists .frappe-list .list-row-head {
+	background-color: color-mix(in srgb, var(--et-accent) 5%, var(--et-card-bg));
+	color: var(--et-text-soft);
+}
+
+/* Filter bar: same soft fields as the navbar search */
+body.et-theme-lists .frappe-list .page-form .form-control,
+body.et-theme-lists .layout-main-section .page-form .form-control {
+	background: var(--et-search-bg);
+	border: 1px solid transparent;
+	border-radius: 8px;
+}
+
+/* (not when Frappe highlights the Filter button because filters are applied) */
+body.et-theme-lists .layout-main-section .filter-section .btn-default:not(.btn-primary-light),
+body.et-theme-lists .layout-main-section .sort-selector .btn-default:not(.btn-primary-light) {
+	background: var(--et-search-bg);
+	border: 1px solid transparent;
+}
+
+/* Page size buttons: a segmented control, the current size in the accent */
+body.et-theme-lists .list-paging-area {
+	border-top-color: var(--et-border) !important;
+}
+
+body.et-theme-lists .list-paging-area .btn-group {
+	border-color: var(--et-border);
+	border-radius: 999px;
+	overflow: hidden;
+	padding: 2px;
+	background: var(--et-card-bg);
+}
+
+body.et-theme-lists .list-paging-area .btn-paging {
+	background-color: transparent;
+	border-radius: 999px !important;
+	color: var(--et-text-soft);
+}
+
+body.et-theme-lists .list-paging-area .btn-paging.btn-info {
+	background-color: var(--et-accent-tint);
+	color: var(--et-accent-ink);
+	font-weight: 600;
+}
+
+/* Empty list: more air around Frappe's illustration and button */
+body.et-theme-lists .frappe-list .no-result .msg-box {
+	padding: 40px 16px 8px;
+}
+
+body.et-theme-lists .frappe-list .no-result .null-state {
+	opacity: 0.7;
+}
+
+/* The list ends at its rows: no tall empty card, paging right after.
+   Not on the report view, whose grid needs its own height. The card
+   stops clipping (overflow) so the sort / filter menus can still open
+   past a short list. */
+body.et-fit-lists[data-route^="List/"]:not([data-route*="/Report"]) .layout-main-section .frappe-list .result {
+	min-height: 0;
+}
+
+body.et-fit-lists[data-route^="List/"]:not([data-route*="/Report"]) .layout-main-section.frappe-card {
+	overflow: visible;
+}
+
+body.et-fit-lists[data-route^="List/"] .layout-main-section .frappe-list .no-result,
+body.et-fit-lists[data-route^="List/"] .layout-main-section .frappe-list .freeze {
+	min-height: 320px;
+}
+
+body.et-fit-lists[data-route^="List/"] .list-paging-area {
+	border-radius: 0 0 var(--et-radius) var(--et-radius);
+}
+
+/* Fewer counters on each row */
+body.et-hide-list-activity .list-row-activity .comment-count,
+body.et-hide-list-activity .list-row-activity .list-comment-count,
+body.et-hide-list-activity .list-row-activity .list-row-like,
+body.et-hide-list-activity .list-row-activity .like-action,
+body.et-hide-list-activity .list-row-activity .mx-2,
+body.et-hide-list-activity .list-row-head .list-liked-by-me {
+	display: none !important;
+}
+
+
+/* =============================================================
+   Forms (Entre Theme Settings > Aparência > Formulários).
+   Each part behind its own body class; off = Frappe's look.
+     et-section-bars   accent bar before section titles
+     et-doc-monogram   initials placeholder in the accent
+     et-timeline       activity timeline, comments, comment box
+     et-form-sidebar   Assigned To / Attachments / Tags / Share rows
+   Selectors follow Frappe v15 (desk/form.scss, desk/timeline.scss,
+   desk/sidebar.scss, form/templates/form_sidebar.html,
+   form/footer/base_timeline.js).
+   ============================================================= */
+
+/* ── Section titles: a short accent bar, like the workspace cards ── */
+body.et-section-bars .form-section .section-head:not(.hide):not(:empty)::before {
+	content: "";
+	display: inline-block;
+	width: 3px;
+	height: 14px;
+	margin-right: 10px;
+	border-radius: 2px;
+	background: var(--et-accent);
+	vertical-align: -2px;
+	flex-shrink: 0;
+}
+
+body.et-section-bars .form-section .section-head.collapsible {
+	align-items: center;
+}
+
+
+/* ── Document image placeholder: initials on the accent ── */
+body.et-doc-monogram .form-sidebar .sidebar-standard-image {
+	border-color: transparent;
+}
+
+body.et-doc-monogram .form-sidebar .sidebar-standard-image .standard-image {
+	background: var(--et-accent-tint) !important;
+	color: var(--et-accent-ink) !important;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+
+
+/* ── Activity timeline ── */
+/* The vertical line: a soft accent instead of grey */
+body.et-timeline .new-timeline:before {
+	border-left: 2px solid var(--et-accent-line);
+}
+
+/* Small dots (edits, creation): a ring with an accent centre */
+body.et-timeline .new-timeline .timeline-dot {
+	background: var(--bg-color);
+	box-shadow: 0 0 0 2px var(--et-accent-border);
+}
+
+body.et-timeline .new-timeline .timeline-dot::before {
+	background: var(--et-accent);
+}
+
+/* Icon badges (comments, emails): accent tint, cut out from the line */
+body.et-timeline .new-timeline .timeline-item .timeline-badge {
+	background-color: var(--et-accent-tint);
+	--icon-stroke: var(--et-accent-ink);
+	color: var(--et-accent-ink);
+	box-shadow: 0 0 0 3px var(--bg-color);
+}
+
+/* Activity lines: calmer text */
+body.et-timeline .new-timeline .timeline-content:not(.frappe-card) {
+	color: var(--et-text-soft);
+	line-height: 1.55;
+}
+
+/* Comments and emails: cards like the rest of the theme */
+body.et-timeline .new-timeline .timeline-content.frappe-card {
+	background-color: var(--et-card-bg);
+	border: 1px solid var(--et-border);
+	border-radius: var(--et-radius);
+	box-shadow: var(--et-card-shadow);
+}
+
+body.et-timeline .timeline-message-box .content::before {
+	background-color: var(--et-border);
+}
+
+/* "Activity" header and its New Email / New Event buttons */
+body.et-timeline .new-timeline .activity-title h4 {
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+body.et-timeline .timeline-actions .action-btn,
+body.et-timeline .activity-title .action-btn {
+	border-radius: 999px;
+	padding: 4px 12px;
+	background: var(--et-card-bg);
+	border: 1px solid var(--et-border);
+	color: var(--et-text-soft);
+	--icon-stroke: currentColor;
+	transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+body.et-timeline .timeline-actions .action-btn:hover,
+body.et-timeline .activity-title .action-btn:hover {
+	border-color: var(--et-accent-border);
+	background: var(--et-accent-soft);
+	color: var(--et-text);
+}
+
+/* Comment box: the editor matches the cards */
+body.et-timeline .comment-box .frappe-control .ql-editor {
+	background-color: var(--et-card-bg) !important;
+	border: 1px solid var(--et-border);
+	border-radius: 10px;
+	min-height: 40px;
+	padding: 10px 12px;
+}
+
+body.et-timeline .comment-box .comment-input-header {
+	font-weight: 600;
+}
+
+body.et-timeline .comment-edit-box {
+	border-color: var(--et-border);
+	border-radius: 10px;
+}
+
+body.et-timeline .timeline-load-more .btn-load-more {
+	border-radius: 999px;
+}
+
+
+/* ── Form sidebar: tidy rows ── */
+body.et-form-sidebar .form-sidebar .form-sidebar-items {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 2px 8px;
+	margin: 0 -8px;
+	border-radius: 8px;
+	color: var(--et-text-soft);
+	--icon-stroke: var(--et-icon-muted);
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+body.et-form-sidebar .form-sidebar .form-sidebar-items:hover {
+	background: var(--et-accent-soft);
+	color: var(--et-text);
+	--icon-stroke: var(--et-accent-ink);
+}
+
+/* "+" buttons: small round buttons that light up on hover */
+body.et-form-sidebar .form-sidebar .add-assignment-btn,
+body.et-form-sidebar .form-sidebar .add-attachment-btn,
+body.et-form-sidebar .form-sidebar .share-doc-btn,
+body.et-form-sidebar .form-sidebar .add-tags-btn {
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--et-border);
+	border-radius: 999px;
+	background: var(--et-card-bg);
+	--icon-stroke: var(--et-text-soft);
+}
+
+body.et-form-sidebar .form-sidebar .add-assignment-btn:hover,
+body.et-form-sidebar .form-sidebar .add-attachment-btn:hover,
+body.et-form-sidebar .form-sidebar .share-doc-btn:hover,
+body.et-form-sidebar .form-sidebar .add-tags-btn:hover {
+	border-color: var(--et-accent-border);
+	background: var(--et-accent-tint);
+	--icon-stroke: var(--et-accent-ink);
+}
+
+/* Likes · comments row, and "Follow" as a small button */
+body.et-form-sidebar .form-sidebar .form-sidebar-stats {
+	color: var(--et-text-soft);
+}
+
+body.et-form-sidebar .form-sidebar .form-follow {
+	padding: 3px 10px;
+	border: 1px solid var(--et-border);
+	border-radius: 999px;
+	color: var(--et-text-soft);
+	text-transform: none;
+	font-weight: 500;
+	text-decoration: none;
+}
+
+body.et-form-sidebar .form-sidebar .form-follow:hover {
+	border-color: var(--et-accent-border);
+	background: var(--et-accent-soft);
+	color: var(--et-text);
+}
+
+/* Last edited / created: quieter */
+body.et-form-sidebar .form-sidebar hr {
+	border-top-color: var(--et-border);
+}
+
+body.et-form-sidebar .form-sidebar .modified-by,
+body.et-form-sidebar .form-sidebar .created-by,
+body.et-form-sidebar .form-sidebar .pageview-count {
+	color: var(--et-icon-muted);
+	line-height: 1.5;
 }

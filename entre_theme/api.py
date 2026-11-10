@@ -12,6 +12,7 @@ DEFAULTS = {
 	"text_color": "#0f172a",
 	"border_color": "#edeef1",
 	# Página de login (options per style: see get_login_theme)
+	"custom_login": 1,
 	"login_style": "Clássico",
 	"login_overlay": 1,
 	"login_overlay_opacity": 80,
@@ -46,6 +47,24 @@ DEFAULTS = {
 	"navbar_style": "Vidro",
 	"navbar_logo_position": "Padrão",
 	"logo_size": "Padrão",
+	# Partes com o tema (off = exactly Frappe's look)
+	"theme_navbar": 1,
+	"theme_sidebar": 1,
+	"theme_workspace": 1,
+	"theme_lists": 1,
+	"theme_tabs": 1,
+	"theme_fields": 1,
+	# Listas e formulários
+	"primary_buttons": "Cor Principal",
+	"page_cards": 1,
+	"tint_blue_indicators": 1,
+	"fit_lists": 1,
+	"hide_list_activity": 0,
+	# Formulários
+	"form_section_bars": 1,
+	"form_monogram": 1,
+	"form_timeline": 1,
+	"form_sidebar_tidy": 1,
 	# Área de trabalho
 	"hide_shortcut_counts": 1,
 	"sidebar_divider": 1,
@@ -94,6 +113,21 @@ OPTIONAL = (
 ) + AREA_COLORS
 
 CHECKS = {
+	"form_section_bars",
+	"form_monogram",
+	"form_timeline",
+	"form_sidebar_tidy",
+	"custom_login",
+	"theme_navbar",
+	"theme_sidebar",
+	"theme_workspace",
+	"theme_lists",
+	"theme_tabs",
+	"theme_fields",
+	"page_cards",
+	"tint_blue_indicators",
+	"fit_lists",
+	"hide_list_activity",
 	"enable_animations",
 	"hide_shortcut_counts",
 	"sidebar_divider",
@@ -166,6 +200,16 @@ def get_watermark(v):
 	return v["workspace_watermark"] or v["logo_url"]
 
 
+FRAPPE_FONT = "Padrão do Frappe"
+SYSTEM_STACK = "system-ui, -apple-system, 'Segoe UI', sans-serif"
+
+
+def font_stack(font_family):
+	if font_family == FRAPPE_FONT:
+		return SYSTEM_STACK
+	return f"'{font_family}', {SYSTEM_STACK}"
+
+
 def get_navbar_logo(v):
 	"""Empty: keep Frappe's own (Navbar Settings)."""
 	return v["navbar_logo"] or v["logo_url"]
@@ -219,7 +263,7 @@ def get_desk_vars(v):
 		"--et-ws-card-bg-light": v["workspace_card_bg"],
 		# Shape & type
 		"--et-radius": v["border_radius"],
-		"--et-font": f"'{v['font_family']}', system-ui, -apple-system, sans-serif",
+		"--et-font": "" if v["font_family"] == FRAPPE_FONT else font_stack(v["font_family"]),
 		"--et-ws-watermark-img": f'url("{watermark}")' if watermark else "none",
 	}
 
@@ -233,8 +277,23 @@ def get_body_classes(v):
 		"et-logo-sized": v["logo_size"] in LOGO_SIZES,
 		"et-hide-counts": v["hide_shortcut_counts"],
 		"et-sidebar-divider": v["sidebar_divider"],
-		"et-ws-watermark": v["show_workspace_watermark"] and bool(get_watermark(v)),
+		"et-ws-watermark": v["theme_workspace"] and v["show_workspace_watermark"] and bool(get_watermark(v)),
 		"et-no-anim": not v["enable_animations"],
+		"et-theme-navbar": v["theme_navbar"],
+		"et-theme-sidebar": v["theme_sidebar"],
+		"et-theme-workspace": v["theme_workspace"],
+		"et-theme-lists": v["theme_lists"],
+		"et-theme-tabs": v["theme_tabs"],
+		"et-theme-fields": v["theme_fields"],
+		"et-btn-accent": v["primary_buttons"] == "Cor Principal",
+		"et-page-cards": v["page_cards"],
+		"et-tint-blue": v["tint_blue_indicators"],
+		"et-fit-lists": v["fit_lists"],
+		"et-hide-list-activity": v["hide_list_activity"],
+		"et-section-bars": v["form_section_bars"],
+		"et-doc-monogram": v["form_monogram"],
+		"et-timeline": v["form_timeline"],
+		"et-form-sidebar": v["form_sidebar_tidy"],
 	}
 	return [name for name, on in classes.items() if on]
 
@@ -244,7 +303,7 @@ def get_css_vars(values=None):
 	v = values or get_settings_values()
 	accent = area_color(v, "login_accent", "primary_color")
 	return {
-		"--font-family": f"'{v['font_family']}', system-ui, -apple-system, sans-serif",
+		"--font-family": font_stack(v["font_family"]),
 		"--page-bg": v["page_bg"],
 		"--border-radius": v["border_radius"],
 		"--transition": TRANSITION if v["enable_animations"] else "none",

@@ -43,7 +43,10 @@
 
 	var BODY_CLASSES = [
 		"et-navbar-glass", "et-hide-counts", "et-sidebar-divider", "et-ws-watermark", "et-no-anim",
-		"et-logo-center", "et-logo-sidebar", "et-logo-sized"
+		"et-logo-center", "et-logo-sidebar", "et-logo-sized",
+		"et-theme-navbar", "et-theme-sidebar", "et-theme-workspace", "et-theme-lists", "et-theme-tabs", "et-theme-fields",
+		"et-btn-accent", "et-page-cards", "et-tint-blue", "et-fit-lists", "et-hide-list-activity",
+		"et-section-bars", "et-doc-monogram", "et-timeline", "et-form-sidebar"
 	];
 
 	// ── Logo in the sidebar ───────────────────────────────────────

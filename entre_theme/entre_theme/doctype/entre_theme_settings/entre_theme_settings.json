@@ -13,6 +13,7 @@
   "favicon",
   "tab_login",
   "section_login_style",
+  "custom_login",
   "login_style",
   "login_bg_url",
   "column_break_login_style",
@@ -119,6 +120,27 @@
   "font_family",
   "border_radius",
   "enable_animations",
+  "section_desk_parts",
+  "theme_navbar",
+  "theme_sidebar",
+  "theme_workspace",
+  "column_break_desk_parts",
+  "theme_lists",
+  "theme_tabs",
+  "theme_fields",
+  "section_desk_pages",
+  "primary_buttons",
+  "page_cards",
+  "tint_blue_indicators",
+  "column_break_desk_pages",
+  "fit_lists",
+  "hide_list_activity",
+  "section_desk_forms",
+  "form_section_bars",
+  "form_monogram",
+  "column_break_desk_forms",
+  "form_timeline",
+  "form_sidebar_tidy",
   "tab_workspace",
   "hide_shortcut_counts",
   "sidebar_divider",
@@ -197,7 +219,15 @@
   {
    "fieldname": "section_login_style",
    "fieldtype": "Section Break",
-   "label": "Estilo"
+   "label": "Estilo",
+   "depends_on": "custom_login"
+  },
+  {
+   "fieldname": "custom_login",
+   "fieldtype": "Check",
+   "label": "Usar a Página de Login do Tema",
+   "default": "1",
+   "description": "Desligado: a página de login normal do Frappe, e as opções abaixo deixam de se aplicar."
   },
   {
    "fieldname": "login_style",
@@ -205,29 +235,33 @@
    "label": "Estilo da Página de Login",
    "options": "Clássico\nDividido\nPainel Lateral\nImersivo\nFoco\nMoldura\nCartão Duplo\nVívido\nVidro\nAurora\nTipográfico\nMinimalista\nNoite",
    "default": "Clássico",
-   "description": "Clássico: cartão ao centro. Dividido: painel da marca de um lado. Painel Lateral: imagem com o formulário numa faixa. Imersivo: imagem inteira com boas-vindas em grande. Foco: logótipo ao centro e campos translúcidos. Moldura: moldura arredondada com imagem ou ilustração. Cartão Duplo: cartão dividido com formas geométricas. Vívido: duas cores. Vidro: cartão translúcido. Aurora: faixas de cor em movimento. Tipográfico: o nome da empresa em grande no fundo. Minimalista: sem cartão. Noite: escuro. As opções de cada estilo aparecem em baixo."
+   "description": "Clássico: cartão ao centro. Dividido: painel da marca de um lado. Painel Lateral: imagem com o formulário numa faixa. Imersivo: imagem inteira com boas-vindas em grande. Foco: logótipo ao centro e campos translúcidos. Moldura: moldura arredondada com imagem ou ilustração. Cartão Duplo: cartão dividido com formas geométricas. Vívido: duas cores. Vidro: cartão translúcido. Aurora: faixas de cor em movimento. Tipográfico: o nome da empresa em grande no fundo. Minimalista: sem cartão. Noite: escuro. As opções de cada estilo aparecem em baixo.",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_bg_url",
    "fieldtype": "Attach Image",
    "label": "Imagem de Fundo",
-   "description": "Usada pelos estilos Clássico, Dividido, Painel Lateral e Vidro. Vazio: um fundo feito com a cor de destaque."
+   "description": "Usada pelos estilos Clássico, Dividido, Painel Lateral e Vidro. Vazio: um fundo feito com a cor de destaque.",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "column_break_login_style",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "company_tagline",
    "fieldtype": "Data",
    "label": "Slogan",
-   "description": "Na página de login; em destaque nos estilos Dividido e Painel Lateral."
+   "description": "Na página de login; em destaque nos estilos Dividido e Painel Lateral.",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "section_login_hero",
    "fieldtype": "Section Break",
    "label": "Boas-vindas",
-   "depends_on": "eval:[\"Imersivo\", \"Moldura\", \"Cartão Duplo\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Imersivo\", \"Moldura\", \"Cartão Duplo\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_headline",
@@ -238,7 +272,8 @@
   },
   {
    "fieldname": "column_break_login_hero",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_subtext",
@@ -251,7 +286,7 @@
    "fieldname": "section_login_overlay",
    "fieldtype": "Section Break",
    "label": "Imagem e Película",
-   "depends_on": "eval:[\"Clássico\", \"Dividido\", \"Painel Lateral\", \"Vidro\", \"Imersivo\", \"Foco\", \"Moldura\"].includes(doc.login_style)",
+   "depends_on": "eval:doc.custom_login && ([\"Clássico\", \"Dividido\", \"Painel Lateral\", \"Vidro\", \"Imersivo\", \"Foco\", \"Moldura\"].includes(doc.login_style))",
    "description": "Só quando há Imagem de Fundo."
   },
   {
@@ -263,7 +298,8 @@
   },
   {
    "fieldname": "column_break_login_overlay",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_overlay_color",
@@ -284,7 +320,7 @@
    "fieldname": "section_login_panel",
    "fieldtype": "Section Break",
    "label": "Painel e Disposição",
-   "depends_on": "eval:[\"Dividido\", \"Painel Lateral\", \"Imersivo\", \"Moldura\", \"Cartão Duplo\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Dividido\", \"Painel Lateral\", \"Imersivo\", \"Moldura\", \"Cartão Duplo\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_panel_side",
@@ -319,7 +355,8 @@
   },
   {
    "fieldname": "column_break_login_panel",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_panel_logo",
@@ -348,7 +385,7 @@
    "fieldname": "section_login_vivid",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Vívido",
-   "depends_on": "eval:[\"Vívido\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Vívido\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_vivid_second",
@@ -358,7 +395,8 @@
   },
   {
    "fieldname": "column_break_login_vivid",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_vivid_angle",
@@ -371,7 +409,7 @@
    "fieldname": "section_login_glass",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Vidro",
-   "depends_on": "eval:[\"Vidro\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Vidro\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_glass_blur",
@@ -382,7 +420,8 @@
   },
   {
    "fieldname": "column_break_login_glass",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_glass_opacity",
@@ -395,7 +434,7 @@
    "fieldname": "section_login_minimal",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Minimalista",
-   "depends_on": "eval:[\"Minimalista\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Minimalista\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_minimal_align",
@@ -407,7 +446,8 @@
   },
   {
    "fieldname": "column_break_login_minimal",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_minimal_line",
@@ -419,7 +459,7 @@
    "fieldname": "section_login_night",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Noite",
-   "depends_on": "eval:[\"Noite\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Noite\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_night_bg",
@@ -429,7 +469,8 @@
   },
   {
    "fieldname": "column_break_login_night",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_night_glow",
@@ -448,7 +489,7 @@
    "fieldname": "section_login_focus",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Foco",
-   "depends_on": "eval:[\"Foco\"].includes(doc.login_style)",
+   "depends_on": "eval:doc.custom_login && ([\"Foco\"].includes(doc.login_style))",
    "description": "Campos translúcidos em pílula, com ícones."
   },
   {
@@ -462,7 +503,7 @@
    "fieldname": "section_login_frame",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Moldura",
-   "depends_on": "eval:[\"Moldura\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Moldura\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_frame_bg",
@@ -472,7 +513,8 @@
   },
   {
    "fieldname": "column_break_login_frame",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_frame_illustration",
@@ -485,7 +527,7 @@
    "fieldname": "section_login_duo",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Cartão Duplo",
-   "depends_on": "eval:[\"Cartão Duplo\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Cartão Duplo\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_duo_shapes",
@@ -495,7 +537,8 @@
   },
   {
    "fieldname": "column_break_login_duo",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_duo_shape_1",
@@ -515,7 +558,7 @@
    "fieldname": "section_login_aurora",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Aurora",
-   "depends_on": "eval:[\"Aurora\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Aurora\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_aurora_tone",
@@ -534,7 +577,8 @@
   },
   {
    "fieldname": "column_break_login_aurora",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_aurora_color_1",
@@ -552,7 +596,7 @@
    "fieldname": "section_login_type",
    "fieldtype": "Section Break",
    "label": "Opções do Estilo Tipográfico",
-   "depends_on": "eval:[\"Tipográfico\"].includes(doc.login_style)"
+   "depends_on": "eval:doc.custom_login && ([\"Tipográfico\"].includes(doc.login_style))"
   },
   {
    "fieldname": "login_type_text",
@@ -569,7 +613,8 @@
   },
   {
    "fieldname": "column_break_login_type",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_type_bg",
@@ -587,7 +632,8 @@
    "fieldname": "section_login_colors",
    "fieldtype": "Section Break",
    "label": "Cores",
-   "description": "Vazio: usa as Cores Globais."
+   "description": "Vazio: usa as Cores Globais.",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_accent",
@@ -597,7 +643,8 @@
   },
   {
    "fieldname": "column_break_login_colors",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_card_bg",
@@ -609,7 +656,8 @@
    "fieldname": "section_login_form",
    "fieldtype": "Section Break",
    "label": "Formulário",
-   "description": "Para todos os estilos."
+   "description": "Para todos os estilos.",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_field_icons",
@@ -620,7 +668,8 @@
   },
   {
    "fieldname": "column_break_login_form",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "depends_on": "custom_login"
   },
   {
    "fieldname": "login_field_shape",
@@ -804,7 +853,8 @@
    "label": "Barra Superior",
    "options": "Vidro\nSólida",
    "default": "Vidro",
-   "description": "Vidro: translúcida e desfocada. Sólida: fundo opaco."
+   "description": "Vidro: translúcida e desfocada. Sólida: fundo opaco.",
+   "depends_on": "theme_navbar"
   },
   {
    "fieldname": "navbar_logo_position",
@@ -830,8 +880,9 @@
    "fieldname": "font_family",
    "fieldtype": "Select",
    "label": "Fonte",
-   "options": "Inter\nNunito Sans\nRoboto\nOutfit\nOpen Sans\nLato",
-   "default": "Inter"
+   "options": "Padrão do Frappe\nInter\nNunito Sans\nRoboto\nOutfit\nOpen Sans\nLato",
+   "default": "Inter",
+   "description": "Padrão do Frappe: não muda a fonte do sistema."
   },
   {
    "fieldname": "border_radius",
@@ -846,6 +897,140 @@
    "label": "Activar Animações",
    "default": "1",
    "description": "Transições e o pequeno levantar dos atalhos ao passar o rato."
+  },
+  {
+   "fieldname": "section_desk_parts",
+   "fieldtype": "Section Break",
+   "label": "Partes com o Tema",
+   "description": "Desligue uma parte para a deixar exactamente como no Frappe."
+  },
+  {
+   "fieldname": "theme_navbar",
+   "fieldtype": "Check",
+   "label": "Barra Superior",
+   "default": "1",
+   "description": "Fundo, linha de destaque e pesquisa."
+  },
+  {
+   "fieldname": "theme_sidebar",
+   "fieldtype": "Check",
+   "label": "Barra Lateral",
+   "default": "1",
+   "description": "Itens, item activo e ícones."
+  },
+  {
+   "fieldname": "theme_workspace",
+   "fieldtype": "Check",
+   "label": "Áreas de Trabalho",
+   "default": "1",
+   "description": "Fundo, cartões, atalhos e listas de links."
+  },
+  {
+   "fieldname": "column_break_desk_parts",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "theme_lists",
+   "fieldtype": "Check",
+   "label": "Listas",
+   "default": "1",
+   "description": "Realce das linhas, cabeçalho, barra de filtros, paginação e lista vazia."
+  },
+  {
+   "fieldname": "theme_tabs",
+   "fieldtype": "Check",
+   "label": "Separadores dos Formulários",
+   "default": "1",
+   "description": "Separador activo sublinhado na cor principal."
+  },
+  {
+   "fieldname": "theme_fields",
+   "fieldtype": "Check",
+   "label": "Campos e Sugestões",
+   "default": "1",
+   "description": "Contorno de foco na cor principal e listas de sugestões (pesquisa e campos de ligação)."
+  },
+  {
+   "fieldname": "section_desk_pages",
+   "fieldtype": "Section Break",
+   "label": "Listas e Formulários"
+  },
+  {
+   "fieldname": "primary_buttons",
+   "fieldtype": "Select",
+   "label": "Botões Principais",
+   "options": "Cor Principal\nEscuro (Frappe)",
+   "default": "Cor Principal",
+   "description": "Guardar, Novo, Submeter e outros botões principais; também os separadores activos e as caixas marcadas."
+  },
+  {
+   "fieldname": "page_cards",
+   "fieldtype": "Check",
+   "label": "Páginas em Cartão",
+   "default": "1",
+   "description": "Listas e formulários em cartões arredondados sobre o fundo cinzento, como as Áreas de Trabalho."
+  },
+  {
+   "fieldname": "tint_blue_indicators",
+   "fieldtype": "Check",
+   "label": "Estados Azuis na Cor Principal",
+   "default": "1",
+   "description": "Etiquetas como \"Enabled\" ou \"Open\" usam a cor principal. Verde, vermelho e laranja mantêm o seu significado."
+  },
+  {
+   "fieldname": "column_break_desk_pages",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fit_lists",
+   "fieldtype": "Check",
+   "label": "Listas Ajustadas ao Conteúdo",
+   "default": "1",
+   "description": "A lista termina nas linhas que tem, com a paginação logo a seguir, em vez de ocupar o ecrã todo."
+  },
+  {
+   "fieldname": "hide_list_activity",
+   "fieldtype": "Check",
+   "label": "Esconder Gostos e Comentários nas Listas",
+   "default": "0",
+   "description": "Remove o coração e o contador de comentários de cada linha."
+  },
+  {
+   "fieldname": "section_desk_forms",
+   "fieldtype": "Section Break",
+   "label": "Formulários"
+  },
+  {
+   "fieldname": "form_section_bars",
+   "fieldtype": "Check",
+   "label": "Títulos das Secções com Barra",
+   "default": "1",
+   "description": "Uma pequena barra na cor principal antes de cada título de secção (\"Defaults\", \"More Information\"...)."
+  },
+  {
+   "fieldname": "form_monogram",
+   "fieldtype": "Check",
+   "label": "Iniciais do Documento na Cor Principal",
+   "default": "1",
+   "description": "Documentos sem imagem mostram as iniciais num quadrado na cor principal, em vez de cinzento."
+  },
+  {
+   "fieldname": "column_break_desk_forms",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "form_timeline",
+   "fieldtype": "Check",
+   "label": "Actividade Redesenhada",
+   "default": "1",
+   "description": "Linha do tempo com traço e pontos na cor principal, comentários em cartões, botões Novo Email / Novo Evento em pílula e caixa de comentário a condizer."
+  },
+  {
+   "fieldname": "form_sidebar_tidy",
+   "fieldtype": "Check",
+   "label": "Barra Lateral do Formulário Arrumada",
+   "default": "1",
+   "description": "Atribuído a, Anexos, Etiquetas e Partilhar como linhas com realce, botões \"+\" redondos e \"Seguir\" como botão."
   },
   {
    "fieldname": "tab_workspace",
@@ -873,7 +1058,8 @@
    "fieldtype": "Check",
    "label": "Marca de Água nas Áreas de Trabalho",
    "default": "1",
-   "description": "Logótipo grande e muito ténue no canto inferior direito (só em ecrãs largos)."
+   "description": "Logótipo grande e muito ténue no canto inferior direito (só em ecrãs largos). Precisa de \"Áreas de Trabalho\" em Partes com o Tema.",
+   "depends_on": "theme_workspace"
   },
   {
    "fieldname": "workspace_watermark",
@@ -1089,7 +1275,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 23:00:00.000000",
+ "modified": "2026-11-11 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",
