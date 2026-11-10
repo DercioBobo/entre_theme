@@ -1,10 +1,11 @@
 /**
  * Entre Theme — desk runtime.
  *
- * Applies the theme from Entre Theme Settings as CSS custom properties on
- * <html>. The payload arrives with the desk boot (api.boot_session), so no
- * extra request or asset rebuild is needed. All styling lives in the static
- * stylesheets, which read these variables.
+ * Applies the theme from Entre Theme Settings: colours, radius and font as
+ * CSS custom properties on <html>, on/off parts as et-* classes on <body>.
+ * The payload arrives with the desk boot (api.boot_session), so no extra
+ * request or asset rebuild is needed. All styling lives in the static
+ * stylesheet (css/theme.css), which reads these variables and classes.
  */
 (function () {
 	"use strict";
@@ -40,12 +41,28 @@
 		if (link.href !== url) link.href = url;
 	}
 
+	var BODY_CLASSES = ["et-navbar-glass", "et-hide-counts", "et-sidebar-divider", "et-ws-watermark", "et-no-anim"];
+
+	function setBodyClasses(classes) {
+		var body = document.body;
+		if (!body) {
+			document.addEventListener("DOMContentLoaded", function () {
+				setBodyClasses(classes);
+			});
+			return;
+		}
+		BODY_CLASSES.forEach(function (name) {
+			body.classList.toggle(name, (classes || []).indexOf(name) !== -1);
+		});
+	}
+
 	function apply(payload) {
 		if (!payload || !payload.vars) return;
 		var root = document.documentElement;
 		Object.keys(payload.vars).forEach(function (name) {
 			root.style.setProperty(name, payload.vars[name]);
 		});
+		setBodyClasses(payload.body_classes);
 		loadFont(payload);
 		setStyleTag("entre-custom-css", payload.custom_css);
 	}

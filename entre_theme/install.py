@@ -11,6 +11,10 @@ def after_install():
 			doc.update(DEFAULTS)
 			doc.save(ignore_permissions=True)
 			frappe.db.commit()
+		else:
+			from entre_theme.print_style import sync
+
+			sync()
 	except Exception:
 		# DocType may not yet be available during the very first migrate.
 		pass

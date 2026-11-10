@@ -10,9 +10,6 @@ app_license = "mit"
 # ─────────────────────────────────────────────
 app_include_css = [
 	"/assets/entre_theme/css/theme.css",
-	"/assets/entre_theme/css/components/navbar.css",
-	"/assets/entre_theme/css/components/sidebar.css",
-	"/assets/entre_theme/css/components/forms.css",
 ]
 app_include_js = [
 	"/assets/entre_theme/js/theme.js",
@@ -31,4 +28,6 @@ page_renderer = ["entre_theme.overrides.login_renderer.LoginPageRenderer"]
 # Install / Uninstall Hooks
 # ─────────────────────────────────────────────
 after_install = "entre_theme.install.after_install"
+# Re-render the "Entre Theme" Print Style (the template may have changed)
+after_migrate = "entre_theme.print_style.sync"
 before_uninstall = "entre_theme.install.before_uninstall"

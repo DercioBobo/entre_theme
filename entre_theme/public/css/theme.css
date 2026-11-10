@@ -1,90 +1,466 @@
 /* =============================================================
-   Entre Theme — Main Frappe Desk Theme Engine
+   Entre Theme — desk
+
+   Light, frosted look with one brand accent. Every configurable
+   value comes from Entre Theme Settings:
+     - colours / radius / font: CSS variables set on <html> by theme.js
+     - on/off parts: classes set on <body> by theme.js
+         et-navbar-glass     frosted navbar (otherwise solid)
+         et-hide-counts      no count badges on shortcuts
+         et-ws-watermark     faint logo behind workspaces
+         et-sidebar-divider  thin line between sidebar and content
+         et-no-anim          no transitions / hover lifts
    ============================================================= */
 
-/* ── Defaults ────────────────────────────────────────────────── */
-/* Mirrors api.DEFAULTS. theme.js overrides these inline on <html>
-   with the values saved in Entre Theme Settings. */
+/* ── Tokens ─────────────────────────────────────────────────── */
+/* --et-accent, --et-accent-text, --et-page-bg-light, --et-radius,
+   --et-font and --et-ws-watermark-img are set inline by theme.js;
+   the values here are the fallbacks (same as api.DEFAULTS). */
 :root {
-	--font-family: 'Inter', system-ui, -apple-system, sans-serif;
-	--page-bg: #f3f4f6;
-	--border-radius: 8px;
-	--transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	--et-accent: #ec932c;
+	--et-accent-text: #ffffff;
+	--et-radius: 12px;
 
-	--card-bg: #ffffff;
-	--card-border: #e5e7eb;
-	--card-shadow: 0px 4px 6px rgba(0,0,0,0.05);
+	--et-page-bg: var(--et-page-bg-light, #f5f6f8);
+	--et-card-bg: #ffffff;
+	--et-text: #0f172a;
+	--et-text-soft: #334155;
+	--et-icon-muted: #94a3b8;
+	--et-border: rgba(15, 23, 42, 0.07);
+	--et-navbar-bg: rgba(255, 255, 255, 0.72);
+	--et-navbar-solid-bg: #ffffff;
+	--et-search-bg: #f1f3f6;
+	--et-search-focus-bg: #ffffff;
 
-	--input-bg: #f9fafb;
-	--input-border: #d1d5db;
-	--input-focus-ring: #2B5CE6;
-
-	--primary-color: #2B5CE6;
-	--primary-hover: #1e40af;
-	--primary-text: #ffffff;
-	--button-shadow: none;
-
-	--navbar-bg: #1a1a2e;
-	--sidebar-bg: #16213e;
-	--sidebar-active-bg: #1f2937;
-	--sidebar-text: #9ca3af;
-	--sidebar-text-active: #ffffff;
+	--et-accent-soft: color-mix(in srgb, var(--et-accent) 8%, transparent);
+	--et-accent-tint: color-mix(in srgb, var(--et-accent) 12%, transparent);
+	--et-accent-border: color-mix(in srgb, var(--et-accent) 28%, transparent);
+	--et-accent-ring: color-mix(in srgb, var(--et-accent) 50%, transparent);
+	--et-accent-glow: color-mix(in srgb, var(--et-accent) 18%, transparent);
+	--et-accent-line: color-mix(in srgb, var(--et-accent) 16%, transparent);
 }
 
-/* ── Frappe Variable Overrides ──────────────────────────────── */
-/* This maps Frappe's hardcoded utility variables to our dynamic variables */
-:root {
-	--primary: var(--primary-color);
-	--blue-500: var(--primary-color);
-	--bg-color: var(--page-bg);
-	--bg-light-gray: var(--page-bg);
-	--bg-light: var(--page-bg);
-	--border-color: var(--card-border);
-	--border-radius-md: var(--border-radius);
-	--control-bg: var(--input-bg);
+/* Frappe's dark theme: same layout, dark surfaces. The page background
+   setting only applies to the light theme. */
+:root[data-theme="dark"] {
+	--et-page-bg: #161616;
+	--et-card-bg: #1f1f1f;
+	--et-text: #f3f4f6;
+	--et-text-soft: #cbd5e1;
+	--et-icon-muted: #64748b;
+	--et-border: rgba(255, 255, 255, 0.08);
+	--et-navbar-bg: rgba(23, 23, 23, 0.72);
+	--et-navbar-solid-bg: #1f1f1f;
+	--et-search-bg: #262626;
+	--et-search-focus-bg: #1f1f1f;
 }
 
-/* ── Base ───────────────────────────────────────────────────── */
-body, .page-body {
-	font-family: var(--font-family);
-	background-color: var(--page-bg) !important;
+body {
+	font-family: var(--et-font, var(--font-stack, "Inter", system-ui, sans-serif));
 }
 
-a,
-.btn,
-.form-control,
-.menu-item,
-.sidebar-item-container {
-	transition: var(--transition);
+/* ── Navbar ─────────────────────────────────────────────────── */
+.navbar {
+	/* The search dropdown paints itself with --bg-color, which the
+	   workspace watermark makes transparent. */
+	--bg-color: var(--et-card-bg);
+	background: var(--et-navbar-solid-bg) !important;
+	border-top: 2px solid var(--et-accent) !important;
+	border-bottom: 1px solid var(--et-border) !important;
+	box-shadow: 0 6px 20px -12px rgba(15, 23, 42, 0.18) !important;
 }
 
-/* ── Cartões, Elementos Flutuantes e Widgets (SaaS Style) ───── */
-.frappe-card,
-.widget,
-.widget-group .widget,
+body.et-navbar-glass .navbar {
+	background: var(--et-navbar-bg) !important;
+	-webkit-backdrop-filter: saturate(180%) blur(16px);
+	backdrop-filter: saturate(180%) blur(16px);
+}
+
+.navbar .search-bar .form-control,
+.navbar #navbar-search {
+	background: var(--et-search-bg) !important;
+	border: 1px solid transparent !important;
+	border-radius: 10px !important;
+	color: var(--et-text) !important;
+	transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.navbar .search-bar .form-control:focus,
+.navbar #navbar-search:focus {
+	background: var(--et-search-focus-bg) !important;
+	border-color: var(--et-accent-border) !important;
+	box-shadow: 0 0 0 3px var(--et-accent-soft) !important;
+}
+
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+	color: var(--et-text-soft) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+	color: var(--et-text) !important;
+}
+
+.navbar-home img {
+	max-height: 60px !important;
+}
+
+/* ── Dropdown lists (search bar and link fields) ────────────── */
 .awesomplete > ul,
-.modal-content,
-.desktop-list,
-.list-item,
-.report-view {
-	background-color: var(--card-bg) !important;
-	border-radius: var(--border-radius) !important;
-	box-shadow: var(--card-shadow) !important;
-	border: 1px solid var(--card-border) !important;
+ul[id^="awesomplete_list"],
+.search-bar ul[role="listbox"] {
+	background: var(--et-card-bg) !important;
+	background-color: var(--et-card-bg) !important;
+	opacity: 1 !important;
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+	border: 1px solid var(--et-border) !important;
+	box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.25) !important;
 }
 
-/* Fallback para evitar double-border nas tabelas */
-.list-item { border-left: none !important; border-right: none !important; }
-
-/* ── Module icons on admin home ─────────────────────────────── */
-.modules-section .widget.links-widget-box {
-	border-radius: var(--border-radius) !important;
-	box-shadow: var(--card-shadow) !important;
-	border: 1px solid var(--card-border) !important;
-	transition: var(--transition) !important;
+/* One highlight at a time: the keyboard selection (Frappe pre-selects the
+   first result for Enter) gives way to the row under the mouse. */
+.awesomplete > ul > li:hover,
+.awesomplete > ul > li[aria-selected="true"] {
+	background: var(--et-accent-soft) !important;
+	color: var(--et-text) !important;
 }
 
-.modules-section .widget.links-widget-box:hover {
-	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
-	transform: translateY(-2px);
+.awesomplete > ul:hover > li[aria-selected="true"]:not(:hover) {
+	background: transparent !important;
+}
+
+/* ── Workspace page ─────────────────────────────────────────── */
+body[data-route^="Workspaces"] {
+	--bg-color: var(--et-page-bg);
+	background: var(--et-page-bg) !important;
+}
+
+body[data-route^="Workspaces"] .layout-main-section {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/* Faint logo fixed bottom-right, behind all content (desktop only) */
+@media (min-width: 992px) {
+	body.et-ws-watermark[data-route^="Workspaces"] {
+		/* Own layer, so the mark sits above the page background but
+		   below the content. Frappe paints its page containers with
+		   --bg-color, which would cover the mark: make them see-through,
+		   the body keeps the background. */
+		isolation: isolate;
+		--bg-color: transparent;
+	}
+
+	/* The sticky page title stays solid so content doesn't show through it */
+	body.et-ws-watermark[data-route^="Workspaces"] .page-head {
+		background: var(--et-page-bg) !important;
+	}
+
+	body.et-ws-watermark[data-route^="Workspaces"]::before {
+		content: "";
+		position: fixed;
+		right: -90px;
+		bottom: -90px;
+		width: 460px;
+		height: 460px;
+		background: var(--et-ws-watermark-img, none) no-repeat center / contain;
+		opacity: 0.04;
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	body.et-sidebar-divider[data-route^="Workspaces"] .layout-side-section {
+		border-right: 1px solid var(--et-border);
+		padding-right: 16px !important;
+		min-height: calc(100vh - 140px);
+	}
+}
+
+/* ── Workspace cards ────────────────────────────────────────── */
+body[data-route^="Workspaces"] .widget:not(.spacer) {
+	background: var(--et-card-bg) !important;
+	border: 1px solid var(--et-border) !important;
+	border-radius: var(--et-radius) !important;
+	box-shadow:
+		0 1px 2px rgba(15, 23, 42, 0.04),
+		0 2px 8px -2px rgba(15, 23, 42, 0.05) !important;
+	transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+body[data-route^="Workspaces"] .widget:not(.spacer):hover {
+	border-color: var(--et-accent-border) !important;
+}
+
+body[data-route^="Workspaces"] .widget.spacer {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+}
+
+/* ── Shortcuts ──────────────────────────────────────────────── */
+.widget.shortcut-widget-box {
+	padding: 14px 16px !important;
+}
+
+.widget.shortcut-widget-box:hover {
+	transform: translateY(-1px) !important;
+	box-shadow:
+		0 2px 4px rgba(15, 23, 42, 0.05),
+		0 8px 20px -10px var(--et-accent-glow) !important;
+}
+
+.widget.shortcut-widget-box:focus-visible {
+	outline: 2px solid var(--et-accent-ring) !important;
+	outline-offset: 2px;
+}
+
+.shortcut-widget-box .widget-head {
+	display: flex !important;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.shortcut-widget-box .widget-title {
+	font-weight: 500;
+	color: var(--et-text);
+}
+
+/* Label with an icon tile in front of it */
+.shortcut-widget-box .widget-label {
+	flex: 1;
+	min-width: 0;
+	position: relative;
+	padding-left: 42px;
+	min-height: 30px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.shortcut-widget-box .widget-label::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 30px;
+	height: 30px;
+	margin-top: -15px;
+	border-radius: 8px;
+	background: var(--et-accent-tint);
+	transition: background 0.2s ease;
+}
+
+.shortcut-widget-box .widget-label::after {
+	content: "";
+	position: absolute;
+	left: 8px;
+	top: 50%;
+	width: 14px;
+	height: 14px;
+	margin-top: -7px;
+	background: var(--et-accent);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E") center / contain no-repeat;
+	transition: background 0.2s ease;
+}
+
+.shortcut-widget-box:hover .widget-label::before {
+	background: var(--et-accent);
+}
+
+.shortcut-widget-box:hover .widget-label::after {
+	background: var(--et-accent-text);
+}
+
+.shortcut-widget-box .widget-control {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+.shortcut-widget-box .widget-control svg {
+	margin-left: 0 !important;
+	--icon-stroke: var(--et-accent);
+	opacity: 0;
+	transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.shortcut-widget-box:hover .widget-control svg {
+	opacity: 1;
+	transform: translate(2px, -2px);
+}
+
+body.et-hide-counts .shortcut-widget-box .widget-control .indicator-pill {
+	display: none !important;
+}
+
+/* ── Link cards ─────────────────────────────────────────────── */
+.links-widget-box.widget:not(.spacer) {
+	padding: 16px !important;
+}
+
+.links-widget-box .widget-head {
+	margin: -16px -16px 10px !important;
+	padding: 14px 16px !important;
+	background: var(--et-accent-soft);
+	border-bottom: 1px solid var(--et-accent-line);
+	border-radius: calc(var(--et-radius) - 1px) calc(var(--et-radius) - 1px) 0 0;
+}
+
+.links-widget-box .widget-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--et-text);
+	letter-spacing: -0.01em;
+}
+
+.links-widget-box .widget-title::before {
+	content: "";
+	flex-shrink: 0;
+	width: 4px;
+	height: 16px;
+	border-radius: 2px;
+	background: var(--et-accent);
+}
+
+.links-widget-box .widget-body {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.links-widget-box .link-item {
+	display: block;
+	padding: 8px 10px !important;
+	margin: 0 -10px;
+	border-radius: 8px;
+	color: var(--et-text-soft) !important;
+	text-decoration: none !important;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.links-widget-box .link-item,
+.links-widget-box .link-content {
+	max-width: none !important;
+}
+
+.links-widget-box .link-content {
+	display: flex !important;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.links-widget-box .link-text {
+	flex: 1;
+	min-width: 0;
+	font-size: 13.5px;
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.links-widget-box .link-content svg {
+	flex-shrink: 0;
+	margin-left: 8px !important;
+	--icon-stroke: var(--et-accent);
+	opacity: 0;
+	transform: translate(-4px, 4px);
+	transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.links-widget-box .link-item:hover {
+	background: var(--et-accent-soft);
+	color: var(--et-text) !important;
+}
+
+.links-widget-box .link-item:hover svg {
+	opacity: 1;
+	transform: none;
+}
+
+.links-widget-box .link-item:focus-visible {
+	outline: 2px solid var(--et-accent-ring);
+	outline-offset: -2px;
+}
+
+@media (hover: none) {
+	.links-widget-box .link-content svg {
+		opacity: 0.5;
+		transform: none;
+	}
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
+.desk-sidebar .standard-sidebar-label {
+	font-size: 11px !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.06em;
+	color: var(--text-muted) !important;
+	margin-top: 6px;
+}
+
+.desk-sidebar .standard-sidebar-item {
+	position: relative;
+	border-radius: 8px !important;
+	margin-bottom: 1px;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.desk-sidebar .standard-sidebar-item:hover {
+	background: var(--et-accent-soft) !important;
+}
+
+.desk-sidebar .standard-sidebar-item .sidebar-item-label {
+	color: var(--et-text-soft);
+	font-weight: 500;
+}
+
+.desk-sidebar .standard-sidebar-item .sidebar-item-icon svg {
+	--icon-stroke: var(--et-icon-muted);
+}
+
+.desk-sidebar .standard-sidebar-item.selected {
+	background: var(--et-accent-tint) !important;
+}
+
+.desk-sidebar .standard-sidebar-item.selected::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 8px;
+	bottom: 8px;
+	width: 3px;
+	border-radius: 0 3px 3px 0;
+	background: var(--et-accent);
+}
+
+.desk-sidebar .standard-sidebar-item.selected .sidebar-item-label {
+	color: var(--et-text) !important;
+	font-weight: 600;
+}
+
+.desk-sidebar .standard-sidebar-item.selected .sidebar-item-icon svg {
+	--icon-stroke: var(--et-accent);
+}
+
+/* ── Animations off ─────────────────────────────────────────── */
+body.et-no-anim *,
+body.et-no-anim *::before,
+body.et-no-anim *::after {
+	transition: none !important;
+}
+
+body.et-no-anim .widget.shortcut-widget-box:hover,
+body.et-no-anim .shortcut-widget-box:hover .widget-control svg {
+	transform: none !important;
 }

@@ -9,37 +9,33 @@
   "logo_url",
   "login_bg_url",
   "company_tagline",
-  "tab_global",
-  "font_family",
-  "enable_animations",
-  "column_break_global",
-  "page_bg",
-  "border_radius",
-  "tab_cards",
-  "card_bg",
-  "card_border",
-  "column_break_cards",
-  "card_shadow",
-  "tab_forms",
-  "input_bg",
-  "input_border",
-  "column_break_forms",
-  "input_focus_ring",
-  "tab_buttons",
+  "tab_appearance",
   "primary_color",
-  "primary_color_hover",
-  "column_break_buttons",
-  "button_shadow",
   "primary_text_color",
-  "tab_sidebar",
-  "navbar_bg",
-  "sidebar_bg",
-  "column_break_sidebar",
-  "sidebar_active_bg",
-  "sidebar_text",
-  "sidebar_text_active",
+  "page_bg",
+  "column_break_appearance",
+  "navbar_style",
+  "font_family",
+  "border_radius",
+  "enable_animations",
+  "tab_workspace",
+  "hide_shortcut_counts",
+  "sidebar_divider",
+  "column_break_workspace",
+  "show_workspace_watermark",
+  "workspace_watermark",
+  "tab_print",
+  "manage_print_style",
+  "set_default_print_style",
+  "print_accent",
+  "print_dark_color",
+  "column_break_print",
+  "print_font_family",
+  "print_font_size",
+  "print_watermark_opacity",
   "tab_advanced",
-  "custom_css"
+  "custom_css",
+  "print_custom_css"
  ],
  "fields": [
   {
@@ -50,196 +46,199 @@
   {
    "fieldname": "logo_url",
    "fieldtype": "Attach Image",
-   "label": "Log\u00f3tipo"
+   "label": "Logótipo",
+   "description": "Usado na página de login e, se não houver outro, como marca de água das áreas de trabalho."
   },
   {
    "fieldname": "login_bg_url",
    "fieldtype": "Attach Image",
-   "label": "Fundo da P\u00e1gina de Login"
+   "label": "Fundo da Página de Login"
   },
   {
    "fieldname": "company_tagline",
    "fieldtype": "Data",
-   "label": "Slogan"
+   "label": "Slogan",
+   "description": "Mostrado na página de login."
   },
   {
-   "fieldname": "tab_global",
+   "fieldname": "tab_appearance",
    "fieldtype": "Tab Break",
-   "label": "Tipografia & Arredondamento"
+   "label": "Aparência"
+  },
+  {
+   "fieldname": "primary_color",
+   "fieldtype": "Color",
+   "label": "Cor de Destaque",
+   "default": "#ec932c",
+   "description": "Barra superior, ícones dos atalhos, cartões, menu lateral e página de login."
+  },
+  {
+   "fieldname": "primary_text_color",
+   "fieldtype": "Color",
+   "label": "Texto sobre a Cor de Destaque",
+   "default": "#ffffff"
+  },
+  {
+   "fieldname": "page_bg",
+   "fieldtype": "Color",
+   "label": "Fundo da Página",
+   "default": "#f5f6f8",
+   "description": "Só no tema claro; o tema escuro do Frappe usa fundos escuros próprios."
+  },
+  {
+   "fieldname": "column_break_appearance",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "navbar_style",
+   "fieldtype": "Select",
+   "label": "Barra Superior",
+   "options": "Vidro\nSólida",
+   "default": "Vidro",
+   "description": "Vidro: translúcida e desfocada. Sólida: fundo opaco."
   },
   {
    "fieldname": "font_family",
    "fieldtype": "Select",
    "label": "Fonte",
-   "options": "Inter\nRoboto\nOutfit\nOpen Sans\nLato",
+   "options": "Inter\nNunito Sans\nRoboto\nOutfit\nOpen Sans\nLato",
    "default": "Inter"
-  },
-  {
-   "fieldname": "enable_animations",
-   "fieldtype": "Check",
-   "label": "Activar Anima\u00e7\u00f5es",
-   "default": "1"
-  },
-  {
-   "fieldname": "column_break_global",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "page_bg",
-   "fieldtype": "Color",
-   "label": "Background da P\u00e1gina",
-   "default": "#f3f4f6"
   },
   {
    "fieldname": "border_radius",
    "fieldtype": "Select",
-   "label": "Arredondamento Global",
-   "options": "4px\n6px\n8px\n12px\n99px",
-   "default": "8px"
+   "label": "Arredondamento dos Cartões",
+   "options": "4px\n6px\n8px\n12px\n16px",
+   "default": "12px"
   },
   {
-   "fieldname": "tab_cards",
-   "fieldtype": "Tab Break",
-   "label": "Cart\u00f5es & Widgets"
-  },
-  {
-   "fieldname": "card_bg",
-   "fieldtype": "Color",
-   "label": "Fundo do Cart\u00e3o",
-   "default": "#ffffff"
-  },
-  {
-   "fieldname": "card_border",
-   "fieldtype": "Color",
-   "label": "Borda do Cart\u00e3o",
-   "default": "#e5e7eb"
-  },
-  {
-   "fieldname": "column_break_cards",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "card_shadow",
-   "fieldtype": "Select",
-   "label": "Sombra do Cart\u00e3o",
-   "options": "none\n0px 1px 3px rgba(0,0,0,0.1)\n0px 4px 6px rgba(0,0,0,0.05)\n0px 10px 15px rgba(0,0,0,0.1)",
-   "default": "0px 4px 6px rgba(0,0,0,0.05)"
-  },
-  {
-   "fieldname": "tab_forms",
-   "fieldtype": "Tab Break",
-   "label": "Formul\u00e1rios & Inputs"
-  },
-  {
-   "fieldname": "input_bg",
-   "fieldtype": "Color",
-   "label": "Fundo do Input",
-   "default": "#f9fafb"
-  },
-  {
-   "fieldname": "input_border",
-   "fieldtype": "Color",
-   "label": "Borda do Input",
-   "default": "#d1d5db"
-  },
-  {
-   "fieldname": "column_break_forms",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "input_focus_ring",
-   "fieldtype": "Color",
-   "label": "Anel de Foco",
-   "default": "#2B5CE6"
-  },
-  {
-   "fieldname": "tab_buttons",
-   "fieldtype": "Tab Break",
-   "label": "Bot\u00f5es Principais"
-  },
-  {
-   "fieldname": "primary_color",
-   "fieldtype": "Color",
-   "label": "Cor Principal do Bot\u00e3o",
-   "default": "#2B5CE6"
-  },
-  {
-   "fieldname": "primary_color_hover",
-   "fieldtype": "Color",
-   "label": "Cor ao passar o Rato (Hover)",
-   "default": "#1e40af"
-  },
-  {
-   "fieldname": "column_break_buttons",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "button_shadow",
+   "fieldname": "enable_animations",
    "fieldtype": "Check",
-   "label": "Activar Sombra/Glow no Bot\u00e3o",
-   "default": "0"
+   "label": "Activar Animações",
+   "default": "1",
+   "description": "Transições e o pequeno levantar dos atalhos ao passar o rato."
   },
   {
-   "fieldname": "primary_text_color",
-   "fieldtype": "Color",
-   "label": "Cor do Texto",
-   "default": "#ffffff"
-  },
-  {
-   "fieldname": "tab_sidebar",
+   "fieldname": "tab_workspace",
    "fieldtype": "Tab Break",
-   "label": "Barra Lateral e Topo"
+   "label": "Áreas de Trabalho"
   },
   {
-   "fieldname": "navbar_bg",
-   "fieldtype": "Color",
-   "label": "Fundo da Barra Superior",
-   "default": "#1a1a2e"
+   "fieldname": "hide_shortcut_counts",
+   "fieldtype": "Check",
+   "label": "Esconder Contadores nos Atalhos",
+   "default": "1"
   },
   {
-   "fieldname": "sidebar_bg",
-   "fieldtype": "Color",
-   "label": "Fundo do Menu Lateral",
-   "default": "#16213e"
+   "fieldname": "sidebar_divider",
+   "fieldtype": "Check",
+   "label": "Linha entre o Menu Lateral e o Conteúdo",
+   "default": "1"
   },
   {
-   "fieldname": "column_break_sidebar",
+   "fieldname": "column_break_workspace",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "sidebar_active_bg",
-   "fieldtype": "Color",
-   "label": "Fundo Activo",
-   "default": "#1f2937"
+   "fieldname": "show_workspace_watermark",
+   "fieldtype": "Check",
+   "label": "Marca de Água nas Áreas de Trabalho",
+   "default": "1",
+   "description": "Logótipo grande e muito ténue no canto inferior direito (só em ecrãs largos)."
   },
   {
-   "fieldname": "sidebar_text",
-   "fieldtype": "Color",
-   "label": "Texto do Menu",
-   "default": "#9ca3af"
+   "fieldname": "workspace_watermark",
+   "fieldtype": "Attach Image",
+   "label": "Imagem da Marca de Água",
+   "depends_on": "show_workspace_watermark",
+   "description": "Vazio: usa o Logótipo."
   },
   {
-   "fieldname": "sidebar_text_active",
+   "fieldname": "tab_print",
+   "fieldtype": "Tab Break",
+   "label": "Impressão"
+  },
+  {
+   "fieldname": "manage_print_style",
+   "fieldtype": "Check",
+   "label": "Gerar o Estilo de Impressão \"Entre Theme\"",
+   "default": "1",
+   "description": "Ao gravar, o Print Style \"Entre Theme\" é actualizado com estas opções."
+  },
+  {
+   "fieldname": "set_default_print_style",
+   "fieldtype": "Check",
+   "label": "Usar como Estilo de Impressão por Omissão",
+   "default": "0",
+   "depends_on": "manage_print_style",
+   "description": "Selecciona \"Entre Theme\" em Print Settings."
+  },
+  {
+   "fieldname": "print_accent",
    "fieldtype": "Color",
-   "label": "Texto Activo/Hover",
-   "default": "#ffffff"
+   "label": "Cor de Destaque na Impressão",
+   "depends_on": "manage_print_style",
+   "description": "Vazio: usa a Cor de Destaque."
+  },
+  {
+   "fieldname": "print_dark_color",
+   "fieldtype": "Color",
+   "label": "Cor Escura (cabeçalhos e totais)",
+   "default": "#111111",
+   "depends_on": "manage_print_style"
+  },
+  {
+   "fieldname": "column_break_print",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "print_font_family",
+   "fieldtype": "Select",
+   "label": "Fonte na Impressão",
+   "options": "Nunito Sans\nInter\nRoboto\nOpen Sans\nLato\nArial",
+   "default": "Nunito Sans",
+   "depends_on": "manage_print_style",
+   "description": "Fontes Google precisam de acesso à internet ao gerar o PDF; Arial não."
+  },
+  {
+   "fieldname": "print_font_size",
+   "fieldtype": "Int",
+   "label": "Tamanho do Texto (px)",
+   "default": "9",
+   "depends_on": "manage_print_style",
+   "description": "Os títulos e totais acompanham na mesma proporção."
+  },
+  {
+   "fieldname": "print_watermark_opacity",
+   "fieldtype": "Float",
+   "label": "Opacidade da Marca de Água",
+   "default": "0.06",
+   "precision": "2",
+   "depends_on": "manage_print_style"
   },
   {
    "fieldname": "tab_advanced",
    "fieldtype": "Tab Break",
-   "label": "Avan\u00e7ado"
+   "label": "Avançado"
   },
   {
    "fieldname": "custom_css",
    "fieldtype": "Code",
-   "label": "CSS Personalizado",
+   "label": "CSS Personalizado (Ecrã)",
    "options": "CSS"
+  },
+  {
+   "fieldname": "print_custom_css",
+   "fieldtype": "Code",
+   "label": "CSS Personalizado (Impressão)",
+   "options": "CSS",
+   "description": "Acrescentado ao fim do Print Style \"Entre Theme\"."
   }
  ],
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-01-01 10:00:00.000000",
+ "modified": "2026-11-10 16:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",
