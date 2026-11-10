@@ -1,0 +1,154 @@
+/* =============================================================
+   Entre Theme — website, portal and error pages
+
+   Loaded on every website page (web_include_css), but every rule is
+   gated by a class that entre_theme.website adds to <body>:
+     et-web              the theme is on ("Site, Portal e Páginas de Erro")
+     et-web-all          also the whole site and portal, not only errors
+     et-web-error-logo   logo instead of Frappe's 404 illustration
+     et-web-hide-chrome  no site header / footer on error pages
+
+   Variables (inline <style> in head_html): --et-primary,
+   --et-accent-text, --et-radius, --et-page-bg, --et-surface, --et-text,
+   --et-border, --et-font, --et-web-logo
+   ============================================================= */
+
+body.et-web {
+	--et-accent: var(--et-primary, #ec932c);
+	--et-accent-ink: color-mix(in oklch, var(--et-accent) 62%, black);
+	--et-accent-tint: color-mix(in srgb, var(--et-accent) 12%, transparent);
+	--et-accent-hover: color-mix(in srgb, var(--et-accent) 86%, black);
+}
+
+/* ── Error and message pages (404, 403, "Message", errors) ──── */
+html:has(> body.et-web .page-card),
+html:has(> body.et-web .error-page),
+body.et-web:has(.page-card),
+body.et-web:has(.error-page) {
+	background-color: var(--et-page-bg, #f5f6f8) !important;
+}
+
+body.et-web .page-card {
+	background: var(--et-surface, #ffffff);
+	color: var(--et-text, #0f172a);
+	border: 1px solid var(--et-border, #edeef1);
+	border-top: 3px solid var(--et-accent);
+	border-radius: var(--et-radius, 12px);
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 16px 40px -16px rgba(15, 23, 42, 0.16);
+	font-family: var(--et-font, inherit);
+}
+
+body.et-web .page-card .page-card-head {
+	border-bottom: none;
+	font-weight: 600;
+}
+
+body.et-web.et-web-error-logo .page-card::before {
+	content: "";
+	display: block;
+	height: 40px;
+	margin-bottom: 18px;
+	background: var(--et-web-logo) left center / contain no-repeat;
+}
+
+body.et-web .error-page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	font-family: var(--et-font, inherit);
+	color: var(--et-text, #0f172a);
+}
+
+body.et-web .error-page h2::after {
+	content: "";
+	display: block;
+	width: 48px;
+	height: 3px;
+	margin: 14px auto 0;
+	border-radius: 3px;
+	background: var(--et-accent);
+}
+
+body.et-web.et-web-error-logo .error-page .img-404 {
+	display: none;
+}
+
+body.et-web.et-web-error-logo .error-page::before {
+	content: "";
+	display: block;
+	width: min(220px, 70vw);
+	height: 72px;
+	margin: 0 auto 12px;
+	background: var(--et-web-logo) center / contain no-repeat;
+}
+
+body.et-web :is(.page-card, .error-page) .btn-primary {
+	background: var(--et-accent) !important;
+	border-color: var(--et-accent) !important;
+	color: var(--et-accent-text, #ffffff) !important;
+	border-radius: calc(var(--et-radius, 12px) * 0.66);
+}
+
+body.et-web :is(.page-card, .error-page) .btn-primary:hover {
+	background: var(--et-accent-hover) !important;
+}
+
+body.et-web .page-card a:not(.btn) {
+	color: var(--et-accent-ink);
+}
+
+/* Only the card on the page: no site header / footer */
+body.et-web-hide-chrome:has(.page-card, .error-page) :is(.navbar, .web-footer, body > header, body > footer) {
+	display: none !important;
+}
+
+body.et-web-hide-chrome:has(.page-card, .error-page) .page-card {
+	margin-top: 12vh;
+}
+
+/* ── Whole site and portal ("Todo o Site e Portal") ─────────── */
+body.et-web-all {
+	--primary: var(--et-accent);
+	--primary-color: var(--et-accent);
+	--btn-primary: var(--et-accent);
+	font-family: var(--et-font, inherit);
+}
+
+body.et-web-all .navbar {
+	border-top: 2px solid var(--et-accent);
+}
+
+body.et-web-all .btn-primary {
+	background: var(--et-accent) !important;
+	border-color: var(--et-accent) !important;
+	color: var(--et-accent-text, #ffffff) !important;
+}
+
+body.et-web-all .btn-primary:hover,
+body.et-web-all .btn-primary:focus {
+	background: var(--et-accent-hover) !important;
+	border-color: var(--et-accent-hover) !important;
+}
+
+body.et-web-all .form-control:focus {
+	border-color: color-mix(in srgb, var(--et-accent) 50%, transparent) !important;
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--et-accent) 15%, transparent) !important;
+}
+
+body.et-web-all input[type="checkbox"],
+body.et-web-all input[type="radio"] {
+	accent-color: var(--et-accent);
+}
+
+/* Portal sidebar (/me, /orders, /invoices…) */
+body.et-web-all .web-sidebar .sidebar-item a.active,
+body.et-web-all .web-sidebar .sidebar-item.active a {
+	color: var(--et-accent-ink) !important;
+	background: var(--et-accent-tint);
+	border-radius: 8px;
+}
+
+body.et-web-all .web-sidebar .sidebar-item a:hover {
+	color: var(--et-accent-ink);
+}
