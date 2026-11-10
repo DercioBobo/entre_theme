@@ -46,7 +46,8 @@
 		"et-logo-center", "et-logo-sidebar", "et-logo-sized",
 		"et-theme-navbar", "et-theme-sidebar", "et-theme-workspace", "et-theme-lists", "et-theme-tabs", "et-theme-fields",
 		"et-btn-accent", "et-page-cards", "et-tint-blue", "et-fit-lists", "et-hide-list-activity",
-		"et-section-bars", "et-doc-monogram", "et-timeline", "et-form-sidebar"
+		"et-section-bars", "et-doc-monogram", "et-timeline", "et-form-sidebar",
+		"et-width-wide", "et-width-full", "et-density-compact", "et-density-comfortable"
 	];
 
 	// ── Logo in the sidebar ───────────────────────────────────────

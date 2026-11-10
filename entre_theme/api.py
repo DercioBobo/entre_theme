@@ -6,6 +6,7 @@ DEFAULTS = {
 	# Cores globais (each area can override them, see AREA_COLORS)
 	"primary_color": "#ec932c",
 	"primary_text_color": "#ffffff",
+	"auto_text_on_accent": 1,
 	"dark_color": "#111111",
 	"page_bg": "#f5f6f8",
 	"surface_color": "#ffffff",
@@ -43,6 +44,8 @@ DEFAULTS = {
 	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",
+	"page_width": "Normal",
+	"density": "Normal",
 	"enable_animations": 1,
 	"navbar_style": "Vidro",
 	"navbar_logo_position": "Padrão",
@@ -113,6 +116,7 @@ OPTIONAL = (
 ) + AREA_COLORS
 
 CHECKS = {
+	"auto_text_on_accent",
 	"form_section_bars",
 	"form_monogram",
 	"form_timeline",
@@ -230,6 +234,56 @@ def sync_favicon(v):
 		frappe.log_error(title="Entre Theme: could not set the favicon")
 
 
+def _rgb(color):
+	"""(r, g, b) 0-255 from #rgb / #rrggbb, or None."""
+	c = (color or "").strip().lstrip("#")
+	if len(c) == 3:
+		c = "".join(ch * 2 for ch in c)
+	if len(c) != 6:
+		return None
+	try:
+		return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+	except ValueError:
+		return None
+
+
+def _luminance(rgb):
+	def channel(value):
+		value /= 255
+		return value / 12.92 if value <= 0.03928 else ((value + 0.055) / 1.055) ** 2.4
+
+	r, g, b = (channel(x) for x in rgb)
+	return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(color_a, color_b):
+	"""WCAG contrast ratio (1 to 21), or None for colours it can't read."""
+	a, b = _rgb(color_a), _rgb(color_b)
+	if not a or not b:
+		return None
+	high, low = sorted((_luminance(a), _luminance(b)), reverse=True)
+	return (high + 0.05) / (low + 0.05)
+
+
+def text_on(color):
+	"""White or near-black for text on the colour. White wins whenever it
+	reaches 3:1 (WCAG for bold / large text, which button labels are), so
+	brand colours keep white text unless they're light enough to need dark."""
+	on_white = contrast_ratio(color, "#ffffff")
+	if on_white is None:
+		return "#ffffff"
+	if on_white >= 3:
+		return "#ffffff"
+	return "#ffffff" if on_white >= contrast_ratio(color, "#111111") else "#111111"
+
+
+def accent_text(v, accent):
+	"""Text on the accent: automatic (black or white) or the chosen colour."""
+	if v["auto_text_on_accent"]:
+		return text_on(accent)
+	return v["primary_text_color"]
+
+
 def area_color(v, area_field, global_field):
 	"""An area's own colour, or the global one when the area has none."""
 	return v[area_field] or v[global_field]
@@ -248,7 +302,7 @@ def get_desk_vars(v):
 		"--et-sidebar-logo-h": f"{sidebar_logo_h}px",
 		# Global
 		"--et-primary": v["primary_color"],
-		"--et-accent-text": v["primary_text_color"],
+		"--et-accent-text": accent_text(v, v["primary_color"]),
 		"--et-page-bg-light": v["page_bg"],
 		"--et-surface-light": v["surface_color"],
 		"--et-text-light": v["text_color"],
@@ -279,6 +333,10 @@ def get_body_classes(v):
 		"et-sidebar-divider": v["sidebar_divider"],
 		"et-ws-watermark": v["theme_workspace"] and v["show_workspace_watermark"] and bool(get_watermark(v)),
 		"et-no-anim": not v["enable_animations"],
+		"et-width-wide": v["page_width"] == "Larga",
+		"et-width-full": v["page_width"] == "Total",
+		"et-density-compact": v["density"] == "Compacta",
+		"et-density-comfortable": v["density"] == "Confortável",
 		"et-theme-navbar": v["theme_navbar"],
 		"et-theme-sidebar": v["theme_sidebar"],
 		"et-theme-workspace": v["theme_workspace"],
@@ -315,7 +373,7 @@ def get_css_vars(values=None):
 		"--input-focus-ring": accent,
 		"--primary-color": accent,
 		"--primary-hover": f"color-mix(in srgb, {accent} 85%, black)",
-		"--primary-text": v["primary_text_color"],
+		"--primary-text": accent_text(v, accent),
 		"--button-shadow": f"0 8px 20px -10px color-mix(in srgb, {accent} 60%, transparent)",
 	}
 

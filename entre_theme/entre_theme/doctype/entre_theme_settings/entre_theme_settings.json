@@ -6,6 +6,12 @@
  "engine": "InnoDB",
  "field_order": [
   "tab_general",
+  "section_presets",
+  "theme_preset",
+  "apply_preset",
+  "column_break_presets",
+  "export_theme",
+  "import_theme",
   "section_brand",
   "logo_url",
   "navbar_logo",
@@ -88,6 +94,7 @@
   "tab_colors",
   "section_global_colors",
   "primary_color",
+  "auto_text_on_accent",
   "primary_text_color",
   "dark_color",
   "column_break_global_colors",
@@ -95,6 +102,8 @@
   "surface_color",
   "text_color",
   "border_color",
+  "section_colors_preview",
+  "colors_preview",
   "section_colors_navbar",
   "navbar_accent",
   "navbar_bg",
@@ -119,6 +128,8 @@
   "column_break_appearance",
   "font_family",
   "border_radius",
+  "page_width",
+  "density",
   "enable_animations",
   "section_desk_parts",
   "theme_navbar",
@@ -183,6 +194,40 @@
    "fieldname": "tab_general",
    "fieldtype": "Tab Break",
    "label": "Geral"
+  },
+  {
+   "fieldname": "section_presets",
+   "fieldtype": "Section Break",
+   "label": "Predefinições",
+   "description": "Um visual completo num clique: cores, fonte, formas, partes com o tema e estilo do login. Logótipos, imagens, textos e impressão não mudam. Nada fica aplicado até gravar."
+  },
+  {
+   "fieldname": "theme_preset",
+   "fieldtype": "Select",
+   "label": "Predefinição",
+   "options": "\nEntre Laranja (original)\nCorporativo Azul\nVerde Natureza\nVibrante\nNoite Elegante\nMinimal Monocromático\nExecutivo Dourado\nFrappe Original (sem tema)"
+  },
+  {
+   "fieldname": "apply_preset",
+   "fieldtype": "Button",
+   "label": "Aplicar Predefinição",
+   "depends_on": "theme_preset"
+  },
+  {
+   "fieldname": "column_break_presets",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "export_theme",
+   "fieldtype": "Button",
+   "label": "Exportar Tema",
+   "description": "Descarrega estas definições num ficheiro .json, para usar noutro site."
+  },
+  {
+   "fieldname": "import_theme",
+   "fieldtype": "Button",
+   "label": "Importar Tema",
+   "description": "Preenche o formulário a partir de um ficheiro exportado. Reveja e grave."
   },
   {
    "fieldname": "section_brand",
@@ -704,10 +749,18 @@
    "description": "A cor da marca: destaques, ícones, item activo, página de login e impressão."
   },
   {
+   "fieldname": "auto_text_on_accent",
+   "fieldtype": "Check",
+   "label": "Texto sobre a Cor Principal Automático",
+   "default": "1",
+   "description": "Escolhe branco ou escuro conforme o contraste com a cor principal (e com a cor de destaque do login)."
+  },
+  {
    "fieldname": "primary_text_color",
    "fieldtype": "Color",
    "label": "Texto sobre a Cor Principal",
-   "default": "#ffffff"
+   "default": "#ffffff",
+   "depends_on": "eval:!doc.auto_text_on_accent"
   },
   {
    "fieldname": "dark_color",
@@ -747,6 +800,17 @@
    "label": "Linhas e Contornos",
    "description": "Tema claro.",
    "default": "#edeef1"
+  },
+  {
+   "fieldname": "section_colors_preview",
+   "fieldtype": "Section Break",
+   "label": "Pré-visualização",
+   "description": "Actualiza à medida que muda as cores. Para ver a página de login real, grave e use Ver > Página de Login."
+  },
+  {
+   "fieldname": "colors_preview",
+   "fieldtype": "HTML",
+   "label": "Pré-visualização"
   },
   {
    "fieldname": "section_colors_navbar",
@@ -890,6 +954,22 @@
    "label": "Arredondamento dos Cartões",
    "options": "4px\n6px\n8px\n12px\n16px",
    "default": "12px"
+  },
+  {
+   "fieldname": "page_width",
+   "fieldtype": "Select",
+   "label": "Largura da Página",
+   "options": "Normal\nLarga\nTotal",
+   "default": "Normal",
+   "description": "Normal: como no Frappe. Larga: até 1440px. Total: usa o ecrã todo."
+  },
+  {
+   "fieldname": "density",
+   "fieldtype": "Select",
+   "label": "Densidade",
+   "options": "Normal\nCompacta\nConfortável",
+   "default": "Normal",
+   "description": "Altura das linhas das listas e espaço entre campos. Normal: como no Frappe."
   },
   {
    "fieldname": "enable_animations",
@@ -1275,7 +1355,7 @@
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-11 13:00:00.000000",
+ "modified": "2026-11-11 14:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",

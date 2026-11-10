@@ -975,3 +975,52 @@ body.et-form-sidebar .form-sidebar .pageview-count {
 	color: var(--et-icon-muted);
 	line-height: 1.5;
 }
+
+
+/* =============================================================
+   Page width and density (Aparência). "Normal" = Frappe's own;
+   the other values sit behind body classes.
+     et-width-wide / et-width-full
+     et-density-compact / et-density-comfortable
+   ============================================================= */
+@media (min-width: 1200px) {
+	body.et-width-wide .container {
+		max-width: 1440px !important;
+	}
+}
+
+body.et-width-full .container {
+	max-width: 100% !important;
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
+/* List rows (Frappe: 40px high, 15px padding) */
+body.et-density-compact .frappe-list .list-row:not(.list-row-head) {
+	height: 32px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+body.et-density-comfortable .frappe-list .list-row:not(.list-row-head) {
+	height: 48px;
+}
+
+/* Space between fields and under section titles */
+body.et-density-compact .frappe-control .form-group,
+body.et-density-compact .form-group {
+	margin-bottom: 8px;
+}
+
+body.et-density-compact .form-section .section-head {
+	margin-bottom: 4px;
+}
+
+body.et-density-comfortable .frappe-control .form-group,
+body.et-density-comfortable .form-group {
+	margin-bottom: 22px;
+}
+
+body.et-density-comfortable .form-section .section-head {
+	margin-bottom: 14px;
+}
