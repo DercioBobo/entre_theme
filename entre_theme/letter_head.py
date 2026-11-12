@@ -68,7 +68,8 @@ def _address(company):
 			["Address", "disabled", "=", 0],
 		],
 		fields=["address_line1", "address_line2", "city", "country", "phone", "email_id"],
-		order_by="is_primary_address desc, modified desc",
+		# Qualified: the Dynamic Link join also has a "modified" column
+		order_by="`tabAddress`.is_primary_address desc, `tabAddress`.modified desc",
 		limit=1,
 	)
 	return rows[0] if rows else frappe._dict()
