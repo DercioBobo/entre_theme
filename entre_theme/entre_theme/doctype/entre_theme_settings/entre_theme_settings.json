@@ -197,6 +197,14 @@
   "web_error_logo",
   "column_break_web",
   "web_hide_chrome",
+  "tab_notices",
+  "section_desk_notices",
+  "desk_notices_on",
+  "desk_notice_style",
+  "column_break_desk_notices",
+  "desk_notice_dismiss",
+  "section_desk_notice_list",
+  "desk_notices",
   "tab_print",
   "manage_print_style",
   "set_default_print_style",
@@ -224,6 +232,26 @@
   "print_show_page_numbers",
   "print_footer_note",
   "print_footer_note_everywhere",
+  "section_letter_head",
+  "lh_manage",
+  "lh_default",
+  "lh_layout",
+  "lh_logo",
+  "lh_logo_height",
+  "lh_accent_line",
+  "column_break_letter_head",
+  "lh_show_company_name",
+  "lh_show_address",
+  "lh_show_tax_id",
+  "lh_tax_label",
+  "lh_show_contacts",
+  "lh_extra_text",
+  "section_letter_head_footer",
+  "lh_footer",
+  "lh_bank_title",
+  "column_break_letter_head_footer",
+  "lh_footer_text",
+  "preview_letter_head",
   "tab_advanced",
   "custom_css",
   "print_custom_css"
@@ -1649,12 +1677,200 @@
    "label": "CSS Personalizado (Impressão)",
    "options": "CSS",
    "description": "Acrescentado ao fim do Print Style \"Entre Theme\"."
+  },
+  {
+   "fieldname": "tab_notices",
+   "fieldtype": "Tab Break",
+   "label": "Avisos"
+  },
+  {
+   "fieldname": "section_desk_notices",
+   "fieldtype": "Section Break",
+   "label": "Avisos no Sistema",
+   "description": "Mensagens para quem já entrou no sistema, por cima de cada página. Ex.: \"Fecho do mês: lançar tudo até dia 30\". O aviso da página de login está no separador Página de Login."
+  },
+  {
+   "fieldname": "desk_notices_on",
+   "fieldtype": "Check",
+   "label": "Mostrar Avisos no Sistema",
+   "default": "1",
+   "description": "Desligado: nenhum aviso aparece, mas a lista fica guardada."
+  },
+  {
+   "fieldname": "desk_notice_style",
+   "fieldtype": "Select",
+   "label": "Estilo",
+   "options": "Faixa\nCartão",
+   "default": "Faixa",
+   "depends_on": "desk_notices_on",
+   "description": "Faixa: à largura da página, por baixo da barra de navegação. Cartão: no canto inferior direito."
+  },
+  {
+   "fieldname": "column_break_desk_notices",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "desk_notice_dismiss",
+   "fieldtype": "Check",
+   "label": "Cada Utilizador Pode Fechar",
+   "default": "1",
+   "depends_on": "desk_notices_on",
+   "description": "Um aviso fechado volta a aparecer se o texto, o tipo ou a ligação mudarem. Fica lembrado por navegador."
+  },
+  {
+   "fieldname": "section_desk_notice_list",
+   "fieldtype": "Section Break",
+   "depends_on": "desk_notices_on"
+  },
+  {
+   "fieldname": "desk_notices",
+   "fieldtype": "Table",
+   "label": "Avisos",
+   "options": "Entre Desk Notice"
+  },
+  {
+   "fieldname": "section_letter_head",
+   "fieldtype": "Section Break",
+   "label": "Cabeçalho (Papel Timbrado)",
+   "collapsible": 1,
+   "description": "Cria o Cabeçalho \"Entre Theme\" (Letter Head) com o logótipo e os dados da empresa de cada documento, e as contas bancárias no rodapé. Serve para todos os formatos de impressão, também os do Frappe."
+  },
+  {
+   "fieldname": "lh_manage",
+   "fieldtype": "Check",
+   "label": "Criar Cabeçalho a partir do Tema",
+   "default": "0",
+   "description": "Desligado: os cabeçalhos ficam como estão. Um \"Entre Theme\" já criado não é apagado, nem deixa de ser usado onde foi escolhido."
+  },
+  {
+   "fieldname": "lh_default",
+   "fieldtype": "Check",
+   "label": "Usar como Cabeçalho Padrão",
+   "default": "0",
+   "depends_on": "lh_manage",
+   "description": "Desligado: só é usado quando escolhido na impressão ou no documento."
+  },
+  {
+   "fieldname": "lh_layout",
+   "fieldtype": "Select",
+   "label": "Disposição",
+   "options": "Logótipo por Cima dos Dados\nLogótipo ao Lado dos Dados",
+   "default": "Logótipo por Cima dos Dados",
+   "depends_on": "lh_manage"
+  },
+  {
+   "fieldname": "lh_logo",
+   "fieldtype": "Attach Image",
+   "label": "Logótipo",
+   "depends_on": "lh_manage",
+   "description": "Vazio: o logótipo da Marca. Use PNG ou JPG: o PDF pode não mostrar SVG."
+  },
+  {
+   "fieldname": "lh_logo_height",
+   "fieldtype": "Int",
+   "label": "Altura do Logótipo (px)",
+   "default": "64",
+   "depends_on": "lh_manage",
+   "description": "Entre 24 e 160."
+  },
+  {
+   "fieldname": "lh_accent_line",
+   "fieldtype": "Check",
+   "label": "Linha na Cor de Impressão",
+   "default": "0",
+   "depends_on": "lh_manage"
+  },
+  {
+   "fieldname": "column_break_letter_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lh_show_company_name",
+   "fieldtype": "Check",
+   "label": "Nome da Empresa",
+   "default": "1",
+   "depends_on": "lh_manage"
+  },
+  {
+   "fieldname": "lh_show_address",
+   "fieldtype": "Check",
+   "label": "Morada",
+   "default": "1",
+   "depends_on": "lh_manage",
+   "description": "A morada principal ligada à Empresa."
+  },
+  {
+   "fieldname": "lh_show_tax_id",
+   "fieldtype": "Check",
+   "label": "Número Fiscal",
+   "default": "1",
+   "depends_on": "lh_manage",
+   "description": "O Tax ID da Empresa."
+  },
+  {
+   "fieldname": "lh_tax_label",
+   "fieldtype": "Data",
+   "label": "Nome do Número Fiscal",
+   "default": "NUIT",
+   "depends_on": "eval:doc.lh_manage && doc.lh_show_tax_id"
+  },
+  {
+   "fieldname": "lh_show_contacts",
+   "fieldtype": "Check",
+   "label": "Telefone, Email e Site",
+   "default": "1",
+   "depends_on": "lh_manage",
+   "description": "Da Empresa; se vazios, da morada."
+  },
+  {
+   "fieldname": "lh_extra_text",
+   "fieldtype": "Small Text",
+   "label": "Linhas Extra",
+   "depends_on": "lh_manage",
+   "description": "Iguais para todas as empresas. Ex.: Alvará nº 123/2024."
+  },
+  {
+   "fieldname": "section_letter_head_footer",
+   "fieldtype": "Section Break",
+   "label": "Rodapé do Cabeçalho",
+   "depends_on": "lh_manage"
+  },
+  {
+   "fieldname": "lh_footer",
+   "fieldtype": "Select",
+   "label": "Rodapé",
+   "options": "Contas Bancárias\nTexto\nContas Bancárias e Texto\nNenhum",
+   "default": "Contas Bancárias",
+   "description": "Contas Bancárias: até 3 Contas Bancárias da empresa (marcadas como conta da empresa), a padrão primeiro."
+  },
+  {
+   "fieldname": "lh_bank_title",
+   "fieldtype": "Data",
+   "label": "Título das Contas",
+   "default": "Dados Bancários",
+   "depends_on": "eval:['Contas Bancárias','Contas Bancárias e Texto'].includes(doc.lh_footer)",
+   "description": "Vazio: sem título."
+  },
+  {
+   "fieldname": "column_break_letter_head_footer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lh_footer_text",
+   "fieldtype": "Small Text",
+   "label": "Texto do Rodapé",
+   "depends_on": "eval:['Texto','Contas Bancárias e Texto'].includes(doc.lh_footer)"
+  },
+  {
+   "fieldname": "preview_letter_head",
+   "fieldtype": "Button",
+   "label": "Pré-visualizar Cabeçalho"
   }
  ],
  "issingle": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-11-10 12:00:00.000000",
+ "modified": "2026-11-11 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Entre Theme",
  "name": "Entre Theme Settings",

@@ -1026,3 +1026,129 @@ body.et-density-comfortable .form-group {
 body.et-density-comfortable .form-section .section-head {
 	margin-bottom: 14px;
 }
+
+/* ==========================================================================
+   Notices in the desk ("Avisos no Sistema", built by theme.js)
+   Not part of the theme parts: they show whatever the theme does, and use
+   Frappe's own card/text colours, so they also fit "Frappe Escuro Original".
+   ========================================================================== */
+.et-desk-notices {
+	--n-info: var(--et-primary, var(--primary, #2490ef));
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.et-desk-notice {
+	--n: var(--n-info);
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 10px 12px;
+	border: 1px solid color-mix(in srgb, var(--n) 28%, transparent);
+	border-left: 3px solid var(--n);
+	border-radius: var(--et-radius, 8px);
+	background: color-mix(in srgb, var(--n) 9%, var(--card-bg, #ffffff));
+	color: var(--text-color, #1f272e);
+	font-size: var(--text-base, 13px);
+	line-height: 1.45;
+}
+
+.et-desk-notice--warning { --n: #d97706; }
+.et-desk-notice--alert { --n: #dc2626; }
+.et-desk-notice--success { --n: #16a34a; }
+
+.et-notice-icon {
+	flex: none;
+	margin-top: 1px;
+	color: var(--n);
+}
+
+.et-desk-notice-text {
+	flex: 1;
+	min-width: 0;
+	white-space: pre-line;
+	overflow-wrap: anywhere;
+}
+
+.et-desk-notice-link {
+	font-weight: 600;
+	color: color-mix(in oklch, var(--n) 70%, var(--text-color, #1f272e));
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	white-space: nowrap;
+}
+
+.et-desk-notice-close {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	margin: -2px -4px -2px 0;
+	padding: 0;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: inherit;
+	opacity: 0.6;
+	cursor: pointer;
+}
+
+.et-desk-notice-close:hover,
+.et-desk-notice-close:focus-visible {
+	opacity: 1;
+	background: color-mix(in srgb, var(--n) 14%, transparent);
+}
+
+.et-desk-notice-close:focus-visible {
+	outline: 2px solid var(--n);
+	outline-offset: 1px;
+}
+
+/* Bar: under the navbar, inside a Frappe .container (same width as the page) */
+.et-desk-notices--bar {
+	margin-top: 12px;
+}
+
+.et-desk-notices--bar > .container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* Card: bottom-right corner, above the page */
+.et-desk-notices--card {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	z-index: 1030;
+	width: min(380px, calc(100vw - 32px));
+}
+
+.et-desk-notices--card .et-desk-notice {
+	border-left-width: 1px;
+	border-top: 3px solid var(--n);
+	box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.35);
+	animation: et-notice-in 0.25s ease-out;
+}
+
+@keyframes et-notice-in {
+	from { opacity: 0; transform: translateY(8px); }
+}
+
+@media (max-width: 575px) {
+	.et-desk-notices--card { right: 16px; bottom: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.et-desk-notices--card .et-desk-notice { animation: none; }
+}
+
+body.et-no-anim .et-desk-notices--card .et-desk-notice { animation: none; }
+
+@media print {
+	.et-desk-notices { display: none !important; }
+}

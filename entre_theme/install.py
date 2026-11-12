@@ -53,12 +53,13 @@ def seed_defaults():
 def after_migrate():
 	"""Fill in new settings, then re-render the print style and print formats
 	(their templates may have changed with the update)."""
-	from entre_theme import print_formats, print_style, website
+	from entre_theme import letter_head, print_formats, print_style, website
 
 	seed_defaults()
 	print_style.sync()
 	print_formats.sync()
 	website.sync_splash()
+	letter_head.sync()
 
 
 def before_uninstall():

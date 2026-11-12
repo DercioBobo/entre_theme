@@ -15,7 +15,8 @@ const PREVIEW_FIELDS = [
 
 // Layout fields: never exported / imported
 const LAYOUT_TYPES = ['Section Break', 'Column Break', 'Tab Break', 'HTML', 'Button', 'Heading'];
-const NOT_EXPORTED = ['theme_preset'];
+// Notices are messages, not part of a look: not exported with the theme
+const NOT_EXPORTED = ['theme_preset', 'desk_notices'];
 
 // ── Colour helpers (same rules as api.py) ─────────────────────────
 function rgb(color) {
@@ -288,6 +289,52 @@ const events = {
 				});
 			},
 		});
+	},
+
+	preview_letter_head(frm) {
+		const show = (company) => frappe.call({
+			method: 'entre_theme.letter_head.preview_letter_head',
+			args: { values: themeValues(frm), company: company || null },
+			freeze: true,
+		}).then((r) => {
+			const lh = r.message || {};
+			const page = `<!doctype html><html><head><meta charset="utf-8"><style>
+				body{margin:0;background:#e5e7eb;font-family:Arial,sans-serif}
+				.sheet{background:#fff;max-width:794px;min-height:520px;margin:16px auto;padding:32px 40px;box-sizing:border-box;
+					display:flex;flex-direction:column;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+				.body{flex:1;margin:28px 0;border:1px dashed #d1d5db;border-radius:6px;display:flex;align-items:center;
+					justify-content:center;color:#9ca3af;font-size:12px;min-height:160px}
+			</style></head><body><div class="sheet">${lh.header || ''}
+				<div class="body">${frappe.utils.escape_html(__('Conteúdo do documento'))}</div>${lh.footer || ''}</div></body></html>`;
+			const dialog = new frappe.ui.Dialog({
+				title: __('Pré-visualização do Cabeçalho'),
+				size: 'large',
+				fields: [
+					// No company (e.g. Frappe without ERPNext): only the preview
+					...(lh.company ? [{
+						fieldtype: 'Link', fieldname: 'company', label: __('Empresa'), options: 'Company',
+						default: lh.company,
+						description: __('Cada documento usa os dados da sua empresa.'),
+						change() {
+							const value = dialog.get_value('company');
+							if (value && value !== lh.company) {
+								dialog.hide();
+								show(value);
+							}
+						},
+					}] : []),
+					{ fieldtype: 'HTML', fieldname: 'preview' },
+				],
+			});
+			// Sandboxed: the preview can't run scripts or reach the desk
+			const frame = document.createElement('iframe');
+			frame.style.cssText = 'width:100%;height:70vh;border:0;border-radius:8px';
+			frame.setAttribute('sandbox', '');
+			frame.srcdoc = page;
+			dialog.fields_dict.preview.$wrapper.empty().append(frame);
+			dialog.show();
+		});
+		show(null);
 	},
 
 	preview_email(frm) {

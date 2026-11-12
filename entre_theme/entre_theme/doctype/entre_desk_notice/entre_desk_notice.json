@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "creation": "2026-11-11 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "istable": 1,
+ "module": "Entre Theme",
+ "name": "Entre Desk Notice",
+ "owner": "Administrator",
+ "modified": "2026-11-11 10:00:00.000000",
+ "modified_by": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "enabled",
+  "notice_type",
+  "message",
+  "column_break_notice",
+  "start_at",
+  "end_at",
+  "roles",
+  "section_link",
+  "link_label",
+  "column_break_link",
+  "link_url"
+ ],
+ "fields": [
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Activo",
+   "default": "1",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "notice_type",
+   "fieldtype": "Select",
+   "label": "Tipo",
+   "options": "Informação\nAviso\nImportante\nSucesso",
+   "default": "Informação",
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "Informação: cor principal. Aviso: laranja. Importante: vermelho. Sucesso: verde."
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Mensagem",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 5,
+   "description": "Texto simples; as quebras de linha são mantidas."
+  },
+  {
+   "fieldname": "column_break_notice",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start_at",
+   "fieldtype": "Datetime",
+   "label": "Mostrar a Partir de",
+   "description": "Vazio: já."
+  },
+  {
+   "fieldname": "end_at",
+   "fieldtype": "Datetime",
+   "label": "Mostrar Até",
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "Vazio: até ser desactivado. Depois desta data desaparece sozinho."
+  },
+  {
+   "fieldname": "roles",
+   "fieldtype": "Small Text",
+   "label": "Só para as Funções",
+   "description": "Uma função por linha (ex.: Accounts User). Vazio: todos os utilizadores."
+  },
+  {
+   "fieldname": "section_link",
+   "fieldtype": "Section Break",
+   "label": "Ligação (opcional)"
+  },
+  {
+   "fieldname": "link_label",
+   "fieldtype": "Data",
+   "label": "Texto da Ligação",
+   "description": "Ex.: Ver detalhes. Vazio: \"Abrir\"."
+  },
+  {
+   "fieldname": "column_break_link",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "link_url",
+   "fieldtype": "Data",
+   "label": "Endereço da Ligação",
+   "description": "Ex.: /app/sales-invoice ou https://…"
+  }
+ ]
+}

@@ -49,5 +49,8 @@ jinja = {
 		"entre_theme.print_utils.entre_print_context",
 		# Branded emails: templates/emails/standard.html (see emails.py)
 		"entre_theme.emails.entre_email_context",
+		# Letter Head "Entre Theme": header and footer (see letter_head.py)
+		"entre_theme.letter_head.entre_letter_head",
+		"entre_theme.letter_head.entre_letter_head_footer",
 	],
 }

@@ -57,6 +57,23 @@ DEFAULTS = {
 	"web_theme": "Páginas de Erro e Mensagens",
 	"web_error_logo": 1,
 	"web_hide_chrome": 0,
+	# Avisos no sistema (the notices themselves: the desk_notices table)
+	"desk_notices_on": 1,
+	"desk_notice_style": "Faixa",
+	"desk_notice_dismiss": 1,
+	# Cabeçalho de impressão (Letter Head "Entre Theme", see letter_head.py)
+	"lh_manage": 0,
+	"lh_default": 0,
+	"lh_layout": "Logótipo por Cima dos Dados",
+	"lh_logo_height": 64,
+	"lh_accent_line": 0,
+	"lh_show_company_name": 1,
+	"lh_show_address": 1,
+	"lh_show_tax_id": 1,
+	"lh_tax_label": "NUIT",
+	"lh_show_contacts": 1,
+	"lh_footer": "Contas Bancárias",
+	"lh_bank_title": "Dados Bancários",
 	# Aparência
 	"border_radius": "12px",
 	"font_family": "Inter",
@@ -138,6 +155,7 @@ OPTIONAL = (
 	"login_notice", "login_notice_until", "login_footer_links",
 	"splash_logo", "splash_text", "splash_bg",
 	"email_logo", "email_accent", "email_bg", "email_footer_text",
+	"lh_logo", "lh_extra_text", "lh_footer_text",
 ) + AREA_COLORS + DARK_COLORS
 
 CHECKS = {
@@ -188,12 +206,24 @@ CHECKS = {
 	"email_show_logo",
 	"web_error_logo",
 	"web_hide_chrome",
+	"desk_notices_on",
+	"desk_notice_dismiss",
+	"lh_manage",
+	"lh_default",
+	"lh_accent_line",
+	"lh_show_company_name",
+	"lh_show_address",
+	"lh_show_tax_id",
+	"lh_show_contacts",
 }
 
 # Text fields with a default where empty is a real choice ("off"). Their
 # defaults are written into the settings by install.seed_defaults, so an
 # empty value here means the user cleared it.
-ALLOW_EMPTY = {"print_title_item_group", "print_footer_note", "print_items_total_label", "login_subtext"}
+ALLOW_EMPTY = {
+	"print_title_item_group", "print_footer_note", "print_items_total_label", "login_subtext",
+	"lh_bank_title", "lh_tax_label",
+}
 
 TRANSITION = "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
 
@@ -517,8 +547,11 @@ def get_font_url(font_family):
 
 
 def get_theme_payload():
+	from entre_theme.notices import get_desk_notices
+
 	values = get_settings_values()
 	return {
+		"notices": get_desk_notices(values),
 		"vars": get_desk_vars(values),
 		"vars_dark": get_dark_vars(values),
 		# "Frappe Escuro Original": no theme at all while the dark theme is on

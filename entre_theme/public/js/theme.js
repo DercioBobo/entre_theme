@@ -181,8 +181,138 @@
 		});
 	}
 
+	// ── Notices ("Avisos no Sistema") ─────────────────────────────
+	// The server sends this user's notices (roles already checked) with
+	// start/end as timestamps; they are shown and hidden on time here, so
+	// a notice that starts or ends while the desk is open needs no reload.
+	// Closed notices are remembered per user, in this browser.
+	var noticeData = null;
+	var noticeTimer = null;
+
+	function dismissKey() {
+		var user = (window.frappe && frappe.session && frappe.session.user) || "";
+		return "entre-notices-closed:" + user;
+	}
+
+	function closedNotices() {
+		try {
+			return JSON.parse(localStorage.getItem(dismissKey()) || "[]");
+		} catch (e) {
+			return [];
+		}
+	}
+
+	function closeNotice(id) {
+		var closed = closedNotices();
+		if (closed.indexOf(id) === -1) closed.push(id);
+		try {
+			// Only ids of notices that still exist: the list never grows forever
+			var live = ((noticeData && noticeData.items) || []).map(function (n) { return n.id; });
+			localStorage.setItem(dismissKey(), JSON.stringify(closed.filter(function (c) {
+				return live.indexOf(c) !== -1;
+			})));
+		} catch (e) { /* private mode: closes for this page only */ }
+		renderNotices();
+	}
+
+	function noticeIcon(type) {
+		var paths = {
+			info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+			warning: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+			alert: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',
+			success: '<circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/>'
+		};
+		return '<svg class="et-notice-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+			'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+			(paths[type] || paths.info) + "</svg>";
+	}
+
+	function buildNotice(n, canClose) {
+		var el = document.createElement("div");
+		el.className = "et-desk-notice et-desk-notice--" + n.type;
+		el.setAttribute("role", n.type === "alert" || n.type === "warning" ? "alert" : "status");
+		el.innerHTML = noticeIcon(n.type);
+		var text = document.createElement("div");
+		text.className = "et-desk-notice-text";
+		text.textContent = n.message; // plain text: never HTML
+		if (n.link) {
+			var a = document.createElement("a");
+			a.className = "et-desk-notice-link";
+			a.href = n.link;
+			a.textContent = n.link_label;
+			if (/^https?:/.test(n.link)) {
+				a.target = "_blank";
+				a.rel = "noopener";
+			}
+			text.appendChild(document.createTextNode(" "));
+			text.appendChild(a);
+		}
+		el.appendChild(text);
+		if (canClose) {
+			var btn = document.createElement("button");
+			btn.type = "button";
+			btn.className = "et-desk-notice-close";
+			btn.setAttribute("aria-label", window.__ ? __("Fechar") : "Fechar");
+			btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+				'stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+			btn.addEventListener("click", function () { closeNotice(n.id); });
+			el.appendChild(btn);
+		}
+		return el;
+	}
+
+	function renderNotices() {
+		var box = document.getElementById("et-desk-notices");
+		var data = noticeData;
+		var now = Date.now();
+		var closed = data && data.dismiss ? closedNotices() : [];
+		var items = ((data && data.items) || []).filter(function (n) {
+			return (!n.start || n.start <= now) && (!n.end || n.end > now) && closed.indexOf(n.id) === -1;
+		});
+		if (!items.length) {
+			if (box) box.remove();
+			return;
+		}
+		var body = document.getElementById("body");
+		if (!box) {
+			box = document.createElement("div");
+			box.id = "et-desk-notices";
+		}
+		box.className = "et-desk-notices et-desk-notices--" + data.style;
+		// Bar: in the page flow, between the navbar and the page. Card: fixed corner.
+		if (data.style === "bar" && body && body.parentNode) {
+			if (box.nextSibling !== body) body.parentNode.insertBefore(box, body);
+		} else if (box.parentNode !== document.body) {
+			document.body.appendChild(box);
+		}
+		box.innerHTML = "";
+		var list = box;
+		if (data.style === "bar") {
+			list = document.createElement("div");
+			list.className = "container";
+			box.appendChild(list);
+		}
+		items.forEach(function (n) { list.appendChild(buildNotice(n, data.dismiss)); });
+	}
+
+	function setupNotices(data) {
+		noticeData = data && data.items && data.items.length ? data : null;
+		if (noticeTimer) {
+			clearInterval(noticeTimer);
+			noticeTimer = null;
+		}
+		if (!document.body) {
+			document.addEventListener("DOMContentLoaded", function () { setupNotices(data); });
+			return;
+		}
+		renderNotices();
+		// Start / end times: check every minute
+		if (noticeData) noticeTimer = setInterval(renderNotices, 60000);
+	}
+
 	function apply(payload) {
 		if (!payload || !payload.vars) return;
+		setupNotices(payload.notices);
 		lastPayload = payload;
 		watchTheme();
 		var root = document.documentElement;
